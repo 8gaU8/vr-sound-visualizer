@@ -25,6 +25,8 @@ export default [
         URL: 'readonly',
         navigator: 'readonly',
         setTimeout: 'readonly',
+        Blob: 'readonly',
+        FileReader: 'readonly',
       },
       parserOptions: {
         ecmaVersion: 'latest',
