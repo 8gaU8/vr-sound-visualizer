@@ -20,6 +20,7 @@
     "vite": "^6.3.5"
   },
   "dependencies": {
+    "@dgreenheck/ez-tree": "^1.0.0",
     "three": "^0.176.0"
   }
 }
