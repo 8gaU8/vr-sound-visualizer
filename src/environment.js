@@ -14,12 +14,14 @@ export class Environment extends THREE.Object3D {
     this.add(this.ground)
 
     this.grass = new Grass()
+    this.grass.scale.set(0.2, 0.2, 0.2)
     this.add(this.grass)
 
     this.skybox = new Skybox()
     this.add(this.skybox)
 
     this.rocks = new Rocks()
+    this.rocks.scale.set(0.2, 0.2, 0.2)
     this.add(this.rocks)
 
     this.clouds = new Clouds()

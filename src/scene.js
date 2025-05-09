@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { Environment } from './environment'
+import { createSimplifiedMesh } from './utils'
 import { AudioManager } from './audio.js'
 
 function sleep(ms) {
@@ -20,13 +21,13 @@ function paintUI() {
  */
 export async function createScene(renderer) {
   const scene = new THREE.Scene()
-  // scene.fog = new THREE.FogExp2(0x94b9f8, 0.0015);
+  scene.fog = new THREE.FogExp2(0x94b9f8, 0.01)
 
   const environment = new Environment()
   scene.add(environment)
 
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000)
-  camera.position.set(100, 20, 5)
+  camera.position.set(10, 1.7, 0)
 
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.update()
@@ -37,18 +38,22 @@ export async function createScene(renderer) {
  
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
+  tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
+  tree.branchesMesh = createSimplifiedMesh(tree.branchesMesh)
+  tree
   tree.generate()
   tree.castShadow = true
   tree.receiveShadow = true
+  tree.position.set(2, 0, 2)
   scene.add(tree)
 
   // Add a forest of trees in the background
   const forest = new THREE.Group()
   forest.name = 'Forest'
 
-  const treeCount = 1
-    const minDistance = 175
-  const maxDistance = 500
+  const treeCount = 20
+  const minDistance = 2
+  const maxDistance = 5
 
   function createTree() {
     const r = minDistance + Math.random() * maxDistance
@@ -130,7 +135,13 @@ export async function createScene(renderer) {
   await AudioModel()
 
   scene.add(forest)
-  // camera.lookAt(1, 0, -5); // Look at the model's position
+
+  // scale every objects in the scene
+  scene.traverse((object) => {
+    if (object.isMesh) {
+      object.scale.set(0.1, 0.1, 0.1)
+    }
+  })
 
   return {
     scene,
