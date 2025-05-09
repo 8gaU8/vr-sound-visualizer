@@ -2,6 +2,8 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
+import { createSimplifiedMesh } from './utils'
+
 let loaded = false
 let _rock1Mesh = null
 let _rock2Mesh = null
@@ -21,8 +23,11 @@ async function fetchAssets() {
   gltfLoader.setDRACOLoader(dracoLoader)
 
   _rock1Mesh = (await gltfLoader.loadAsync('rock1.glb')).scene.children[0]
+  _rock1Mesh = createSimplifiedMesh(_rock1Mesh)
   _rock2Mesh = (await gltfLoader.loadAsync('rock2.glb')).scene.children[0]
+  _rock2Mesh = createSimplifiedMesh(_rock2Mesh)
   _rock3Mesh = (await gltfLoader.loadAsync('rock3.glb')).scene.children[0]
+  _rock3Mesh = createSimplifiedMesh(_rock3Mesh)
 
   loaded = true
 }
@@ -64,9 +69,9 @@ export class Rocks extends THREE.Group {
     for (let i = 0; i < 50; i++) {
       // Set position randomly
       const p = new THREE.Vector3(
-        2 * (Math.random() - 0.5) * 250,
-        0.3,
-        2 * (Math.random() - 0.5) * 250,
+        20 * (Math.random() - 0.5) * 25,
+        0.03,
+        20 * (Math.random() - 0.5) * 25,
       )
 
       dummy.position.copy(p)

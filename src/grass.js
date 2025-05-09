@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
 import { simplex2d } from './noise'
+import { createSimplifiedMesh } from './utils'
 
 let loaded = false
 let _grassMesh = null
@@ -13,7 +14,7 @@ export class GrassOptions {
   /**
    * Number of grass instances
    */
-  instanceCount = 5000
+  instanceCount = 50
 
   /**
    * Maximum number of grass instances
@@ -28,12 +29,12 @@ export class GrassOptions {
   /**
    * Size of the grass patches
    */
-  scale = 100
+  scale = 0.05
 
   /**
    * Patchiness of the grass
    */
-  patchiness = 0.7
+  patchiness = 0.1
 
   /**
    * Scale factor for the grass model
@@ -150,6 +151,7 @@ export class Grass extends THREE.Object3D {
       grassMaterial,
       this.options.maxInstanceCount,
     )
+    this.grassMesh = createSimplifiedMesh(this.grassMesh)
 
     this.generateGrassInstances()
 
@@ -161,7 +163,7 @@ export class Grass extends THREE.Object3D {
 
     let count = 0
     for (let i = 0; i < this.options.maxInstanceCount; i++) {
-      const r = 10 + Math.random() * 500
+      const r = 10 + Math.random() * 50
       const theta = Math.random() * 2.0 * Math.PI
 
       // Set position randomly
@@ -213,7 +215,7 @@ export class Grass extends THREE.Object3D {
    */
   generateFlowers(flowerMesh) {
     for (let i = 0; i < this.options.flowerCount; i++) {
-      const r = 10 + Math.random() * 200
+      const r = 10 + Math.random() * 20
       const theta = Math.random() * 2.0 * Math.PI
 
       // Set position randomly
