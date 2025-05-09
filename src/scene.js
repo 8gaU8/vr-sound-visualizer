@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { Environment } from './environment'
+import { AudioManager } from './audio.js'
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -25,11 +26,15 @@ export async function createScene(renderer) {
   scene.add(environment)
 
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000)
-  camera.position.set(100, 20, 0)
+  camera.position.set(100, 20, 5)
 
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.update()
 
+  //create audio and add it to the camera
+  const audioManager= new AudioManager()
+  camera.add(audioManager.listener)
+ 
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
   tree.generate()
@@ -41,8 +46,8 @@ export async function createScene(renderer) {
   const forest = new THREE.Group()
   forest.name = 'Forest'
 
-  const treeCount = 100
-  const minDistance = 175
+  const treeCount = 1
+    const minDistance = 175
   const maxDistance = 500
 
   function createTree() {
@@ -84,10 +89,48 @@ export async function createScene(renderer) {
     // document.getElementById("loading-screen").style.display = "none";
   }
 
+  //AUDIO+model
+  async function AudioModel(){
+    const modelAudioPairs=[
+      {
+        model: 'love_birds_parrot.glb',
+        audio: 'quaker-parrot-screams-231906.mp3',
+        position: { x: 100, y: 50, z: 25 },
+        scale: { x: 10, y: 10, z: 10 }
+      },
+      {
+        model: 'woodpecker.glb',
+        audio: 'Pileated Woodpecker .mp3',
+        position: { x: -50, y: 50, z: 20 },
+        scale: { x: 10, y: 10, z: 10 }
+      },
+    ];
+    
+    try{
+      for (const pair of modelAudioPairs) {
+      const{model, audio}= await audioManager.loadModelAudio(pair.model, pair.audio, scene, pair.position)
+      
+
+    model.scale.set(pair.scale.x,pair.scale.y,pair.scale.z); // Adjust scale if needed
+    model.visible = true;     // Ensure visibility is on
+    // camera.lookAt(model.position); // Adjust camera to look at the model
+    model.castShadow = true
+    model.receiveShadow = true
+    audio.play()
+    }}
+    catch(error){
+      console.error('Error loading model or audio:', error)
+      throw error
+    }
+  }
+
+
   // Start the tree loading process
   await loadTrees(0)
+  await AudioModel()
 
   scene.add(forest)
+  // camera.lookAt(1, 0, -5); // Look at the model's position
 
   return {
     scene,
@@ -95,5 +138,6 @@ export async function createScene(renderer) {
     tree,
     camera,
     controls,
+    audioManager,
   }
 }
