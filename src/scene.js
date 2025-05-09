@@ -4,6 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { Environment } from './environment'
 import { createSimplifiedMesh } from './utils'
+import { AudioManager } from './audio.js'
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -31,6 +32,10 @@ export async function createScene(renderer) {
   const controls = new OrbitControls(camera, renderer.domElement)
   controls.update()
 
+  //create audio and add it to the camera
+  const audioManager= new AudioManager()
+  camera.add(audioManager.listener)
+ 
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
   tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
@@ -89,8 +94,45 @@ export async function createScene(renderer) {
     // document.getElementById("loading-screen").style.display = "none";
   }
 
+  //AUDIO+model
+  async function AudioModel(){
+    const modelAudioPairs=[
+      {
+        model: 'love_birds_parrot.glb',
+        audio: 'quaker-parrot-screams-231906.mp3',
+        position: { x: 100, y: 50, z: 25 },
+        scale: { x: 10, y: 10, z: 10 }
+      },
+      {
+        model: 'woodpecker.glb',
+        audio: 'Pileated Woodpecker .mp3',
+        position: { x: -50, y: 50, z: 20 },
+        scale: { x: 10, y: 10, z: 10 }
+      },
+    ];
+    
+    try{
+      for (const pair of modelAudioPairs) {
+      const{model, audio}= await audioManager.loadModelAudio(pair.model, pair.audio, scene, pair.position)
+      
+
+    model.scale.set(pair.scale.x,pair.scale.y,pair.scale.z); // Adjust scale if needed
+    model.visible = true;     // Ensure visibility is on
+    // camera.lookAt(model.position); // Adjust camera to look at the model
+    model.castShadow = true
+    model.receiveShadow = true
+    audio.play()
+    }}
+    catch(error){
+      console.error('Error loading model or audio:', error)
+      throw error
+    }
+  }
+
+
   // Start the tree loading process
   await loadTrees(0)
+  await AudioModel()
 
   scene.add(forest)
 
@@ -107,5 +149,6 @@ export async function createScene(renderer) {
     tree,
     camera,
     controls,
+    audioManager,
   }
 }
