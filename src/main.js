@@ -11,17 +11,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const renderer = initRenderer(container)
 
-  const { scene, environment, tree, camera, controls } = await createScene(renderer)
+  const { scene, environment, tree, camera, controls ,audioManager} = await createScene(renderer)
 
   const clock = new THREE.Clock()
   function render() {
+    if (renderer.xr.isPresenting){
+      audioManager.updateAudioListener(renderer.xr.getCamera())
+    }
+    else{
+      controls.update()
+      audioManager.updateAudioListener(camera)
+    }
+
     // Update time for wind sway shaders
     const t = clock.getElapsedTime()
     tree.update(t)
     scene.getObjectByName('Forest').children.forEach((o) => o.update(t))
     environment.update(t)
 
-    controls.update()
+    // controls.update()
+    // audioManager.updateAudioListener(camera)
     renderer.render(scene, camera)
   }
 

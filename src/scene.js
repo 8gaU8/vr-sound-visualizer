@@ -34,8 +34,9 @@ export async function createScene(renderer) {
 
   //create audio and add it to the camera
   const audioManager= new AudioManager()
-  camera.add(audioManager.listener)
- 
+  scene.add(audioManager.listener)
+
+  
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
   tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
@@ -51,9 +52,9 @@ export async function createScene(renderer) {
   const forest = new THREE.Group()
   forest.name = 'Forest'
 
-  const treeCount = 20
-  const minDistance = 2
-  const maxDistance = 5
+  const treeCount = 2
+  const minDistance = 10
+  const maxDistance = 20
 
   function createTree() {
     const r = minDistance + Math.random() * maxDistance
@@ -100,14 +101,14 @@ export async function createScene(renderer) {
       {
         model: 'love_birds_parrot.glb',
         audio: 'quaker-parrot-screams-231906.mp3',
-        position: { x: 100, y: 50, z: 25 },
-        scale: { x: 10, y: 10, z: 10 }
+        position: { x: 3, y: 2, z: -8 },
+        scale: { x: 8, y: 8, z: 8 }
       },
       {
         model: 'woodpecker.glb',
         audio: 'Pileated Woodpecker .mp3',
-        position: { x: -50, y: 50, z: 20 },
-        scale: { x: 10, y: 10, z: 10 }
+        position: { x: 5, y: 2, z: 2 },
+        scale: { x: 0.5, y: 0.5, z: 0.5 }
       },
     ];
     
@@ -121,6 +122,10 @@ export async function createScene(renderer) {
     // camera.lookAt(model.position); // Adjust camera to look at the model
     model.castShadow = true
     model.receiveShadow = true
+    
+  //  if (audioManager.audioContext.state === 'suspended') {
+  //   audioManager.audioContext.resume()
+  // }
     audio.play()
     }}
     catch(error){
@@ -128,7 +133,6 @@ export async function createScene(renderer) {
       throw error
     }
   }
-
 
   // Start the tree loading process
   await loadTrees(0)
