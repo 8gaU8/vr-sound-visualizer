@@ -99,6 +99,24 @@ export class AudioManager {
     })
     this.models.clear()
   }
+ //load ambient audio
+ async loadAmbientAudio(path) {
+    try{
+    const ambientAudio = new THREE.Audio(this.listener)
+    const ambaudioBuffer =  await this.loadAudio(path)
+        ambientAudio.setBuffer(ambaudioBuffer)
+        ambientAudio.setLoop(true)
+        ambientAudio.setVolume(0.5)
+        ambientAudio.play()
+
+        // scene.add(ambientAudio)
+
+      return ambientAudio 
+    } catch (error) {
+      console.error('Error loading ambient audio:', error)
+      throw error
+    }
+  }
 
   updateAudioListener(camera) {
     this.listener.position.copy(camera.position)

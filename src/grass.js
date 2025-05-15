@@ -247,7 +247,7 @@ export class Grass extends THREE.Object3D {
         ? `
         vec4 mvPosition = instanceMatrix * vec4(transformed, 1.0);
         float windOffset = 2.0 * 3.14 * simplex2d((modelMatrix * mvPosition).xz / uWindScale);
-        vec3 windSway = position.y * uWindStrength * 
+        vec3 windSway = position.y * uWindStrength *2.0* 
         sin(uTime * uWindFrequency + windOffset) *
         cos(uTime * 1.4 * uWindFrequency + windOffset);
 
