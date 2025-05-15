@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
+import { RockOptions } from './defaultConfigs/RockOptions'
 import { createSimplifiedMesh } from './utils'
 
 let loaded = false
@@ -32,18 +33,6 @@ async function fetchAssets() {
   loaded = true
 }
 
-export class RockOptions {
-  /**
-   * Scale factor
-   */
-  size = { x: 2, y: 2, z: 2 }
-
-  /**
-   * Maximum variation in the rock size
-   */
-  sizeVariation = { x: 3, y: 3, z: 3 }
-}
-
 export class Rocks extends THREE.Group {
   constructor(options = new RockOptions()) {
     super()
@@ -66,25 +55,20 @@ export class Rocks extends THREE.Group {
     const dummy = new THREE.Object3D()
 
     let count = 0
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < this.options.instanceCount; i++) {
       // Set position randomly
-      const p = new THREE.Vector3(
-        20 * (Math.random() - 0.5) * 25,
-        0.03,
-        20 * (Math.random() - 0.5) * 25,
-      )
+      const p = this.options.positions[i]
 
-      dummy.position.copy(p)
+      dummy.position.set(p[0], p[1], p[2])
 
       // Set rotation randomly
-      dummy.rotation.set(0, 2 * Math.PI * Math.random(), 0)
+      const r = this.options.rotations[i]
+
+      dummy.rotation.set(r[0], r[1], r[2])
 
       // Set scale randomly
-      dummy.scale.set(
-        this.options.sizeVariation.x * Math.random() + this.options.size.x,
-        this.options.sizeVariation.y * Math.random() + this.options.size.y,
-        this.options.sizeVariation.z * Math.random() + this.options.size.z,
-      )
+      const s = this.options.scales[i]
+      dummy.scale.set(s[0], s[1], s[2])
 
       // Apply the transformation to the instance
       dummy.updateMatrix()

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { GrassOptions } from './grass'
+import { GrassOptions } from './defaultConfigs/GrassOptions'
 
 let loaded = false
 let _grassTexture = null
@@ -22,7 +22,6 @@ async function fetchAssets() {
   _grassTexture.colorSpace = THREE.SRGBColorSpace
 
   _dirtTexture = await textureLoader.loadAsync('dirt_color.jpg')
-  console.log(_dirtTexture)
   _dirtTexture.wrapS = THREE.RepeatWrapping
   _dirtTexture.wrapT = THREE.RepeatWrapping
   _dirtTexture.colorSpace = THREE.SRGBColorSpace
