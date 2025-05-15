@@ -2,9 +2,9 @@ import { Tree, TreePreset } from '@dgreenheck/ez-tree'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
+import { AudioManager } from './audio.js'
 import { Environment } from './environment'
 import { createSimplifiedMesh } from './utils'
-import { AudioManager } from './audio.js'
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -33,15 +33,13 @@ export async function createScene(renderer) {
   controls.update()
 
   //create audio and add it to the camera
-  const audioManager= new AudioManager()
+  const audioManager = new AudioManager()
   scene.add(audioManager.listener)
 
-  
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
   tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
   tree.branchesMesh = createSimplifiedMesh(tree.branchesMesh)
-  tree
   tree.generate()
   tree.castShadow = true
   tree.receiveShadow = true
@@ -77,13 +75,6 @@ export async function createScene(renderer) {
     while (i < treeCount) {
       createTree()
 
-      // const progress = Math.floor((100 * (i + 1)) / treeCount);
-
-      // Update progress UI
-      // logoElement.style.clipPath = `inset(${100 - progress}% 0% 0% 0%)`;
-      // progressElement.innerText = `LOADING... ${progress}%`;
-
-      // Wait for the next animation frame to continue
       await paintUI()
 
       i++
@@ -91,44 +82,42 @@ export async function createScene(renderer) {
 
     // All trees are loaded, hide loading screen
     await sleep(300)
-    // logoElement.style.clipPath = `inset(0% 0% 0% 0%)`;
-    // document.getElementById("loading-screen").style.display = "none";
   }
 
   //AUDIO+model
-  async function AudioModel(){
-    const modelAudioPairs=[
+  async function AudioModel() {
+    const modelAudioPairs = [
       {
         model: 'love_birds_parrot.glb',
         audio: 'quaker-parrot-screams-231906.mp3',
         position: { x: 3, y: 2, z: -8 },
-        scale: { x: 8, y: 8, z: 8 }
+        scale: { x: 8, y: 8, z: 8 },
       },
       {
         model: 'woodpecker.glb',
         audio: 'Pileated Woodpecker .mp3',
         position: { x: 5, y: 2, z: 2 },
-        scale: { x: 0.5, y: 0.5, z: 0.5 }
+        scale: { x: 0.5, y: 0.5, z: 0.5 },
       },
-    ];
-    
-    try{
-      for (const pair of modelAudioPairs) {
-      const{model, audio}= await audioManager.loadModelAudio(pair.model, pair.audio, scene, pair.position)
-      
+    ]
 
-    model.scale.set(pair.scale.x,pair.scale.y,pair.scale.z); // Adjust scale if needed
-    model.visible = true;     // Ensure visibility is on
-    // camera.lookAt(model.position); // Adjust camera to look at the model
-    model.castShadow = true
-    model.receiveShadow = true
-    
-  //  if (audioManager.audioContext.state === 'suspended') {
-  //   audioManager.audioContext.resume()
-  // }
-    audio.play()
-    }}
-    catch(error){
+    try {
+      for (const pair of modelAudioPairs) {
+        const { model, audio } = await audioManager.loadModelAudio(
+          pair.model,
+          pair.audio,
+          scene,
+          pair.position,
+        )
+
+        model.scale.set(pair.scale.x, pair.scale.y, pair.scale.z) // Adjust scale if needed
+        model.visible = true // Ensure visibility is on
+        model.castShadow = true
+        model.receiveShadow = true
+
+        audio.play()
+      }
+    } catch (error) {
       console.error('Error loading model or audio:', error)
       throw error
     }

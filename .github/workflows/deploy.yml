@@ -3,10 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # メインブランチにプッシュするとデプロイ
+      - main # メインブランチにプッシュするとデプロイ
 
 permissions:
-  contents: write  # ← GitHub Pages にデプロイするための書き込み権限
+  contents: write # ← GitHub Pages にデプロイするための書き込み権限
   pages: write
   id-token: write
 
@@ -35,4 +35,4 @@ jobs:
         with:
           branch: gh-pages
           folder: dist
-          token: ${{ secrets.GITHUB_TOKEN }}  # ← ここを追加
+          token: ${{ secrets.GITHUB_TOKEN }} # ← ここを追加

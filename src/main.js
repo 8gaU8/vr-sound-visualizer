@@ -11,14 +11,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const renderer = initRenderer(container)
 
-  const { scene, environment, tree, camera, controls ,audioManager} = await createScene(renderer)
+  const { scene, environment, tree, camera, controls, audioManager } = await createScene(renderer)
 
   const clock = new THREE.Clock()
   function render() {
-    if (renderer.xr.isPresenting){
+    if (renderer.xr.isPresenting) {
       audioManager.updateAudioListener(renderer.xr.getCamera())
-    }
-    else{
+    } else {
       controls.update()
       audioManager.updateAudioListener(camera)
     }
@@ -45,5 +44,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupUI(tree, environment, renderer, scene, camera, controls, 'Ash Medium')
   renderer.setAnimationLoop(render)
   resize()
-  
 })

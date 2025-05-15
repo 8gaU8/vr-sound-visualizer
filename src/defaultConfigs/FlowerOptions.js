@@ -94,4 +94,3 @@ export class AllFlowersOptions extends BaseOptions {
     this.yellow = new FlowerOptions('flower_yellow.glb', this.seed + 12)
   }
 }
-
