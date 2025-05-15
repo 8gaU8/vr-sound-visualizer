@@ -9,9 +9,7 @@
     "localbuild": "vite build --mode localbuild",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "lint": "eslint . --fix",
-    "fix": "npm run format && npm run lint",
-    "prepare": "husky"
+    "lint": "eslint . --fix"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.27.1",
@@ -19,8 +17,6 @@
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-import": "^2.31.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.0.0",
     "prettier": "^3.5.3",
     "vite": "^6.3.5"
   },
