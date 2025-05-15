@@ -169,6 +169,13 @@ export function setupUI(tree, environment, renderer, scene, camera, controls, in
     step: 1,
   })
 
+  // audio folder
+//   const audioFolder = tab.pages[0].addFolder({ title: 'Audio', expanded: false })
+// audioFolder.addBinding(scene.audioManager, 'isPlaying', { 
+//   label: 'play/pause',
+//   readonly: false
+// })
+
   /** INFO  */
 
   const infoFolder = tab.pages[0].addFolder({ title: 'Info', expanded: false })
