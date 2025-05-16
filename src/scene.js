@@ -4,7 +4,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { AudioManager } from './audio.js'
 import { Environment } from './environment'
-import { createSimplifiedMesh } from './utils'
+import { SpectrogramModel } from './spectrogram.js'
+import { createSimplifiedMesh, Group } from './utils'
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -84,6 +85,9 @@ export async function createScene(renderer) {
     await sleep(300)
   }
 
+  const spectrogramModels = new Group()
+  spectrogramModels.name = 'SpectrogramModels'
+
   //AUDIO+model
   async function AudioModel() {
     const modelAudioPairs = [
@@ -116,6 +120,12 @@ export async function createScene(renderer) {
         model.receiveShadow = true
 
         audio.play()
+        const spectrogramModel = new SpectrogramModel(audio)
+        spectrogramModels.add(spectrogramModel)
+        const mesh = spectrogramModel.createSpectrogramMesh()
+        mesh.position.set(pair.position.x, pair.position.y, pair.position.z)
+
+        scene.add(mesh)
       }
     } catch (error) {
       console.error('Error loading model or audio:', error)
@@ -143,5 +153,6 @@ export async function createScene(renderer) {
     camera,
     controls,
     audioManager,
+    spectrogramModels,
   }
 }
