@@ -10,6 +10,6 @@ void main() {
 
     float i = step( vUv.y, f ) * step( f - 0.0125, vUv.y );
 
-    gl_FragColor = vec4( mix( backgroundColor, color, i ), 1.0 );
+    gl_FragColor = vec4( mix( backgroundColor, color, i ), 0.8 );
 
 }
