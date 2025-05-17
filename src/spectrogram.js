@@ -5,7 +5,7 @@ import vertShaer from './shaders/spectrogram.vert?raw'
 
 export class SpectrogramModel {
   constructor(audio) {
-    this.fftSize = 512
+    this.fftSize = 64
 
     this.analyser = new THREE.AudioAnalyser(audio, this.fftSize)
     this.uniforms = {
@@ -25,12 +25,12 @@ export class SpectrogramModel {
       vertexShader: vertShaer,
       fragmentShader: fragShaer,
       transparent: true,
+      side: THREE.DoubleSide,
     })
 
     const geometry = new THREE.PlaneGeometry(10, 10)
 
     const mesh = new THREE.Mesh(geometry, material)
-    mesh.position.set(0, 5, -5)
     return mesh
   }
 
