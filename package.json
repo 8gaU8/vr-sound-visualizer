@@ -9,8 +9,7 @@
     "localbuild": "vite build --mode localbuild",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "lint": "eslint . --fix",
-    "prepare": "husky install"
+    "lint": "eslint . --fix"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.27.1",
