@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const renderer = initRenderer(container)
 
-  const { scene, environment, tree, camera, controls, audioManager } = await createScene(renderer)
+  const { scene, environment, tree, camera, controls, audioManager, spectrogramModels } =
+    await createScene(renderer)
 
   const clock = new THREE.Clock()
   function render() {
@@ -30,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // controls.update()
     // audioManager.updateAudioListener(camera)
+    spectrogramModels.update()
     renderer.render(scene, camera)
   }
 

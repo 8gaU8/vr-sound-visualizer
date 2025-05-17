@@ -15,3 +15,23 @@ export function createSimplifiedMesh(mesh) {
   simplified.geometry = modifier.modify(simplified.geometry, count)
   return simplified
 }
+
+export class Group {
+  name = null
+
+  constructor() {
+    this.children = []
+  }
+
+  add(child) {
+    this.children.push(child)
+  }
+
+  update() {
+    this.children.forEach((child) => {
+      if (child.update) {
+        child.update()
+      }
+    })
+  }
+}
