@@ -1,6 +1,6 @@
 import { simplex2d } from '../noise.js'
 
-import { BaseOptions } from './baseOptions.js'
+import { BaseOptions } from './BaseOptions.js'
 
 export class FlowerOptions extends BaseOptions {
   /**

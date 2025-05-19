@@ -1,4 +1,4 @@
-import { BaseOptions } from './baseOptions.js'
+import { BaseOptions } from './BaseOptions.js'
 
 export class RockOptions extends BaseOptions {
   /**
