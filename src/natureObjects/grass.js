@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
-import { AllFlowersOptions } from './defaultConfigs/FlowerOptions'
-import { GrassOptions } from './defaultConfigs/GrassOptions'
-import { createSimplifiedMesh } from './utils'
+import { AllFlowersOptions } from '../defaultConfigs/FlowerOptions'
+import { GrassOptions } from '../defaultConfigs/GrassOptions'
+import { createSimplifiedMesh } from '../utils'
 
 let loaded = false
 let _grassMesh = null
