@@ -16,7 +16,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   const clock = new THREE.Clock()
   function render() {
     if (renderer.xr.isPresenting) {
+      const session = renderer.xr.getSession()
+            audioManager.hapticsManager.updateGamepad(session);
+            audioManager.hapticsManager.update();
+
       audioManager.updateAudioListener(renderer.xr.getCamera())
+      
+      // audioManager.hapticsManager.update();
     } else {
       controls.update()
       audioManager.updateAudioListener(camera)
