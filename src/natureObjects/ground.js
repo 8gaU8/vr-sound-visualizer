@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 
-import { GrassOptions } from './defaultConfigs/GrassOptions'
+import { GrassOptions } from '../defaultConfigs/GrassOptions'
 
 let loaded = false
 let _grassTexture = null

@@ -2,8 +2,8 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
-import { RockOptions } from './defaultConfigs/RockOptions'
-import { createSimplifiedMesh } from './utils'
+import { RockOptions } from '../defaultConfigs/RockOptions'
+import { createSimplifiedMesh } from '../utils'
 
 let loaded = false
 let _rock1Mesh = null
