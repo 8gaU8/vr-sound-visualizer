@@ -2,6 +2,7 @@ import { Tree, TreePreset } from '@dgreenheck/ez-tree'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
+import { DirectionIndicator } from './DirectionIndicator.js'
 import { AudioManager } from './audio.js'
 import { Environment } from './environment'
 import { SpectrogramModel } from './spectrogram.js'
@@ -28,6 +29,7 @@ export async function createScene(renderer) {
   scene.add(environment)
 
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000)
+  scene.add(camera)
   camera.position.set(10, 1.7, 0)
 
   const controls = new OrbitControls(camera, renderer.domElement)
@@ -36,6 +38,11 @@ export async function createScene(renderer) {
   //create audio and add it to the camera
   const audioManager = new AudioManager()
   scene.add(audioManager.listener)
+
+  // Add a directional indicator
+  const directionIndicator = new DirectionIndicator()
+  const indicator = directionIndicator.indicator
+  camera.add(indicator)
 
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
@@ -154,5 +161,6 @@ export async function createScene(renderer) {
     controls,
     audioManager,
     spectrogramModels,
+    directionIndicator,
   }
 }
