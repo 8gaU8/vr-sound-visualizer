@@ -2,10 +2,10 @@ import { Tree, TreePreset } from '@dgreenheck/ez-tree'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import { DirectionIndicator } from './DirectionIndicator.js'
 import { AudioManager } from './audio.js'
+import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
+import { SpectrogramModel } from './audioVisualizers/SpectrogramModel.js'
 import { Environment } from './environment'
-import { SpectrogramModel } from './spectrogram.js'
 import { createSimplifiedMesh, Group } from './utils'
 
 function sleep(ms) {
@@ -40,7 +40,7 @@ export async function createScene(renderer) {
   scene.add(audioManager.listener)
 
   // Add a directional indicator
-  const directionIndicator = new DirectionIndicator()
+  const directionIndicator = new DirectionIndicator(camera)
   const indicator = directionIndicator.indicator
   camera.add(indicator)
 

@@ -11,16 +11,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const renderer = initRenderer(container)
 
-  const { scene, environment, tree, camera, controls, audioManager, spectrogramModels } =
-    await createScene(renderer)
+  const {
+    scene,
+    environment,
+    tree,
+    camera,
+    controls,
+    audioManager,
+    spectrogramModels,
+    directionIndicator,
+  } = await createScene(renderer)
 
   const clock = new THREE.Clock()
   function render() {
     if (renderer.xr.isPresenting) {
       audioManager.updateAudioListener(renderer.xr.getCamera())
+      directionIndicator.update()
     } else {
       controls.update()
       audioManager.updateAudioListener(camera)
+      directionIndicator.update()
     }
 
     // Update time for wind sway shaders
