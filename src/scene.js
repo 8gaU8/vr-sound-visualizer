@@ -141,7 +141,7 @@ export async function createScene(renderer) {
   }
 
   //load ambient sounds
-  const ambientAudioload = audioManager.loadAmbientAudio('ambient wind edited.mp3')
+  audioManager.loadAmbientAudio('ambient wind edited.mp3')
 
   // Start the tree loading process
   await loadTrees(0)
