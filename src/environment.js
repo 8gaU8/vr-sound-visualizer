@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 
-import { Clouds } from './clouds'
-import { Grass } from './grass'
-import { Ground } from './ground'
-import { Rocks } from './rocks'
-import { Skybox } from './skybox'
+import { Clouds } from './natureObjects/clouds'
+import { Grass } from './natureObjects/grass'
+import { Ground } from './natureObjects/ground'
+import { Rocks } from './natureObjects/rocks'
+import { Skybox } from './natureObjects/skybox'
 
 /**
  * @extends THREE.Object3D

@@ -11,7 +11,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const renderer = initRenderer(container)
 
-  const { scene, environment, tree, camera, controls, audioManager } = await createScene(renderer)
+  const {
+    scene,
+    environment,
+    tree,
+    camera,
+    controls,
+    audioManager,
+    spectrogramModels,
+    directionIndicator,
+  } = await createScene(renderer)
 
   const clock = new THREE.Clock()
   function render() {
@@ -21,11 +30,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             audioManager.hapticsManager.update();
 
       audioManager.updateAudioListener(renderer.xr.getCamera())
-      
-      // audioManager.hapticsManager.update();
+      directionIndicator.update()
     } else {
       controls.update()
       audioManager.updateAudioListener(camera)
+      directionIndicator.update()
     }
 
     // Update time for wind sway shaders
@@ -36,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // controls.update()
     // audioManager.updateAudioListener(camera)
+    spectrogramModels.update()
     renderer.render(scene, camera)
   }
 

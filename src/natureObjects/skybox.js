@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import { degToRad } from 'three/src/math/MathUtils.js'
 
-import { SkyboxOptions } from './defaultConfigs/SkyboxOptions'
-import fragmentShader from './shaders/skybox.frag?raw'
-import vertexShader from './shaders/skybox.vert?raw'
+import { SkyboxOptions } from '../defaultConfigs/SkyboxOptions'
+import fragmentShader from '../shaders/skybox.frag?raw'
+import vertexShader from '../shaders/skybox.vert?raw'
 
 /**
  * Configurable skybox with sun and built-in lighting
