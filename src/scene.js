@@ -127,12 +127,15 @@ export async function createScene(renderer) {
         scene.add(model)
 
         audio.play()
+
         const spectrogramModel = new SpectrogramModel(audio)
         spectrogramModels.add(spectrogramModel)
-        const mesh = spectrogramModel.createSpectrogramMesh()
-        mesh.position.set(pair.position.x, pair.position.y, pair.position.z)
+        const spectrogramMesh = spectrogramModel.createSpectrogramMesh()
+        spectrogramMesh.position.set(pair.position.x, pair.position.y, pair.position.z)
 
-        scene.add(mesh)
+        scene.add(spectrogramMesh)
+
+        directionIndicator.addTarget(model)
       }
     } catch (error) {
       console.error('Error loading model or audio:', error)

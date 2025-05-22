@@ -3,19 +3,27 @@
 import * as THREE from 'three'
 
 import { Point } from './Point'
+// eslint-disable-next-line no-unused-vars
+import { SpectrogramModel } from './SpectrogramModel'
 
 export class DirectionIndicator {
   /**
+   * @description The main mesh of the direction indicator
    * @type {THREE.Group}
    */
   indicator
 
   /**
-   * @private
    * @type {Array<Point>}
    * @description The points that are used to indicate the direction
    */
   points = []
+
+  /**
+   * @type {THREE.Camera}
+   * @description The camera to which the indicator is attached
+   */
+  camera
 
   #ringRadius = 2
   #ringThickness = 0.2
@@ -26,7 +34,8 @@ export class DirectionIndicator {
    * @description The camera to which the indicator is attached
    */
   constructor(camera) {
-    this.indicator = this.#generateIndicator(camera)
+    this.camera = camera
+    this.indicator = this.#generateIndicator()
   }
 
   #generateRing() {
@@ -46,42 +55,34 @@ export class DirectionIndicator {
     return ringMesh
   }
 
-  /**
-   * @param {THREE.Camera} camera
-   * @param {THREE.Vector3} position
-   */
-  #generatePoint(camera, position) {
-    const point = new Point(position, 0.12, camera, this.#ringRadius)
-    return point
-  }
-
-  /**
-   * @param {THREE.Camera} camera
-   */
-  #generateIndicator(camera) {
+  #generateIndicator() {
     const indicator = new THREE.Group()
     indicator.name = 'DirectionIndicator'
 
     const ringMesh = this.#generateRing()
     indicator.add(ringMesh)
 
-    const position = new THREE.Vector3(5, 2, 2)
-    this.points.push(
-      this.#generatePoint(camera, position),
-
-      // this.#generatePoint(camera, new THREE.Vector3(-2, 0, 2)),
-    )
-    this.points.forEach((point) => {
-      indicator.add(point.mesh)
-    })
-
     indicator.position.set(0, 0, -2)
     return indicator
   }
 
+  /**
+   * @description Add a sound object as a target to the indicator.
+   *              The target will be represented as a point on the indicator ring.
+   * @param {THREE.Mesh} target
+   */
+  addTarget(target) {
+    const point = new Point(target, this.camera, this.#ringRadius)
+    this.points.push(point)
+    this.indicator.add(point.mesh)
+  }
+
+  /**
+   * @description Update the position of the indicator and the points
+   */
   update() {
     this.points.forEach((point) => {
-      point.update(point.objPosition, point.intensity)
+      point.update()
     })
   }
 }

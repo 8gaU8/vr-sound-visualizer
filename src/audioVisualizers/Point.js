@@ -2,20 +2,14 @@
 
 import * as THREE from 'three'
 
-import { calcAnglet2Pos, calcPos2Angle, getCameraYawAngle } from './angleUtils'
+import { calcAnglet2Pos, calcDistance, calcPos2Angle, getCameraYawAngle } from './angleUtils'
 
 export class Point {
   /**
-   * @description The point that indicates the direction of the sound
-   * @type {THREE.Vector3}
+   * @description The target spectrogram object
+   * @type {THREE.Mesh}
    */
-  objPosition
-
-  /**
-   * volume of the sound
-   * @type {Number}
-   */
-  intensity
+  target
 
   /**
    * camera to reference the direction
@@ -45,24 +39,22 @@ export class Point {
 
   /**
    *
-   * @param {THREE.Vector3} objPosition
-   * @param {Number} intensity
+   * @param {THREE.Mesh} target
    * @param {THREE.Camera} camera
    * @param {Number} indicatorRadius
    */
-  constructor(objPosition, intensity, camera, indicatorRadius) {
-    this.objPosition = objPosition
-    this.intensity = intensity
+  constructor(target, camera, indicatorRadius) {
+    this.target = target
     this.camera = camera
     this.indicatorRadius = indicatorRadius
     this.#initialAngle = getCameraYawAngle(this.camera)
 
     this.mesh = this.#genMesh()
-    this.update(objPosition, intensity)
+    this.update()
   }
 
   #genMesh() {
-    const pointGeometry = new THREE.CircleGeometry(this.intensity, 32, 32)
+    const pointGeometry = new THREE.CircleGeometry(1, 32, 32)
     const pointMaterial = new THREE.MeshBasicMaterial({
       color: 0xff0000,
       side: THREE.FrontSide,
@@ -76,17 +68,16 @@ export class Point {
   }
 
   /**
-   *
-   * @param {THREE.Vector3} position
-   * @param {Number} intensity
+   * @description Update the position of the point depending on the camera position and the target object
    */
-  update(position, intensity) {
+  update() {
     // calculate the angle of the camera
     const cameraAngle = getCameraYawAngle(this.camera) - this.#initialAngle
 
     // Calculate the angle between the point and the camera
     const cameraPosition = this.camera.position
-    const objectAngle = calcPos2Angle(position, cameraPosition)
+    // console.log('target position', this.target.position)
+    const objectAngle = calcPos2Angle(this.target.position, cameraPosition)
 
     // calculate global angle
     const angle = objectAngle - cameraAngle
@@ -96,6 +87,15 @@ export class Point {
     x *= this.indicatorRadius
     y *= this.indicatorRadius
     this.mesh.position.set(x, y, this.#z)
-    this.mesh.scale.set(intensity, intensity, intensity)
+
+    // calculate size of the point
+    // calculate distance between camera and the point
+    const distance = calcDistance(this.camera, this.target.position)
+    // calculate the size of the point based on the distance
+    const size = 1 / distance
+    // console.log('size', size)
+    // const size = 10
+
+    this.mesh.scale.set(size, size, size)
   }
 }
