@@ -20,4 +20,9 @@ export const VisualizeOptions = {
       z: 0.001,
     },
   },
+  spectrogramModel: {
+    fftSize: 64,
+    width: 10,
+    height: 10,
+  },
 }

@@ -2,10 +2,14 @@
 
 import * as THREE from 'three'
 
+import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
+
 // @ts-ignore
 import fragShaer from './shaders/spectrogram.frag?raw'
 // @ts-ignore
 import vertShaer from './shaders/spectrogram.vert?raw'
+
+const spectOpt = VisualizeOptions.spectrogramModel
 
 export class SpectrogramModel {
   /**
@@ -19,12 +23,6 @@ export class SpectrogramModel {
    * @type {Object}
    */
   uniforms
-
-  /**
-   * @description The size of the FFT
-   * @type {Number}
-   */
-  fftSize
 
   /**
    * @description Current maximum amplitude
@@ -44,10 +42,10 @@ export class SpectrogramModel {
   constructor(audio) {
     this.fftSize = 64
 
-    this.analyser = new THREE.AudioAnalyser(audio, this.fftSize)
+    this.analyser = new THREE.AudioAnalyser(audio, spectOpt.fftSize)
     this.uniforms = {
       tAudioData: {
-        value: new THREE.DataTexture(this.analyser.data, this.fftSize / 2, 1, THREE.RedFormat),
+        value: new THREE.DataTexture(this.analyser.data, spectOpt.fftSize / 2, 1, THREE.RedFormat),
       },
     }
     this.mesh = this.#generateSpectrogramMesh()
@@ -66,7 +64,7 @@ export class SpectrogramModel {
       side: THREE.DoubleSide,
     })
 
-    const geometry = new THREE.PlaneGeometry(10, 10)
+    const geometry = new THREE.PlaneGeometry(spectOpt.width, spectOpt.height)
 
     const mesh = new THREE.Mesh(geometry, material)
     return mesh
