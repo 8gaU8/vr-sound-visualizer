@@ -2,12 +2,18 @@
 
 import * as THREE from 'three'
 
+import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
+
+// eslint-disable-next-line no-unused-vars
+import { SpectrogramModel } from './SpectrogramModel'
 import { calcAnglet2Pos, calcDistance, calcPos2Angle, getCameraYawAngle } from './angleUtils'
+
+const pointOptions = VisualizeOptions.directionalIndicator.point
 
 export class Point {
   /**
    * @description The target spectrogram object
-   * @type {THREE.Mesh}
+   * @type {SpectrogramModel}
    */
   target
 
@@ -16,14 +22,6 @@ export class Point {
    * @type {THREE.Camera}
    */
   camera
-
-  /**
-   * @description Radius of indicator ring
-   * @type {Number}
-   */
-  indicatorRadius
-
-  #z = 0.001
 
   /**
    * @type {THREE.Mesh}
@@ -39,14 +37,12 @@ export class Point {
 
   /**
    *
-   * @param {THREE.Mesh} target
+   * @param {SpectrogramModel} target
    * @param {THREE.Camera} camera
-   * @param {Number} indicatorRadius
    */
-  constructor(target, camera, indicatorRadius) {
+  constructor(target, camera) {
     this.target = target
     this.camera = camera
-    this.indicatorRadius = indicatorRadius
     this.#initialAngle = getCameraYawAngle(this.camera)
 
     this.mesh = this.#genMesh()
@@ -56,12 +52,12 @@ export class Point {
   #genMesh() {
     const pointGeometry = new THREE.CircleGeometry(1, 32, 32)
     const pointMaterial = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
+      color: pointOptions.color,
       side: THREE.FrontSide,
       depthTest: false,
       depthWrite: false,
       transparent: true,
-      opacity: 1.0,
+      opacity: pointOptions.opacity,
     })
     const point = new THREE.Mesh(pointGeometry, pointMaterial)
     return point
@@ -76,25 +72,25 @@ export class Point {
 
     // Calculate the angle between the point and the camera
     const cameraPosition = this.camera.position
-    // console.log('target position', this.target.position)
-    const objectAngle = calcPos2Angle(this.target.position, cameraPosition)
+    const targetPosition = this.target.position
+    const objectAngle = calcPos2Angle(targetPosition, cameraPosition)
 
     // calculate global angle
     const angle = objectAngle - cameraAngle
 
     // position of the point to draw
     let { x, y } = calcAnglet2Pos(angle)
-    x *= this.indicatorRadius
-    y *= this.indicatorRadius
-    this.mesh.position.set(x, y, this.#z)
+    x *= VisualizeOptions.directionalIndicator.ring.radius
+    y *= VisualizeOptions.directionalIndicator.ring.radius
+    this.mesh.position.set(x, y, pointOptions.z)
 
     // calculate size of the point
     // calculate distance between camera and the point
     const distance = calcDistance(this.camera, this.target.position)
     // calculate the size of the point based on the distance
-    const size = 1 / distance
-    // console.log('size', size)
-    // const size = 10
+    let size = ((1 / distance) * this.target.intensity) / 500
+    // clip size
+    size = Math.max(pointOptions.minSize, Math.min(size, pointOptions.maxSize))
 
     this.mesh.scale.set(size, size, size)
   }

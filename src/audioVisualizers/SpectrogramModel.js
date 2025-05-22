@@ -50,13 +50,14 @@ export class SpectrogramModel {
         value: new THREE.DataTexture(this.analyser.data, this.fftSize / 2, 1, THREE.RedFormat),
       },
     }
+    this.mesh = this.#generateSpectrogramMesh()
   }
 
   /**
    * @description Create a mesh for the spectrogram
    * @returns {THREE.Mesh}
    */
-  createSpectrogramMesh() {
+  #generateSpectrogramMesh() {
     const material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: vertShaer,
@@ -71,9 +72,22 @@ export class SpectrogramModel {
     return mesh
   }
 
+  get position() {
+    return this.mesh.position
+  }
+
   update() {
     this.analyser.getFrequencyData()
     this.uniforms.tAudioData.value.needsUpdate = true
-    this.intensity = Math.max(...this.analyser.data.map(Math.abs))
+    this.intensity = this.#calcIntensity(this.analyser.data)
+  }
+
+  /**
+   * @param {Uint8Array<ArrayBufferLike> } data
+   * @returns {Number}
+   */
+  #calcIntensity(data) {
+    const intensity = Math.max(...data.map(Math.abs))
+    return intensity
   }
 }
