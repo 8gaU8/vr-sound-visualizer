@@ -1,6 +1,7 @@
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/Addons.js';
-import { HapticsManager } from './haptics';
+import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/Addons.js'
+
+import { HapticsManager } from './haptics'
 
 export class AudioManager {
   constructor() {
@@ -40,13 +41,13 @@ export class AudioManager {
       //store ref
       this.models.set(modelPath, { model, audio })
 
-      this.hapticsManager.audioHaptics(audio,{
+      this.hapticsManager.audioHaptics(audio, {
         intensityMultiplier: 1.0,
         frequencyRange: [0, 32],
         minIntensity: 0.05,
         maxIntensity: 0.5,
-        threshold: 0.3
-      });
+        threshold: 0.3,
+      })
 
       return { model, audio }
     } catch (error) {
@@ -106,19 +107,19 @@ export class AudioManager {
     })
     this.models.clear()
   }
- //load ambient audio
- async loadAmbientAudio(path) {
-    try{
-    const ambientAudio = new THREE.Audio(this.listener)
-    const ambaudioBuffer =  await this.loadAudio(path)
-        ambientAudio.setBuffer(ambaudioBuffer)
-        ambientAudio.setLoop(true)
-        ambientAudio.setVolume(0.5)
-        ambientAudio.play()
+  //load ambient audio
+  async loadAmbientAudio(path) {
+    try {
+      const ambientAudio = new THREE.Audio(this.listener)
+      const ambaudioBuffer = await this.loadAudio(path)
+      ambientAudio.setBuffer(ambaudioBuffer)
+      ambientAudio.setLoop(true)
+      ambientAudio.setVolume(0.5)
+      ambientAudio.play()
 
-        // scene.add(ambientAudio)
+      // scene.add(ambientAudio)
 
-      return ambientAudio 
+      return ambientAudio
     } catch (error) {
       console.error('Error loading ambient audio:', error)
       throw error
@@ -128,12 +129,11 @@ export class AudioManager {
   updateAudioListener(camera) {
     this.listener.position.copy(camera.position)
     this.listener.quaternion.copy(camera.quaternion) //update the audio listener to the head orientation
- //update haptics
-  // if (renderer.xr.isPresenting) {
-  //   const session = renderer.xr.getSession();
-  //   this.hapticsManager.updateGamepad(session);
-  //   this.hapticsManager.update(); 
-  // }
+    //update haptics
+    // if (renderer.xr.isPresenting) {
+    //   const session = renderer.xr.getSession();
+    //   this.hapticsManager.updateGamepad(session);
+    //   this.hapticsManager.update();
+    // }
   }
- 
 }

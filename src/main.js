@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   function render() {
     if (renderer.xr.isPresenting) {
       const session = renderer.xr.getSession()
-            audioManager.hapticsManager.updateGamepad(session);
-            audioManager.hapticsManager.update();
+      audioManager.hapticsManager.updateGamepad(session)
+      audioManager.hapticsManager.update()
 
       audioManager.updateAudioListener(renderer.xr.getCamera())
       directionIndicator.update()
