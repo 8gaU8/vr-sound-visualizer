@@ -46,11 +46,18 @@ export class DirectionIndicator {
     return ringMesh
   }
 
+  /**
+   * @param {THREE.Camera} camera
+   * @param {THREE.Vector3} position
+   */
   #generatePoint(camera, position) {
     const point = new Point(position, 0.12, camera, this.#ringRadius)
     return point
   }
 
+  /**
+   * @param {THREE.Camera} camera
+   */
   #generateIndicator(camera) {
     const indicator = new THREE.Group()
     indicator.name = 'DirectionIndicator'
