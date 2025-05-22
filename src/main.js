@@ -7,7 +7,9 @@ import { setupUI } from './ui'
 async function main() {
   // Remove the loading overlay
   const overlay = document.getElementById('overlay')
-  overlay.remove()
+  if (overlay) {
+    overlay.remove()
+  }
 
   // Create container for renderer
   const container = document.createElement('div')
