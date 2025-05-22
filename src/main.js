@@ -4,7 +4,13 @@ import { initRenderer } from './renderer'
 import { createScene } from './scene'
 import { setupUI } from './ui'
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function main() {
+  // Remove the loading overlay
+  const overlay = document.getElementById('overlay')
+  if (overlay) {
+    overlay.remove()
+  }
+
   // Create container for renderer
   const container = document.createElement('div')
   document.body.appendChild(container)
@@ -60,4 +66,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupUI(tree, environment, renderer, scene, camera, controls, 'Ash Medium')
   renderer.setAnimationLoop(render)
   resize()
-})
+}
+
+async function _onload() {
+  const startButton = document.getElementById('startButton')
+  startButton.addEventListener('click', main)
+}
+
+document.addEventListener('DOMContentLoaded', _onload)
