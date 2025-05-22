@@ -45,7 +45,12 @@ export class SpectrogramModel {
     this.analyser = new THREE.AudioAnalyser(audio, spectrogramOpt.fftSize)
     this.uniforms = {
       tAudioData: {
-        value: new THREE.DataTexture(this.analyser.data, spectrogramOpt.fftSize / 2, 1, THREE.RedFormat),
+        value: new THREE.DataTexture(
+          this.analyser.data,
+          spectrogramOpt.fftSize / 2,
+          1,
+          THREE.RedFormat,
+        ),
       },
     }
     this.mesh = this.#generateSpectrogramMesh()
