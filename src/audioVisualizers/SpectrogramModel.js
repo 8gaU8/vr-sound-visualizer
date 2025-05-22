@@ -1,9 +1,17 @@
+// @ts-check
+
 import * as THREE from 'three'
 
+// @ts-ignore
 import fragShaer from './shaders/spectrogram.frag?raw'
+// @ts-ignore
 import vertShaer from './shaders/spectrogram.vert?raw'
 
 export class SpectrogramModel {
+
+  /**
+   * @param {THREE.Audio<AudioNode>} audio
+   */
   constructor(audio) {
     this.fftSize = 64
 

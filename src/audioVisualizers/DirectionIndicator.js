@@ -1,4 +1,4 @@
-// DirectionIndicator.js
+// @ts-check
 
 import * as THREE from 'three'
 
@@ -8,7 +8,7 @@ export class DirectionIndicator {
   /**
    * @type {THREE.Group}
    */
-  indicator = null
+  indicator
 
   /**
    * @private
@@ -47,7 +47,7 @@ export class DirectionIndicator {
   }
 
   #generatePoint(camera, position) {
-    const point = new Point(position, 0.1, camera, this.#ringRadius)
+    const point = new Point(position, 0.12, camera, this.#ringRadius)
     return point
   }
 
@@ -58,8 +58,10 @@ export class DirectionIndicator {
     const ringMesh = this.#generateRing()
     indicator.add(ringMesh)
 
+    const position = new THREE.Vector3(5, 2, 2)
     this.points.push(
-      this.#generatePoint(camera, new THREE.Vector3(2, 0, 2)),
+      this.#generatePoint(camera, position),
+
       // this.#generatePoint(camera, new THREE.Vector3(-2, 0, 2)),
     )
     this.points.forEach((point) => {

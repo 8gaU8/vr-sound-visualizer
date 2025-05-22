@@ -1,3 +1,5 @@
+// @ts-check
+
 import * as THREE from 'three'
 
 import { calcAnglet2Pos, calcPos2Angle, getCameraYawAngle } from './angleUtils'
@@ -7,25 +9,25 @@ export class Point {
    * @description The point that indicates the direction of the sound
    * @type {THREE.Vector3}
    */
-  objPosition = null
+  objPosition
 
   /**
    * volume of the sound
-   * @type {float}
+   * @type {Number}
    */
-  intensity = null | undefined
+  intensity
 
   /**
    * camera to reference the direction
    * @type {THREE.Camera}
    */
-  camera = null
+  camera
 
   /**
    * @description Radius of indicator ring
-   * @type {float}
+   * @type {Number}
    */
-  indicatorRadius = null
+  indicatorRadius
 
   #z = 0.001
 
@@ -33,21 +35,20 @@ export class Point {
    * @type {THREE.Mesh}
    * @description The point mesh
    */
-  mesh = null
+  mesh
 
   /**
    * @description Initial angle of the point
-   * @private
-   * @type {float}
+   * @type {Number}
    */
-  #initialAngle = null
+  #initialAngle
 
   /**
    *
    * @param {THREE.Vector3} objPosition
-   * @param {float} intensity
+   * @param {Number} intensity
    * @param {THREE.Camera} camera
-   * @param {float} indicatorRadius
+   * @param {Number} indicatorRadius
    */
   constructor(objPosition, intensity, camera, indicatorRadius) {
     this.objPosition = objPosition
@@ -61,7 +62,7 @@ export class Point {
   }
 
   #genMesh() {
-    const pointGeometry = new THREE.CircleGeometry(this.intensity, 8, 8)
+    const pointGeometry = new THREE.CircleGeometry(this.intensity, 32, 32)
     const pointMaterial = new THREE.MeshBasicMaterial({
       color: 0xff0000,
       side: THREE.FrontSide,
@@ -77,7 +78,7 @@ export class Point {
   /**
    *
    * @param {THREE.Vector3} position
-   * @param {float} intensity
+   * @param {Number} intensity
    */
   update(position, intensity) {
     // calculate the angle of the camera

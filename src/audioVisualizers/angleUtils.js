@@ -1,9 +1,11 @@
+// @ts-check
+
 import * as THREE from 'three'
 
 /**
  * @description Get the yaw angle of the camera in radians
  * @param {THREE.Camera} camera
- * @returns {float} radians along the Y axis
+ * @returns {Number} radians along the Y axis
  */
 export function getCameraYawAngle(camera) {
   const direction = new THREE.Vector3()
@@ -22,7 +24,7 @@ export function getCameraYawAngle(camera) {
  * @description Calculate the angle between two points
  * @param {THREE.Vector3} p1
  * @param {THREE.Vector3} p2
- * @returns {float}
+ * @returns {Number}
  */
 export function calcPos2Angle(p1, p2) {
   const dx = p2.x - p1.x
@@ -33,8 +35,8 @@ export function calcPos2Angle(p1, p2) {
 
 /**
  * @description Calculate the xy-position of the point based on the angle
- * @param {float} angle
- * @returns {{x: float, y: float}}
+ * @param {Number} angle
+ * @returns {{x: Number, y: Number}}
  */
 export function calcAnglet2Pos(angle) {
   const y = Math.sin(angle) / 10
