@@ -74,5 +74,6 @@ export class SpectrogramModel {
   update() {
     this.analyser.getFrequencyData()
     this.uniforms.tAudioData.value.needsUpdate = true
+    this.intensity = Math.max(...this.analyser.data.map(Math.abs))
   }
 }
