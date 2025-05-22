@@ -12,14 +12,11 @@ export class AudioManager {
     this.hapticsManager = new HapticsManager()
   }
 
-  async loadModelAudio(modelPath, audioPath, scene, position = { x: 0, y: 0, z: 0 }) {
+  async loadModelAudio(modelPath, audioPath) {
     try {
       // Load the 3D model glb
       const gltf = await this.loadModel(modelPath)
       const model = gltf.scene
-
-      //position the model in the scene
-      model.position.set(position.x, position.y, position.z)
 
       //create an audio object positio
       const audio = new THREE.PositionalAudio(this.listener) ////positional audio///////////
@@ -35,8 +32,6 @@ export class AudioManager {
 
       // Add the audio object to the model
       model.add(audio)
-      // add the model to the scene
-      scene.add(model)
 
       //store ref
       this.models.set(modelPath, { model, audio })

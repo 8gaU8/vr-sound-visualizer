@@ -99,14 +99,14 @@ export async function createScene(renderer) {
   async function AudioModel() {
     const modelAudioPairs = [
       {
-        model: 'parrot trellis.glb',
-        audio: 'quaker-parrot-screams-231906.mp3',
+        modelPath: 'parrot trellis.glb',
+        audioPath: 'quaker-parrot-screams-231906.mp3',
         position: { x: 3, y: 2, z: -8 },
         scale: { x: 8, y: 8, z: 8 },
       },
       {
-        model: 'woodpecker.glb',
-        audio: 'Pileated Woodpecker .mp3',
+        modelPath: 'woodpecker.glb',
+        audioPath: 'Pileated Woodpecker .mp3',
         position: { x: 5, y: 2, z: 2 },
         scale: { x: 0.5, y: 0.5, z: 0.5 },
       },
@@ -114,17 +114,17 @@ export async function createScene(renderer) {
 
     try {
       for (const pair of modelAudioPairs) {
-        const { model, audio } = await audioManager.loadModelAudio(
-          pair.model,
-          pair.audio,
-          scene,
-          pair.position,
-        )
+        const { model, audio } = await audioManager.loadModelAudio(pair.modelPath, pair.audioPath)
+
+        // Set the position of the model
+        model.position.set(pair.position.x, pair.position.y, pair.position.z)
 
         model.scale.set(pair.scale.x, pair.scale.y, pair.scale.z) // Adjust scale if needed
         model.visible = true // Ensure visibility is on
         model.castShadow = true
         model.receiveShadow = true
+        // add the model to the scene
+        scene.add(model)
 
         audio.play()
         const spectrogramModel = new SpectrogramModel(audio)
