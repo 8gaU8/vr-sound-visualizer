@@ -106,8 +106,8 @@ export class AudioManager {
   async loadAmbientAudio(path) {
     try {
       const ambientAudio = new THREE.Audio(this.listener)
-      const ambaudioBuffer = await this.loadAudio(path)
-      ambientAudio.setBuffer(ambaudioBuffer)
+      const ambAudioBuffer = await this.loadAudio(path)
+      ambientAudio.setBuffer(ambAudioBuffer)
       ambientAudio.setLoop(true)
       ambientAudio.setVolume(0.5)
       ambientAudio.play()

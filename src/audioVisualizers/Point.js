@@ -6,7 +6,7 @@ import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
 
 // eslint-disable-next-line no-unused-vars
 import { SpectrogramModel } from './SpectrogramModel'
-import { calcAnglet2Pos, calcDistance, calcPos2Angle, getCameraYawAngle } from './angleUtils'
+import { calcAngle2Pos, calcDistance, calcPos2Angle, getCameraYawAngle } from './angleUtils'
 
 const pointOptions = VisualizeOptions.directionalIndicator.point
 
@@ -79,7 +79,7 @@ export class Point {
     const angle = objectAngle - cameraAngle
 
     // position of the point to draw
-    let { x, y } = calcAnglet2Pos(angle)
+    let { x, y } = calcAngle2Pos(angle)
     x *= VisualizeOptions.directionalIndicator.ring.radius
     y *= VisualizeOptions.directionalIndicator.ring.radius
     this.mesh.position.set(x, y, pointOptions.z)

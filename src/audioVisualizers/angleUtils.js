@@ -38,7 +38,7 @@ export function calcPos2Angle(p1, p2) {
  * @param {Number} angle
  * @returns {{x: Number, y: Number}}
  */
-export function calcAnglet2Pos(angle) {
+export function calcAngle2Pos(angle) {
   const y = Math.sin(angle) / 10
   const x = Math.cos(angle) / 10
   return { x, y }

@@ -44,14 +44,14 @@ export class DirectionIndicator {
     const outerR = ringOptions.radius + ringOptions.thickness / 2
     const thetaSegments = 32
     const ringGeometry = new THREE.RingGeometry(innerR, outerR, thetaSegments)
-    const ringMAterial = new THREE.MeshBasicMaterial({
+    const ringMaterial = new THREE.MeshBasicMaterial({
       color: ringOptions.color,
       side: THREE.FrontSide,
       depthTest: false,
       transparent: true,
       opacity: ringOptions.opacity,
     })
-    const ringMesh = new THREE.Mesh(ringGeometry, ringMAterial)
+    const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial)
     ringMesh.name = 'ring'
     return ringMesh
   }

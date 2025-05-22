@@ -5,11 +5,11 @@ import * as THREE from 'three'
 import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
 
 // @ts-ignore
-import fragShaer from './shaders/spectrogram.frag?raw'
+import fragShader from './shaders/spectrogram.frag?raw'
 // @ts-ignore
-import vertShaer from './shaders/spectrogram.vert?raw'
+import vertShader from './shaders/spectrogram.vert?raw'
 
-const spectOpt = VisualizeOptions.spectrogramModel
+const spectrogramOpt = VisualizeOptions.spectrogramModel
 
 export class SpectrogramModel {
   /**
@@ -42,10 +42,10 @@ export class SpectrogramModel {
   constructor(audio) {
     this.fftSize = 64
 
-    this.analyser = new THREE.AudioAnalyser(audio, spectOpt.fftSize)
+    this.analyser = new THREE.AudioAnalyser(audio, spectrogramOpt.fftSize)
     this.uniforms = {
       tAudioData: {
-        value: new THREE.DataTexture(this.analyser.data, spectOpt.fftSize / 2, 1, THREE.RedFormat),
+        value: new THREE.DataTexture(this.analyser.data, spectrogramOpt.fftSize / 2, 1, THREE.RedFormat),
       },
     }
     this.mesh = this.#generateSpectrogramMesh()
@@ -58,13 +58,13 @@ export class SpectrogramModel {
   #generateSpectrogramMesh() {
     const material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: vertShaer,
-      fragmentShader: fragShaer,
+      vertexShader: vertShader,
+      fragmentShader: fragShader,
       transparent: true,
       side: THREE.DoubleSide,
     })
 
-    const geometry = new THREE.PlaneGeometry(spectOpt.width, spectOpt.height)
+    const geometry = new THREE.PlaneGeometry(spectrogramOpt.width, spectrogramOpt.height)
 
     const mesh = new THREE.Mesh(geometry, material)
     return mesh
