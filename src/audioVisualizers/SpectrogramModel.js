@@ -8,7 +8,6 @@ import fragShaer from './shaders/spectrogram.frag?raw'
 import vertShaer from './shaders/spectrogram.vert?raw'
 
 export class SpectrogramModel {
-
   /**
    * @param {THREE.Audio<AudioNode>} audio
    */

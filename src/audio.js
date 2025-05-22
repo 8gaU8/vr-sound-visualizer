@@ -1,13 +1,15 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
+import { HapticsManager } from './haptics'
+
 export class AudioManager {
   constructor() {
     this.listener = new THREE.AudioListener()
     this.audioLoader = new THREE.AudioLoader()
     this.gltfLoader = new GLTFLoader() // for loading 3D glb models
     this.models = new Map() //store loaded models
-    // this._isPlaying = false
+    this.hapticsManager = new HapticsManager()
   }
 
   async loadModelAudio(modelPath, audioPath, scene, position = { x: 0, y: 0, z: 0 }) {
@@ -28,8 +30,6 @@ export class AudioManager {
       audio.setRolloffFactor(2) // Add rolloff factor
       audio.setDistanceModel('inverse') // Change to inverse for better distance attenuation
       audio.setDirectionalCone(180, 230, 0.1) // Add directional cone for more realistic sound
-
-      //audio.setDistanceModel('exponential') // Set the distance model for the audio
       audio.setLoop(true) // Set the audio to loop
       // audio.setVolume(0.5) // Set the volume of the audio
 
@@ -40,6 +40,14 @@ export class AudioManager {
 
       //store ref
       this.models.set(modelPath, { model, audio })
+
+      this.hapticsManager.audioHaptics(audio, {
+        intensityMultiplier: 1.0,
+        frequencyRange: [0, 32],
+        minIntensity: 0.05,
+        maxIntensity: 0.5,
+        threshold: 0.3,
+      })
 
       return { model, audio }
     } catch (error) {
@@ -99,26 +107,33 @@ export class AudioManager {
     })
     this.models.clear()
   }
+  //load ambient audio
+  async loadAmbientAudio(path) {
+    try {
+      const ambientAudio = new THREE.Audio(this.listener)
+      const ambaudioBuffer = await this.loadAudio(path)
+      ambientAudio.setBuffer(ambaudioBuffer)
+      ambientAudio.setLoop(true)
+      ambientAudio.setVolume(0.5)
+      ambientAudio.play()
+
+      // scene.add(ambientAudio)
+
+      return ambientAudio
+    } catch (error) {
+      console.error('Error loading ambient audio:', error)
+      throw error
+    }
+  }
 
   updateAudioListener(camera) {
     this.listener.position.copy(camera.position)
     this.listener.quaternion.copy(camera.quaternion) //update the audio listener to the head orientation
+    //update haptics
+    // if (renderer.xr.isPresenting) {
+    //   const session = renderer.xr.getSession();
+    //   this.hapticsManager.updateGamepad(session);
+    //   this.hapticsManager.update();
+    // }
   }
-
-  // get isPlaying() {
-  //   return this._isPlaying
-  // }
-  //  set isPlaying(value) {
-  //   this._isPlaying = value;
-  //   this.models.forEach(({audio}) => {
-  //     if (this._isPlaying) {
-  //       audio.play();
-  //     } else {
-  //       audio.pause();
-  //     }
-  //   });
-  // }
-  // tooglePlay(){
-  //   this.isPlaying = !this.isPlaying
-  // }
 }

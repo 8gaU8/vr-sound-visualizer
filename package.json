@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@dgreenheck/ez-tree": "^1.0.0",
+    "gltf": "^1.0.3",
     "pure-rand": "^7.0.1",
     "three": "^0.176.0"
   }

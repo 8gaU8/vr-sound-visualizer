@@ -99,7 +99,7 @@ export async function createScene(renderer) {
   async function AudioModel() {
     const modelAudioPairs = [
       {
-        model: 'love_birds_parrot.glb',
+        model: 'parrot trellis.glb',
         audio: 'quaker-parrot-screams-231906.mp3',
         position: { x: 3, y: 2, z: -8 },
         scale: { x: 8, y: 8, z: 8 },
@@ -139,6 +139,9 @@ export async function createScene(renderer) {
       throw error
     }
   }
+
+  //load ambient sounds
+  const ambientAudioload = audioManager.loadAmbientAudio('ambient wind edited.mp3')
 
   // Start the tree loading process
   await loadTrees(0)
