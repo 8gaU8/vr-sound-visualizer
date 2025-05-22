@@ -10,17 +10,16 @@ export class AudioManager {
     this.gltfLoader = new GLTFLoader() // for loading 3D glb models
     this.models = new Map() //store loaded models
     this.hapticsManager = new HapticsManager()
+    this.clock = new THREE.Clock()
   }
 
-  async loadModelAudio(modelPath, audioPath, scene, position = { x: 0, y: 0, z: 0 }) {
+  async loadModelAudio(modelPath, audioPath, scene, position = { x: 0, y: 0, z: 0 }, motion= true) {
     try {
       // Load the 3D model glb
       const gltf = await this.loadModel(modelPath)
       const model = gltf.scene
-
       //position the model in the scene
       model.position.set(position.x, position.y, position.z)
-
       //create an audio object positio
       const audio = new THREE.PositionalAudio(this.listener) ////positional audio///////////
       // Load the audio file
@@ -32,14 +31,10 @@ export class AudioManager {
       audio.setDirectionalCone(180, 230, 0.1) // Add directional cone for more realistic sound
       audio.setLoop(true) // Set the audio to loop
       // audio.setVolume(0.5) // Set the volume of the audio
-
-      // Add the audio object to the model
       model.add(audio)
-      // add the model to the scene
       scene.add(model)
-
       //store ref
-      this.models.set(modelPath, { model, audio })
+      this.models.set(modelPath, { model, audio, motion });
 
       this.hapticsManager.audioHaptics(audio, {
         intensityMultiplier: 1.0,
@@ -54,6 +49,14 @@ export class AudioManager {
       console.error('Error loading model or audio:', error)
       throw error
     }
+  }
+
+  //add motion to models using update
+  update(){
+      const time = this.clock.getElapsedTime();
+      this.models.forEach(({model,audio,motion})=>{
+        if (motion && model){model.position.y= model.position.y+(0.005*Math.sin(time*1.5));
+        model.rotation.y = 0.2*Math.sin(time*1.5*0.5);}});
   }
 
   async loadModel(url) {
@@ -129,11 +132,6 @@ export class AudioManager {
   updateAudioListener(camera) {
     this.listener.position.copy(camera.position)
     this.listener.quaternion.copy(camera.quaternion) //update the audio listener to the head orientation
-    //update haptics
-    // if (renderer.xr.isPresenting) {
-    //   const session = renderer.xr.getSession();
-    //   this.hapticsManager.updateGamepad(session);
-    //   this.hapticsManager.update();
-    // }
+    this.update();//update motion
   }
 }

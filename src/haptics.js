@@ -80,3 +80,5 @@ export class HapticsManager {
     return count > 0 ? sum / count / 255 : 0
   }
 }
+
+//TODO: haptics on/off button in gui

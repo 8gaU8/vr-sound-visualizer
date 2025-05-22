@@ -114,25 +114,31 @@ export async function createScene(renderer) {
 
     try {
       for (const pair of modelAudioPairs) {
-        const { model, audio } = await audioManager.loadModelAudio(
+        const { model, audio, motion } = await audioManager.loadModelAudio(
           pair.model,
           pair.audio,
           scene,
-          pair.position,
+          pair.position
         )
+        const modelGroup= new THREE.Group()// to prevent scaling of spectrogram mesh
+        modelGroup.position.set(pair.position.x, pair.position.y, pair.position.z)
+        scene.add(modelGroup)
+model.position.set(0, 0, 0) // Reset position since parent handles it
 
         model.scale.set(pair.scale.x, pair.scale.y, pair.scale.z) // Adjust scale if needed
         model.visible = true // Ensure visibility is on
         model.castShadow = true
         model.receiveShadow = true
+        modelGroup.add(model)
 
         audio.play()
         const spectrogramModel = new SpectrogramModel(audio)
         spectrogramModels.add(spectrogramModel)
         const mesh = spectrogramModel.createSpectrogramMesh()
-        mesh.position.set(pair.position.x, pair.position.y, pair.position.z)
+        mesh.position.set(0,1,0)
+        mesh.rotation.y = Math.PI/2
 
-        scene.add(mesh)
+        modelGroup.add(mesh)
       }
     } catch (error) {
       console.error('Error loading model or audio:', error)
@@ -165,5 +171,8 @@ export async function createScene(renderer) {
     audioManager,
     spectrogramModels,
     directionIndicator,
+    update: function(time){audioManager.update(time);
+    spectrogramModels.update();
+    directionIndicator.update();}
   }
 }
