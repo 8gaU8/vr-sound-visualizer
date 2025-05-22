@@ -36,11 +36,9 @@ async function main() {
       audioManager.hapticsManager.update()
 
       audioManager.updateAudioListener(renderer.xr.getCamera())
-      directionIndicator.update()
     } else {
       controls.update()
       audioManager.updateAudioListener(camera)
-      directionIndicator.update()
     }
 
     // Update time for wind sway shaders
@@ -49,9 +47,8 @@ async function main() {
     scene.getObjectByName('Forest').children.forEach((o) => o.update(t))
     environment.update(t)
 
-    // controls.update()
-    // audioManager.updateAudioListener(camera)
     spectrogramModels.update()
+    directionIndicator.update()
     renderer.render(scene, camera)
   }
 

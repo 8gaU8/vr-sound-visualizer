@@ -2,34 +2,26 @@
 
 import * as THREE from 'three'
 
-import { calcAnglet2Pos, calcPos2Angle, getCameraYawAngle } from './angleUtils'
+import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
+
+// eslint-disable-next-line no-unused-vars
+import { SpectrogramModel } from './SpectrogramModel'
+import { calcAnglet2Pos, calcDistance, calcPos2Angle, getCameraYawAngle } from './angleUtils'
+
+const pointOptions = VisualizeOptions.directionalIndicator.point
 
 export class Point {
   /**
-   * @description The point that indicates the direction of the sound
-   * @type {THREE.Vector3}
+   * @description The target spectrogram object
+   * @type {SpectrogramModel}
    */
-  objPosition
-
-  /**
-   * volume of the sound
-   * @type {Number}
-   */
-  intensity
+  target
 
   /**
    * camera to reference the direction
    * @type {THREE.Camera}
    */
   camera
-
-  /**
-   * @description Radius of indicator ring
-   * @type {Number}
-   */
-  indicatorRadius
-
-  #z = 0.001
 
   /**
    * @type {THREE.Mesh}
@@ -45,57 +37,61 @@ export class Point {
 
   /**
    *
-   * @param {THREE.Vector3} objPosition
-   * @param {Number} intensity
+   * @param {SpectrogramModel} target
    * @param {THREE.Camera} camera
-   * @param {Number} indicatorRadius
    */
-  constructor(objPosition, intensity, camera, indicatorRadius) {
-    this.objPosition = objPosition
-    this.intensity = intensity
+  constructor(target, camera) {
+    this.target = target
     this.camera = camera
-    this.indicatorRadius = indicatorRadius
     this.#initialAngle = getCameraYawAngle(this.camera)
 
     this.mesh = this.#genMesh()
-    this.update(objPosition, intensity)
+    this.update()
   }
 
   #genMesh() {
-    const pointGeometry = new THREE.CircleGeometry(this.intensity, 32, 32)
+    const pointGeometry = new THREE.CircleGeometry(1, 32, 32)
     const pointMaterial = new THREE.MeshBasicMaterial({
-      color: 0xff0000,
+      color: pointOptions.color,
       side: THREE.FrontSide,
       depthTest: false,
       depthWrite: false,
       transparent: true,
-      opacity: 1.0,
+      opacity: pointOptions.opacity,
     })
     const point = new THREE.Mesh(pointGeometry, pointMaterial)
     return point
   }
 
   /**
-   *
-   * @param {THREE.Vector3} position
-   * @param {Number} intensity
+   * @description Update the position of the point depending on the camera position and the target object
    */
-  update(position, intensity) {
+  update() {
     // calculate the angle of the camera
     const cameraAngle = getCameraYawAngle(this.camera) - this.#initialAngle
 
     // Calculate the angle between the point and the camera
     const cameraPosition = this.camera.position
-    const objectAngle = calcPos2Angle(position, cameraPosition)
+    const targetPosition = this.target.position
+    const objectAngle = calcPos2Angle(targetPosition, cameraPosition)
 
     // calculate global angle
     const angle = objectAngle - cameraAngle
 
     // position of the point to draw
     let { x, y } = calcAnglet2Pos(angle)
-    x *= this.indicatorRadius
-    y *= this.indicatorRadius
-    this.mesh.position.set(x, y, this.#z)
-    this.mesh.scale.set(intensity, intensity, intensity)
+    x *= VisualizeOptions.directionalIndicator.ring.radius
+    y *= VisualizeOptions.directionalIndicator.ring.radius
+    this.mesh.position.set(x, y, pointOptions.z)
+
+    // calculate size of the point
+    // calculate distance between camera and the point
+    const distance = calcDistance(this.camera, this.target.position)
+    // calculate the size of the point based on the distance
+    let size = ((1 / distance) * this.target.intensity) / 500
+    // clip size
+    size = Math.max(pointOptions.minSize, Math.min(size, pointOptions.maxSize))
+
+    this.mesh.scale.set(size, size, size)
   }
 }

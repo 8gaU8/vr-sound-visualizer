@@ -2,23 +2,32 @@
 
 import * as THREE from 'three'
 
+import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
+
 import { Point } from './Point'
+// eslint-disable-next-line no-unused-vars
+import { SpectrogramModel } from './SpectrogramModel'
+
+const ringOptions = VisualizeOptions.directionalIndicator.ring
 
 export class DirectionIndicator {
   /**
+   * @description The main mesh of the direction indicator
    * @type {THREE.Group}
    */
   indicator
 
   /**
-   * @private
    * @type {Array<Point>}
    * @description The points that are used to indicate the direction
    */
   points = []
 
-  #ringRadius = 2
-  #ringThickness = 0.2
+  /**
+   * @type {THREE.Camera}
+   * @description The camera to which the indicator is attached
+   */
+  camera
 
   /**
    * @description The direction indicator
@@ -26,55 +35,56 @@ export class DirectionIndicator {
    * @description The camera to which the indicator is attached
    */
   constructor(camera) {
-    this.indicator = this.#generateIndicator(camera)
+    this.camera = camera
+    this.indicator = this.#generateIndicator()
   }
 
   #generateRing() {
-    const innerR = this.#ringRadius - this.#ringThickness / 2
-    const outerR = this.#ringRadius + this.#ringThickness / 2
+    const innerR = ringOptions.radius - ringOptions.thickness / 2
+    const outerR = ringOptions.radius + ringOptions.thickness / 2
     const thetaSegments = 32
     const ringGeometry = new THREE.RingGeometry(innerR, outerR, thetaSegments)
     const ringMAterial = new THREE.MeshBasicMaterial({
-      color: 0x00ff00,
+      color: ringOptions.color,
       side: THREE.FrontSide,
       depthTest: false,
       transparent: true,
-      opacity: 0.8,
+      opacity: ringOptions.opacity,
     })
     const ringMesh = new THREE.Mesh(ringGeometry, ringMAterial)
     ringMesh.name = 'ring'
     return ringMesh
   }
 
-  #generatePoint(camera, position) {
-    const point = new Point(position, 0.12, camera, this.#ringRadius)
-    return point
-  }
-
-  #generateIndicator(camera) {
+  #generateIndicator() {
     const indicator = new THREE.Group()
     indicator.name = 'DirectionIndicator'
 
     const ringMesh = this.#generateRing()
     indicator.add(ringMesh)
 
-    const position = new THREE.Vector3(5, 2, 2)
-    this.points.push(
-      this.#generatePoint(camera, position),
-
-      // this.#generatePoint(camera, new THREE.Vector3(-2, 0, 2)),
-    )
-    this.points.forEach((point) => {
-      indicator.add(point.mesh)
-    })
-
-    indicator.position.set(0, 0, -2)
+    const p = ringOptions.position
+    indicator.position.set(p.x, p.y, p.z)
     return indicator
   }
 
+  /**
+   * @description Add a sound object as a target to the indicator.
+   *              The target will be represented as a point on the indicator ring.
+   * @param {SpectrogramModel} target
+   */
+  addTarget(target) {
+    const point = new Point(target, this.camera)
+    this.points.push(point)
+    this.indicator.add(point.mesh)
+  }
+
+  /**
+   * @description Update the position of the indicator and the points
+   */
   update() {
     this.points.forEach((point) => {
-      point.update(point.objPosition, point.intensity)
+      point.update()
     })
   }
 }
