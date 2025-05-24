@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export class HapticsManager {
   constructor() {
-    this.gamepad = null
+    this.gamepads = {left: null, right: null}
     this.analyzerMap = new Map()
   }
   updateGamepad(session) {
@@ -10,9 +10,9 @@ export class HapticsManager {
       // Get VR gamepad specifically
       const inputSources = Array.from(session.inputSources)
       for (const inputSource of inputSources) {
-        if (inputSource.gamepad && inputSource.handedness === 'right') {
-          this.gamepad = inputSource.gamepad
-          break
+        if (inputSource.gamepad && inputSource.handedness) {
+          this.gamepads[inputSource.handedness] = inputSource.gamepad
+          
         }
       }
     }
@@ -22,7 +22,7 @@ export class HapticsManager {
     audio,
     options = {
       intensityMultiplier: 1.0,
-      frequncyRange: [0, 32],
+      frequencyRange: [0, 32],
       minIntensity: 0.001,
       maxIntensity: 1.0,
       threshold: 0.3,
@@ -33,7 +33,7 @@ export class HapticsManager {
   }
 
   update() {
-    if (!this.gamepad || !this.gamepad.hapticActuators || !this.gamepad.hapticActuators[0]) return
+    if (!this.gamepads || (!this.gamepads.left && !this.gamepads.right)) return
 
     this.analyzerMap.forEach(({ analyzer, options }, audio) => {
       if (audio.isPlaying) {
@@ -51,20 +51,27 @@ export class HapticsManager {
         )
 
         // Trigger haptic pulse
-        if (intensity >= options.threshold) {
-          try {
-            this.gamepad.hapticActuators[0].playEffect('dual-rumble', {
+        if (intensity >= options.threshold) {if (this.gamepads.left) {
+            this.triggerHaptics(this.gamepads.left, intensity)
+          }
+          if (this.gamepads.right) {
+            this.triggerHaptics(this.gamepads.right, intensity)
+          }}
+      }   
+    })
+  }
+  //to trigger haptics on both left and right gamepad
+triggerHaptics(gamepad, intensity) {
+  if (gamepad && gamepad.hapticActuators && gamepad.hapticActuators[0]) {
+  try {
+            gamepad.hapticActuators[0].playEffect('dual-rumble', {
               duration: 100,
               strongMagnitude: intensity,
               weakMagnitude: intensity,
             })
           } catch (error) {
             console.warn('Haptics not supported:', error)
-          }
-        }
-      }
-    })
-  }
+          }}}
 
   getAverageFrequency(fData, minFreq, maxFreq) {
     let sum = 0
@@ -82,3 +89,4 @@ export class HapticsManager {
 }
 
 //TODO: haptics on/off button in gui
+//TODO: haptics and distance from audio source
