@@ -44,9 +44,23 @@ export class HapticsManager {
           options.frequencyRange[1],
         )
 
+        //get distance between listener and audio source
+        const audioPos= new THREE.Vector3()
+        const listenerPos = new THREE.Vector3()
+        if (audio&& audio.position) {
+                  audio.getWorldPosition(audioPos)
+        }
+        if (audio.context && audio.context.listener && audio.context.listener.position) {
+          listenerPos.copy(audio.context.listener.position)
+        }
+        const distance = audioPos.distanceTo(listenerPos)
+        // distance attenuation
+        const maxDistance=10
+        const distanceFactor = 1 / (1 + (distance * distance) / (maxDistance * maxDistance))
+
         // Map frequency intensity to haptic strength
         const intensity = Math.min(
-          Math.max(average * options.intensityMultiplier, options.minIntensity),
+          Math.max(average * options.intensityMultiplier*distanceFactor, options.minIntensity),
           options.maxIntensity,
         )
 
@@ -89,4 +103,3 @@ triggerHaptics(gamepad, intensity) {
 }
 
 //TODO: haptics on/off button in gui
-//TODO: haptics and distance from audio source
