@@ -23,6 +23,7 @@
   "dependencies": {
     "@dgreenheck/ez-tree": "^1.0.0",
     "pure-rand": "^7.0.1",
+    "statsvr": "^3.1.6",
     "three": "^0.176.0"
   }
 }
