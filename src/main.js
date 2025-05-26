@@ -2,6 +2,7 @@ import * as THREE from 'three'
 
 import { initRenderer } from './renderer'
 import { createScene } from './scene'
+import { StatsWrapper } from './stats'
 import { setupUI } from './ui'
 
 async function main() {
@@ -27,6 +28,7 @@ async function main() {
     spectrogramModels,
     directionIndicator,
   } = await createScene(renderer)
+  const stats = new StatsWrapper(scene, camera)
 
   const clock = new THREE.Clock()
   function render() {
@@ -49,6 +51,8 @@ async function main() {
 
     spectrogramModels.update()
     directionIndicator.update()
+
+    stats.update()
     renderer.render(scene, camera)
   }
 
