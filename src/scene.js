@@ -114,37 +114,23 @@ export async function createScene(renderer) {
 
     try {
       for (const pair of modelAudioPairs) {
-        const { model, audio, motion } = await audioManager.loadModelAudio(
-          pair.model,
-          pair.audio,
-          scene,
-          pair.position
-        )
-        const modelGroup= new THREE.Group()// to prevent scaling of spectrogram mesh
+        const { model, audio } = await audioManager.loadModelAudio(pair.modelPath, pair.audioPath)
+        const modelGroup = new THREE.Group() // to prevent scaling of spectrogram mesh
         modelGroup.position.set(pair.position.x, pair.position.y, pair.position.z)
         scene.add(modelGroup)
-        model.position.set(0, 0, 0) // Reset position since parent handles it
-        const { model, audio } = await audioManager.loadModelAudio(pair.modelPath, pair.audioPath)
+        // model.position.set(0, 0, 0) // Reset position since parent handles it
 
         model.scale.set(pair.scale.x, pair.scale.y, pair.scale.z) // Adjust scale if needed
         model.visible = true // Ensure visibility is on
         model.castShadow = true
         model.receiveShadow = true
         modelGroup.add(model)
-        // add the model to the scene
-        scene.add(model)
-
-        audio.play()
 
         const spectrogramModel = new SpectrogramModel(audio)
         spectrogramModels.add(spectrogramModel)
 
-
         const spectrogramMesh = spectrogramModel.mesh
-        spectrogramMesh.position.set(pair.position.x, pair.position.y, pair.position.z)
-        spectrogramMesh.position.set(0,1,0)
-        spectrogramMesh.rotation.y = Math.PI/2
-
+        spectrogramMesh.position.set(0, 1, 0)
         modelGroup.add(spectrogramMesh)
 
         directionIndicator.addTarget(spectrogramModel)
@@ -180,8 +166,10 @@ export async function createScene(renderer) {
     audioManager,
     spectrogramModels,
     directionIndicator,
-    update: function(time){audioManager.update(time);
-    spectrogramModels.update();
-    directionIndicator.update();}
+    update: function (time) {
+      audioManager.update(time)
+      spectrogramModels.update()
+      directionIndicator.update()
+    },
   }
 }
