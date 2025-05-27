@@ -13,13 +13,12 @@ export class AudioManager {
     this.clock = new THREE.Clock()
   }
 
-  async loadModelAudio(modelPath, audioPath, scene, position = { x: 0, y: 0, z: 0 }, motion= true) {
+  async loadModelAudio(modelPath, audioPath, motion= true) {
     try {
       // Load the 3D model glb
       const gltf = await this.loadModel(modelPath)
       const model = gltf.scene
-      //position the model in the scene
-      model.position.set(position.x, position.y, position.z)
+
       //create an audio object positio
       const audio = new THREE.PositionalAudio(this.listener) ////positional audio///////////
       // Load the audio file
@@ -32,7 +31,7 @@ export class AudioManager {
       audio.setLoop(true) // Set the audio to loop
       // audio.setVolume(0.5) // Set the volume of the audio
       model.add(audio)
-      scene.add(model)
+
       //store ref
       this.models.set(modelPath, { model, audio, motion });
 
@@ -114,8 +113,8 @@ export class AudioManager {
   async loadAmbientAudio(path) {
     try {
       const ambientAudio = new THREE.Audio(this.listener)
-      const ambaudioBuffer = await this.loadAudio(path)
-      ambientAudio.setBuffer(ambaudioBuffer)
+      const ambAudioBuffer = await this.loadAudio(path)
+      ambientAudio.setBuffer(ambAudioBuffer)
       ambientAudio.setLoop(true)
       ambientAudio.setVolume(0.5)
       ambientAudio.play()

@@ -99,14 +99,14 @@ export async function createScene(renderer) {
   async function AudioModel() {
     const modelAudioPairs = [
       {
-        model: 'parrot trellis.glb',
-        audio: 'quaker-parrot-screams-231906.mp3',
+        modelPath: 'parrot trellis.glb',
+        audioPath: 'quaker-parrot-screams-231906.mp3',
         position: { x: 3, y: 2, z: -8 },
         scale: { x: 8, y: 8, z: 8 },
       },
       {
-        model: 'woodpecker.glb',
-        audio: 'Pileated Woodpecker .mp3',
+        modelPath: 'woodpecker.glb',
+        audioPath: 'Pileated Woodpecker .mp3',
         position: { x: 5, y: 2, z: 2 },
         scale: { x: 0.5, y: 0.5, z: 0.5 },
       },
@@ -123,22 +123,31 @@ export async function createScene(renderer) {
         const modelGroup= new THREE.Group()// to prevent scaling of spectrogram mesh
         modelGroup.position.set(pair.position.x, pair.position.y, pair.position.z)
         scene.add(modelGroup)
-model.position.set(0, 0, 0) // Reset position since parent handles it
+        model.position.set(0, 0, 0) // Reset position since parent handles it
+        const { model, audio } = await audioManager.loadModelAudio(pair.modelPath, pair.audioPath)
 
         model.scale.set(pair.scale.x, pair.scale.y, pair.scale.z) // Adjust scale if needed
         model.visible = true // Ensure visibility is on
         model.castShadow = true
         model.receiveShadow = true
         modelGroup.add(model)
+        // add the model to the scene
+        scene.add(model)
 
         audio.play()
+
         const spectrogramModel = new SpectrogramModel(audio)
         spectrogramModels.add(spectrogramModel)
-        const mesh = spectrogramModel.createSpectrogramMesh()
-        mesh.position.set(0,1,0)
-        mesh.rotation.y = Math.PI/2
 
-        modelGroup.add(mesh)
+
+        const spectrogramMesh = spectrogramModel.mesh
+        spectrogramMesh.position.set(pair.position.x, pair.position.y, pair.position.z)
+        spectrogramMesh.position.set(0,1,0)
+        spectrogramMesh.rotation.y = Math.PI/2
+
+        modelGroup.add(spectrogramMesh)
+
+        directionIndicator.addTarget(spectrogramModel)
       }
     } catch (error) {
       console.error('Error loading model or audio:', error)
@@ -147,7 +156,7 @@ model.position.set(0, 0, 0) // Reset position since parent handles it
   }
 
   //load ambient sounds
-  const ambientAudioload = audioManager.loadAmbientAudio('ambient wind edited.mp3')
+  audioManager.loadAmbientAudio('ambient wind edited.mp3')
 
   // Start the tree loading process
   await loadTrees(0)

@@ -2,9 +2,16 @@ import * as THREE from 'three'
 
 import { initRenderer } from './renderer'
 import { createScene } from './scene'
+import { StatsWrapper } from './stats'
 import { setupUI } from './ui'
 
-document.addEventListener('DOMContentLoaded', async () => {
+async function main() {
+  // Remove the loading overlay
+  const overlay = document.getElementById('overlay')
+  if (overlay) {
+    overlay.remove()
+  }
+
   // Create container for renderer
   const container = document.createElement('div')
   document.body.appendChild(container)
@@ -21,6 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     spectrogramModels,
     directionIndicator,
   } = await createScene(renderer)
+  const stats = new StatsWrapper(scene, camera)
 
   const clock = new THREE.Clock()
   function render() {
@@ -30,11 +38,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       audioManager.hapticsManager.update()
 
       audioManager.updateAudioListener(renderer.xr.getCamera())
-      directionIndicator.update()
     } else {
       controls.update()
       audioManager.updateAudioListener(camera)
-      directionIndicator.update()
     }
 
     // Update time for wind sway shaders
@@ -43,9 +49,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     scene.getObjectByName('Forest').children.forEach((o) => o.update(t))
     environment.update(t)
 
-    // controls.update()
-    // audioManager.updateAudioListener(camera)
     spectrogramModels.update()
+    directionIndicator.update()
+
+    stats.update()
     renderer.render(scene, camera)
   }
 
@@ -60,4 +67,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupUI(tree, environment, renderer, scene, camera, controls, 'Ash Medium')
   renderer.setAnimationLoop(render)
   resize()
-})
+}
+
+async function _onload() {
+  const startButton = document.getElementById('startButton')
+  startButton.addEventListener('click', main)
+}
+
+document.addEventListener('DOMContentLoaded', _onload)

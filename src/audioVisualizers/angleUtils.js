@@ -38,8 +38,22 @@ export function calcPos2Angle(p1, p2) {
  * @param {Number} angle
  * @returns {{x: Number, y: Number}}
  */
-export function calcAnglet2Pos(angle) {
+export function calcAngle2Pos(angle) {
   const y = Math.sin(angle) / 10
   const x = Math.cos(angle) / 10
   return { x, y }
+}
+
+/**
+ * @description Calculate the distance between camera and the point
+ * @param {THREE.Camera} camera
+ * @param {THREE.Vector3} p1
+ * @returns {Number}
+ */
+export function calcDistance(camera, p1) {
+  const p2 = new THREE.Vector3(camera.position.x, camera.position.y, camera.position.z)
+  const dx = p2.x - p1.x
+  const dy = p2.y - p1.y
+  const dz = p2.z - p1.z
+  return Math.sqrt(dx * dx + dy * dy + dz * dz)
 }
