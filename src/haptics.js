@@ -2,7 +2,7 @@ import * as THREE from 'three'
 
 export class HapticsManager {
   constructor() {
-    this.gamepad = null
+    this.gamepads = {left: null, right: null}
     this.analyzerMap = new Map()
   }
   updateGamepad(session) {
@@ -10,9 +10,9 @@ export class HapticsManager {
       // Get VR gamepad specifically
       const inputSources = Array.from(session.inputSources)
       for (const inputSource of inputSources) {
-        if (inputSource.gamepad && inputSource.handedness === 'right') {
-          this.gamepad = inputSource.gamepad
-          break
+        if (inputSource.gamepad && inputSource.handedness) {
+          this.gamepads[inputSource.handedness] = inputSource.gamepad
+          
         }
       }
     }
@@ -22,7 +22,7 @@ export class HapticsManager {
     audio,
     options = {
       intensityMultiplier: 1.0,
-      frequncyRange: [0, 32],
+      frequencyRange: [0, 32],
       minIntensity: 0.001,
       maxIntensity: 1.0,
       threshold: 0.3,
@@ -33,7 +33,7 @@ export class HapticsManager {
   }
 
   update() {
-    if (!this.gamepad || !this.gamepad.hapticActuators || !this.gamepad.hapticActuators[0]) return
+    if (!this.gamepads || (!this.gamepads.left && !this.gamepads.right)) return
 
     this.analyzerMap.forEach(({ analyzer, options }, audio) => {
       if (audio.isPlaying) {
@@ -44,27 +44,48 @@ export class HapticsManager {
           options.frequencyRange[1],
         )
 
+        //get distance between listener and audio source
+        const audioPos= new THREE.Vector3()
+        const listenerPos = new THREE.Vector3()
+        if (audio&& audio.position) {
+                  audio.getWorldPosition(audioPos)
+        }
+        if (audio.context && audio.context.listener && audio.context.listener.position) {
+          listenerPos.copy(audio.context.listener.position)
+        }
+        const distance = audioPos.distanceTo(listenerPos)
+        // distance attenuation
+        const maxDistance=10
+        const distanceFactor = 1 / (1 + (distance * distance) / (maxDistance * maxDistance))
+
         // Map frequency intensity to haptic strength
         const intensity = Math.min(
-          Math.max(average * options.intensityMultiplier, options.minIntensity),
+          Math.max(average * options.intensityMultiplier*distanceFactor, options.minIntensity),
           options.maxIntensity,
         )
 
         // Trigger haptic pulse
-        if (intensity >= options.threshold) {
-          try {
-            this.gamepad.hapticActuators[0].playEffect('dual-rumble', {
+        if (intensity >= options.threshold) {if (this.gamepads.left) {
+            this.triggerHaptics(this.gamepads.left, intensity)
+          }
+          if (this.gamepads.right) {
+            this.triggerHaptics(this.gamepads.right, intensity)
+          }}
+      }   
+    })
+  }
+  //to trigger haptics on both left and right gamepad
+triggerHaptics(gamepad, intensity) {
+  if (gamepad && gamepad.hapticActuators && gamepad.hapticActuators[0]) {
+  try {
+            gamepad.hapticActuators[0].playEffect('dual-rumble', {
               duration: 100,
               strongMagnitude: intensity,
               weakMagnitude: intensity,
             })
           } catch (error) {
             console.warn('Haptics not supported:', error)
-          }
-        }
-      }
-    })
-  }
+          }}}
 
   getAverageFrequency(fData, minFreq, maxFreq) {
     let sum = 0
@@ -80,3 +101,5 @@ export class HapticsManager {
     return count > 0 ? sum / count / 255 : 0
   }
 }
+
+//TODO: haptics on/off button in gui
