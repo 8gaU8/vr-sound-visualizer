@@ -25,7 +25,6 @@ async function main() {
     camera,
     controls,
     audioManager,
-    spectrogramModels,
     directionIndicator,
   } = await createScene(renderer)
   const stats = new StatsWrapper(scene, camera)
@@ -49,7 +48,6 @@ async function main() {
     scene.getObjectByName('Forest').children.forEach((o) => o.update(t))
     environment.update(t)
 
-    spectrogramModels.update()
     directionIndicator.update()
 
     stats.update()

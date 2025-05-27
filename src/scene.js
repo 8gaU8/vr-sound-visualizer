@@ -92,9 +92,6 @@ export async function createScene(renderer) {
     await sleep(300)
   }
 
-  const spectrogramModels = new Group()
-  spectrogramModels.name = 'SpectrogramModels'
-
   //AUDIO+model
   async function AudioModel() {
     const modelAudioPairs = [
@@ -114,7 +111,10 @@ export async function createScene(renderer) {
 
     try {
       for (const pair of modelAudioPairs) {
-        const { model, audio } = await audioManager.loadModelAudio(pair.modelPath, pair.audioPath)
+        const { model, audio, spectrogramModel } = await audioManager.loadModelAudio(
+          pair.modelPath,
+          pair.audioPath,
+        )
         const modelGroup = new THREE.Group() // to prevent scaling of spectrogram mesh
         modelGroup.position.set(pair.position.x, pair.position.y, pair.position.z)
         scene.add(modelGroup)
@@ -125,13 +125,6 @@ export async function createScene(renderer) {
         model.castShadow = true
         model.receiveShadow = true
         modelGroup.add(model)
-
-        const spectrogramModel = new SpectrogramModel(audio)
-        spectrogramModels.add(spectrogramModel)
-
-        const spectrogramMesh = spectrogramModel.mesh
-        spectrogramMesh.position.set(0, 1, 0)
-        modelGroup.add(spectrogramMesh)
 
         directionIndicator.addTarget(spectrogramModel)
       }
@@ -164,11 +157,9 @@ export async function createScene(renderer) {
     camera,
     controls,
     audioManager,
-    spectrogramModels,
     directionIndicator,
     update: function () {
       audioManager.update()
-      spectrogramModels.update()
       directionIndicator.update()
     },
   }
