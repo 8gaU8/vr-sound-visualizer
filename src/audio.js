@@ -13,19 +13,6 @@ export class AudioManager {
     this.clock = new THREE.Clock()
   }
 
-  async loadAudio(audioPath) {
-    const audio = new THREE.PositionalAudio(this.listener)
-    const audioBuffer = await this.loadAudioBuffer(audioPath)
-    audio.setBuffer(audioBuffer)
-    audio.setRefDistance(5) // Set the distance at which the audio is heard at full volume
-    audio.setRolloffFactor(2) // Add rolloff factor
-    audio.setDistanceModel('inverse') // Change to inverse for better distance attenuation
-    audio.setDirectionalCone(180, 230, 0.1) // Add directional cone for more realistic sound
-    audio.setLoop(true) // Set the audio to loop
-    return audio
-  }
-
-  //add motion to models using update
   update() {
     const time = this.clock.getElapsedTime()
     this.models.forEach(({ model, motion }) => {
@@ -36,44 +23,14 @@ export class AudioManager {
     })
   }
 
-  async loadModel(url) {
-    return new Promise((resolve, reject) => {
-      this.gltfLoader.load(
-        url,
-        (gltf) => resolve(gltf),
-        (progress) => {
-          if (progress.loaded / progress.total === 1) {
-            console.log('Loaded:', url)
-          }
-        },
-        (error) => reject(error),
-      )
-    })
-  }
-
-  async loadAudioBuffer(url) {
-    return new Promise((resolve, reject) => {
-      this.audioLoader.load(
-        url,
-        (buffer) => resolve(buffer),
-        (progress) => {
-          if (progress.loaded / progress.total === 1) {
-            console.log('Loaded:', url)
-          }
-        },
-        (error) => reject(error),
-      )
-    })
-  }
-
   async loadModelAudio(modelPath, audioPath, motion = true) {
     try {
       // Load the 3D model glb
-      const gltf = await this.loadModel(modelPath)
+      const gltf = await this.#loadModel(modelPath)
       const model = gltf.scene
 
       //create an audio object
-      const audio = await this.loadAudio(audioPath)
+      const audio = await this.#loadAudio(audioPath)
       audio.play()
 
       model.add(audio)
@@ -126,13 +83,11 @@ export class AudioManager {
   async loadAmbientAudio(path) {
     try {
       const ambientAudio = new THREE.Audio(this.listener)
-      const ambAudioBuffer = await this.loadAudioBuffer(path)
+      const ambAudioBuffer = await this.#loadAudioBuffer(path)
       ambientAudio.setBuffer(ambAudioBuffer)
       ambientAudio.setLoop(true)
       ambientAudio.setVolume(0.5)
       ambientAudio.play()
-
-      // scene.add(ambientAudio)
 
       return ambientAudio
     } catch (error) {
@@ -145,5 +100,47 @@ export class AudioManager {
     this.listener.position.copy(camera.position)
     this.listener.quaternion.copy(camera.quaternion) //update the audio listener to the head orientation
     this.update() //update motion
+  }
+
+  async #loadAudio(audioPath) {
+    const audio = new THREE.PositionalAudio(this.listener)
+    const audioBuffer = await this.#loadAudioBuffer(audioPath)
+    audio.setBuffer(audioBuffer)
+    audio.setRefDistance(5) // Set the distance at which the audio is heard at full volume
+    audio.setRolloffFactor(2) // Add rolloff factor
+    audio.setDistanceModel('inverse') // Change to inverse for better distance attenuation
+    audio.setDirectionalCone(180, 230, 0.1) // Add directional cone for more realistic sound
+    audio.setLoop(true) // Set the audio to loop
+    return audio
+  }
+
+  async #loadModel(url) {
+    return new Promise((resolve, reject) => {
+      this.gltfLoader.load(
+        url,
+        (gltf) => resolve(gltf),
+        (progress) => {
+          if (progress.loaded / progress.total === 1) {
+            console.log('Loaded:', url)
+          }
+        },
+        (error) => reject(error),
+      )
+    })
+  }
+
+  async #loadAudioBuffer(url) {
+    return new Promise((resolve, reject) => {
+      this.audioLoader.load(
+        url,
+        (buffer) => resolve(buffer),
+        (progress) => {
+          if (progress.loaded / progress.total === 1) {
+            console.log('Loaded:', url)
+          }
+        },
+        (error) => reject(error),
+      )
+    })
   }
 }

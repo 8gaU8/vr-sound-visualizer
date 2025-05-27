@@ -166,8 +166,8 @@ export async function createScene(renderer) {
     audioManager,
     spectrogramModels,
     directionIndicator,
-    update: function (time) {
-      audioManager.update(time)
+    update: function () {
+      audioManager.update()
       spectrogramModels.update()
       directionIndicator.update()
     },
