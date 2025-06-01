@@ -1,17 +1,18 @@
 // @ts-check
 
+/**
+ * @typedef {import('../AudioController.js').AudioController} AudioController
+ */
+
 import * as THREE from 'three'
 
 import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
 
-// @ts-ignore
-import fragShader from './shaders/spectrogram.frag?raw'
-// @ts-ignore
-import vertShader from './shaders/spectrogram.vert?raw'
+import { spectrogramShaders } from './shaders.js'
 
 const spectrogramOpt = VisualizeOptions.spectrogramModel
 
-export class SpectrogramModel {
+export class SpectrogramModelController {
   /**
    * @description The analyser for the audio
    * @type {THREE.AudioAnalyser}
@@ -37,12 +38,12 @@ export class SpectrogramModel {
   mesh
 
   /**
-   * @param {THREE.Audio<AudioNode>} audio
+   * @param {AudioController} audioController
    */
-  constructor(audio) {
+  constructor(audioController) {
     this.fftSize = 64
 
-    this.analyser = new THREE.AudioAnalyser(audio, spectrogramOpt.fftSize)
+    this.analyser = new THREE.AudioAnalyser(audioController.audio, spectrogramOpt.fftSize)
     this.uniforms = {
       tAudioData: {
         value: new THREE.DataTexture(
@@ -54,6 +55,7 @@ export class SpectrogramModel {
       },
     }
     this.mesh = this.#generateSpectrogramMesh()
+    this.mesh.name = `${audioController.param.name}SpectrogramMesh`
   }
 
   /**
@@ -63,8 +65,8 @@ export class SpectrogramModel {
   #generateSpectrogramMesh() {
     const material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
-      vertexShader: vertShader,
-      fragmentShader: fragShader,
+      vertexShader: spectrogramShaders.vertShader,
+      fragmentShader: spectrogramShaders.fragShader,
       transparent: true,
       side: THREE.DoubleSide,
     })
@@ -72,6 +74,8 @@ export class SpectrogramModel {
     const geometry = new THREE.PlaneGeometry(spectrogramOpt.width, spectrogramOpt.height)
 
     const mesh = new THREE.Mesh(geometry, material)
+    mesh.translateY(0.5)
+    mesh.translateZ(-0.5)
     return mesh
   }
 
@@ -92,5 +96,13 @@ export class SpectrogramModel {
   #calcIntensity(data) {
     const intensity = Math.max(...data.map(Math.abs))
     return intensity
+  }
+
+  /**
+   * @description Adds the spectrogram mesh to the scene
+   * @param {THREE.Scene} scene - The scene to add the mesh to
+   */
+  addToScene(scene) {
+    scene.add(this.mesh)
   }
 }

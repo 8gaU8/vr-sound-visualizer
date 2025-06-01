@@ -1,11 +1,13 @@
 // @ts-check
 
+/**
+ * @typedef {import('../BirdAVController.js').BirdAVController} BirdAVController
+ */
+
 import * as THREE from 'three'
 
 import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
 
-// eslint-disable-next-line no-unused-vars
-import { SpectrogramModel } from './SpectrogramModel'
 import { calcAngle2Pos, calcDistance, calcPos2Angle, getCameraYawAngle } from './angleUtils'
 
 const pointOptions = VisualizeOptions.directionalIndicator.point
@@ -13,7 +15,7 @@ const pointOptions = VisualizeOptions.directionalIndicator.point
 export class Point {
   /**
    * @description The target spectrogram object
-   * @type {SpectrogramModel}
+   * @type {BirdAVController}
    */
   target
 
@@ -37,7 +39,7 @@ export class Point {
 
   /**
    *
-   * @param {SpectrogramModel} target
+   * @param {BirdAVController} target
    * @param {THREE.Camera} camera
    */
   constructor(target, camera) {

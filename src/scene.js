@@ -1,20 +1,14 @@
+// @ts-check
 import { Tree, TreePreset } from '@dgreenheck/ez-tree'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import { AudioManager } from './audio.js'
+import { AudioController } from './AudioController.js'
+import { birdsParams } from './defaultConfigs/BirdModelParam.js'
+import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
-import { SpectrogramModel } from './audioVisualizers/SpectrogramModel.js'
 import { Environment } from './environment'
-import { createSimplifiedMesh, Group } from './utils'
-
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-function paintUI() {
-  return new Promise((resolve) => requestAnimationFrame(resolve))
-}
+import { createSimplifiedMesh } from './utils'
 
 /**
  * Creates a new instance of the Three.js scene
@@ -33,11 +27,6 @@ export async function createScene(renderer) {
   camera.position.set(10, 1.7, 0)
 
   const controls = new OrbitControls(camera, renderer.domElement)
-  controls.update()
-
-  //create audio and add it to the camera
-  const audioManager = new AudioManager()
-  scene.add(audioManager.listener)
 
   // Add a directional indicator
   const directionIndicator = new DirectionIndicator(camera)
@@ -58,9 +47,9 @@ export async function createScene(renderer) {
   const forest = new THREE.Group()
   forest.name = 'Forest'
 
-  const treeCount = 2
-  const minDistance = 10
-  const maxDistance = 20
+  const treeCount = 20
+  const minDistance = 5
+  const maxDistance = 15
 
   function createTree() {
     const r = minDistance + Math.random() * maxDistance
@@ -82,65 +71,26 @@ export async function createScene(renderer) {
   async function loadTrees(i) {
     while (i < treeCount) {
       createTree()
-
-      await paintUI()
-
       i++
     }
-
-    // All trees are loaded, hide loading screen
-    await sleep(300)
   }
 
-  //AUDIO+model
-  async function AudioModel() {
-    const modelAudioPairs = [
-      {
-        modelPath: 'parrot trellis.glb',
-        audioPath: 'quaker-parrot-screams-231906.mp3',
-        position: { x: 3, y: 2, z: -8 },
-        scale: { x: 8, y: 8, z: 8 },
-      },
-      {
-        modelPath: 'woodpecker.glb',
-        audioPath: 'Pileated Woodpecker .mp3',
-        position: { x: 5, y: 2, z: 2 },
-        scale: { x: 0.5, y: 0.5, z: 0.5 },
-      },
-    ]
+  const audioListener = new THREE.AudioListener()
+  scene.add(audioListener)
 
-    try {
-      for (const pair of modelAudioPairs) {
-        const { model, audio, spectrogramModel } = await audioManager.loadModelAudio(
-          pair.modelPath,
-          pair.audioPath,
-        )
-        const modelGroup = new THREE.Group() // to prevent scaling of spectrogram mesh
-        modelGroup.position.set(pair.position.x, pair.position.y, pair.position.z)
-        scene.add(modelGroup)
-        // model.position.set(0, 0, 0) // Reset position since parent handles it
+  // load ambient sounds
+  AudioController.loadAmbientAudio('ambient wind edited.mp3', audioListener)
 
-        model.scale.set(pair.scale.x, pair.scale.y, pair.scale.z) // Adjust scale if needed
-        model.visible = true // Ensure visibility is on
-        model.castShadow = true
-        model.receiveShadow = true
-        modelGroup.add(model)
-
-        directionIndicator.addTarget(spectrogramModel)
-      }
-    } catch (error) {
-      console.error('Error loading model or audio:', error)
-      throw error
-    }
+  const birdsWatcher = new BirdsWatcher(audioListener)
+  for (const birdParam of birdsParams) {
+    console.log('Adding bird:', birdParam.name)
+    await birdsWatcher.addBird(birdParam)
   }
-
-  //load ambient sounds
-  audioManager.loadAmbientAudio('ambient wind edited.mp3')
+  birdsWatcher.addToScene(scene)
+  directionIndicator.addTargets(birdsWatcher.birds)
 
   // Start the tree loading process
   await loadTrees(0)
-  await AudioModel()
-
   scene.add(forest)
 
   // scale every objects in the scene
@@ -156,11 +106,7 @@ export async function createScene(renderer) {
     tree,
     camera,
     controls,
-    audioManager,
+    birdwatcher: birdsWatcher,
     directionIndicator,
-    update: function () {
-      audioManager.update()
-      directionIndicator.update()
-    },
   }
 }

@@ -1,12 +1,15 @@
 // @ts-check
 
+/**
+ * @typedef {import('../BirdsWatcher.js').BirdsWatcher} BirdWatcher
+ * @typedef {import('../BirdAVController.js').BirdAVController} BirdAVController
+ */
+
 import * as THREE from 'three'
 
 import { VisualizeOptions } from '../defaultConfigs/VisualizeOptions'
 
 import { Point } from './Point'
-// eslint-disable-next-line no-unused-vars
-import { SpectrogramModel } from './SpectrogramModel'
 
 const ringOptions = VisualizeOptions.directionalIndicator.ring
 
@@ -71,12 +74,21 @@ export class DirectionIndicator {
   /**
    * @description Add a sound object as a target to the indicator.
    *              The target will be represented as a point on the indicator ring.
-   * @param {SpectrogramModel} target
+   * @param {BirdAVController} target
    */
   addTarget(target) {
     const point = new Point(target, this.camera)
     this.points.push(point)
     this.indicator.add(point.mesh)
+  }
+
+  /**
+   * @param {Array<BirdAVController>} birds
+   */
+  addTargets(birds) {
+    birds.forEach((bird) => {
+      this.addTarget(bird)
+    })
   }
 
   /**
