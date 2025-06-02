@@ -80,15 +80,15 @@ export class SpectrogramModelController {
     return mesh
   }
 
-    updateVisibility(camera){
-    const visibleThreshold = 10
+    updateVisibility(camera,worldPosition){
+    const visibleThreshold = 5
     const angleThreshold = 0.5
     // console.log('updateVisibility', camera.position)
-    const distance= camera.position.distanceTo(this.mesh.position)
+    const distance= camera.position.distanceTo(worldPosition)
   
     //get vector from camera to mesh
     const vecToMesh = new THREE.Vector3()
-    vecToMesh.subVectors(this.mesh.position, camera.position).normalize()
+    vecToMesh.subVectors(worldPosition, camera.position).normalize()
     //get camera direction vector
     const cameraDirection = new THREE.Vector3(0,0,-1)
     cameraDirection.applyQuaternion(camera.quaternion).normalize()
@@ -108,7 +108,11 @@ export class SpectrogramModelController {
     this.analyser.getFrequencyData()
     this.uniforms.tAudioData.value.needsUpdate = true
     this.intensity = this.#calcIntensity(this.analyser.data)
-    this.updateVisibility(camera)
+
+    //get world position of the mesh
+    const worldPosition = new THREE.Vector3()
+    this.mesh.getWorldPosition(worldPosition)
+    this.updateVisibility(camera,worldPosition)
   }
 
   /**
