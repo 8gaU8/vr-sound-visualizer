@@ -44,7 +44,7 @@ export class BirdModelParam {
 export const birdsParams = [
   new BirdModelParam(
     'parrotTrellis',
-    'parrot trellis.glb',
+    'parrot-trellis.glb',
     'quaker-parrot-screams-231906.mp3',
     new Vector3(3, 2, -8),
     new Vector3(8, 8, 8),
@@ -53,7 +53,7 @@ export const birdsParams = [
   new BirdModelParam(
     'woodpecker',
     'woodpecker.glb',
-    'Pileated Woodpecker .mp3',
+    'PileatedWoodpecker.mp3',
     new Vector3(5, 2, 2),
     new Vector3(0.5, 0.5, 0.5),
     MOTION_ENABLED,
