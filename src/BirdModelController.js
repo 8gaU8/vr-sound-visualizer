@@ -1,4 +1,6 @@
 // @ts-check
+import { CatmullRomCurve3, Vector3 } from 'three'
+
 import { loaders } from './loaders'
 
 /**
@@ -18,6 +20,8 @@ export class BirdModelController {
    */
   constructor(birdModelParam) {
     this.param = birdModelParam
+
+    this.curvePoints = BirdModelController.#generateMotion()
   }
 
   /**
@@ -60,8 +64,34 @@ export class BirdModelController {
    */
   update(time) {
     if (this.param.motion) {
-      this.mesh.position.y += 0.005 * Math.sin(time * 1.5)
-      this.mesh.rotation.y = 0.2 * Math.sin(time * 1.5 * 0.5)
+      const t = time * 0.05 // Convert time to seconds
+      const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
+      const point = this.curvePoints[index]
+
+      this.mesh.position.copy(point)
+
+      //  Rotate the bird model to face the direction of motion
+      const nextIndex = (index + 1) % this.curvePoints.length
+      const nextPoint = this.curvePoints[nextIndex]
+      const direction = nextPoint.clone().sub(point).normalize()
+      const lookAtPoint = point.clone().add(direction)
+      this.mesh.quaternion.setFromUnitVectors(
+        new Vector3(0, 0, 1), // Default forward vector
+        lookAtPoint.clone().sub(point).normalize(), // Direction to look at
+      )
     }
+  }
+
+  static #generateMotion() {
+    const randomPoints = []
+    for (var i = 0; i < 20; i++) {
+      const randomX = Math.random() * 5 + 1
+      const randomY = Math.random() * 5 + 1
+      const randomZ = Math.random() * 5 + 1
+      randomPoints.push(new Vector3(randomX, randomY, randomZ))
+    }
+    const curve = new CatmullRomCurve3(randomPoints, true, 'catmullrom', 0.5)
+    const points = curve.getPoints(2000)
+    return points
   }
 }

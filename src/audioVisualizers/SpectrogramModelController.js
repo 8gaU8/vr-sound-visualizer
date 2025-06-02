@@ -2,6 +2,7 @@
 
 /**
  * @typedef {import('../AudioController.js').AudioController} AudioController
+ * @typedef {import('../BirdModelController.js').BirdModelController} BirdModelController
  */
 
 import * as THREE from 'three'
@@ -79,8 +80,14 @@ export class SpectrogramModelController {
     return mesh
   }
 
-  get position() {
-    return this.mesh.position
+  /**
+   * @param {BirdModelController} birdModelController
+   */
+  followsModel(birdModelController) {
+    this.mesh.position.copy(birdModelController.mesh.position)
+    this.mesh.position.y += 0.5
+    // this.mesh.position.x += 0.5
+    // this.mesh.position.z += 0.5
   }
 
   update() {
@@ -104,5 +111,15 @@ export class SpectrogramModelController {
    */
   addToScene(scene) {
     scene.add(this.mesh)
+  }
+
+  /**
+   * @description スペクトログラム平面をカメラの方向に向ける
+   * @param {THREE.Camera} camera
+   */
+  faceToCamera(camera) {
+    if (this.mesh && camera) {
+      this.mesh.lookAt(camera.position)
+    }
   }
 }
