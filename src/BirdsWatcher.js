@@ -67,7 +67,7 @@ export class BirdsWatcher {
    */
   update(time, camera) {
     this.birds.forEach((controller) => {
-      controller.update(time)
+      controller.update(time, camera)
     })
     // Update the audio listener's position and orientation to match the camera
     this.audioListener.position.copy(camera.position)

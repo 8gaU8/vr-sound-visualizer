@@ -37,6 +37,7 @@ export class BirdAVController {
   constructor(birdModelParam, audioListener) {
     this.param = birdModelParam
     this.audioListener = audioListener
+    // this.camera = camera
     this.birdModelController = new BirdModelController(this.param)
     this.audioController = new AudioController(this.param, this.audioListener)
   }
@@ -46,8 +47,9 @@ export class BirdAVController {
   async load() {
     await this.birdModelController.load()
     await this.audioController.load()
-
     this.spectrogramModelController = new SpectrogramModelController(this.audioController)
+
+    // this.spectrogramModelController = new SpectrogramModelController(this.audioController)
 
     this.meshGroup = new Group()
     this.meshGroup.name = `${this.param.name}Controller`
@@ -63,9 +65,9 @@ export class BirdAVController {
    * @param {number} time  - The elapsed time since the last update.
    * @description Updates the bird model and spectrogram based on the elapsed time.
    */
-  update(time) {
+  update(time, camera) {
     this.birdModelController.update(time)
-    this.spectrogramModelController.update()
+    this.spectrogramModelController.update(camera)
   }
 
   get intensity() {
