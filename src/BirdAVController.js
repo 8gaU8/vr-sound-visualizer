@@ -43,6 +43,7 @@ export class BirdAVController {
   constructor(birdModelParam, audioListener) {
     this.param = birdModelParam
     this.audioListener = audioListener
+    // this.camera = camera
     this.birdModelController = new BirdModelController(this.param)
     this.audioController = new AudioController(this.param, this.audioListener)
   }
@@ -52,8 +53,9 @@ export class BirdAVController {
   async load() {
     await this.birdModelController.load()
     await this.audioController.load()
-
     this.spectrogramModelController = new SpectrogramModelController(this.audioController)
+
+    // this.spectrogramModelController = new SpectrogramModelController(this.audioController)
 
     this.meshGroup = new Group()
     this.meshGroup.name = `${this.param.name}Controller`
