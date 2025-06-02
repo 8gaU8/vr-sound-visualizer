@@ -19,7 +19,7 @@ export class BirdAVController {
   meshGroup
 
   /** @type {BirdModelController} - Path to the audio file */
-  bitrdModelController
+  birdModelController
 
   /** @type {AudioController} - Path to the audio file */
   audioController

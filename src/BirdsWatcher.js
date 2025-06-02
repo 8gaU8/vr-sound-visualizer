@@ -78,7 +78,7 @@ export class BirdsWatcher {
    * @description Updates the haptic feedback. only in XR mode.
    * @param {WebGLRenderer} renderer
    */
-  udpateHaptics(renderer) {
+  updateHaptics(renderer) {
     const session = renderer.xr.getSession()
     this.hapticsManager.updateGamepad(session)
     this.hapticsManager.update()
