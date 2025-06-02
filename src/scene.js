@@ -79,7 +79,7 @@ export async function createScene(renderer) {
   scene.add(audioListener)
 
   // load ambient sounds
-  AudioController.loadAmbientAudio('ambient wind edited.mp3', audioListener)
+  AudioController.loadAmbientAudio('ambient.mp3', audioListener)
 
   const birdsWatcher = new BirdsWatcher(audioListener)
   for (const birdParam of birdsParams) {
