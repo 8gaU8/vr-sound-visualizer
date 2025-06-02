@@ -9,4 +9,3 @@ export const loaders = {
   audioLoader,
   gltfLoader,
 }
-

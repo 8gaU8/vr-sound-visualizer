@@ -4,9 +4,9 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { AudioController } from './AudioController.js'
-import { birdsParams } from './defaultConfigs/BirdModelParam.js'
 import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
+import { birdsParams } from './defaultConfigs/BirdModelParam.js'
 import { Environment } from './environment'
 import { createSimplifiedMesh } from './utils'
 
@@ -95,7 +95,7 @@ export async function createScene(renderer) {
 
   // scale every objects in the scene
   scene.traverse((object) => {
-    if (object.isMesh) {
+    if (object instanceof THREE.Mesh) {
       object.scale.set(0.1, 0.1, 0.1)
     }
   })
