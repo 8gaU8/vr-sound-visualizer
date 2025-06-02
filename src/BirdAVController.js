@@ -71,10 +71,18 @@ export class BirdAVController {
    * @description Updates the bird model and spectrogram based on the elapsed time.
    */
   update(time, camera) {
-    this.birdModelController.update(time)
-    this.spectrogramModelController.update()
-    this.spectrogramModelController.faceToCamera(camera)
-    this.spectrogramModelController.followsModel(this.birdModelController)
+    // update model position
+    const position = this.birdModelController.getPosition(time)
+    // add initial position offset
+    position.add(this.param.position)
+    this.meshGroup.position.copy(position)
+
+    // update model rotation
+    const quaternion = this.birdModelController.getQuaternion(time)
+    this.meshGroup.quaternion.copy(quaternion)
+
+    // update spectrogram
+    this.spectrogramModelController.update(camera)
   }
 
   get intensity() {

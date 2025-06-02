@@ -90,10 +90,14 @@ export class SpectrogramModelController {
     // this.mesh.position.z += 0.5
   }
 
-  update() {
+  /**
+   * @param {THREE.Camera} camera
+   */
+  update(camera) {
     this.analyser.getFrequencyData()
     this.uniforms.tAudioData.value.needsUpdate = true
     this.intensity = this.#calcIntensity(this.analyser.data)
+    this.faceToCamera(camera)
   }
 
   /**
