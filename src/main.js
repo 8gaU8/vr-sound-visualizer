@@ -18,39 +18,26 @@ async function main() {
 
   const renderer = initRenderer(container)
 
-  const {
-    scene,
-    environment,
-    tree,
-    camera,
-    controls,
-    audioManager,
-    spectrogramModels,
-    directionIndicator,
-  } = await createScene(renderer)
+  const { scene, environment, tree, camera, controls, birdwatcher, directionIndicator } =
+    await createScene(renderer)
   const stats = new StatsWrapper(scene, camera)
 
   const clock = new THREE.Clock()
   function render() {
+    const t = clock.getElapsedTime()
     if (renderer.xr.isPresenting) {
-      const session = renderer.xr.getSession()
-      audioManager.hapticsManager.updateGamepad(session)
-      audioManager.hapticsManager.update()
-
-      audioManager.updateAudioListener(renderer.xr.getCamera())
+      birdwatcher.update(t, renderer.xr.getCamera())
+      birdwatcher.udpateHaptics(renderer)
     } else {
       controls.update()
-      audioManager.updateAudioListener(camera)
+      birdwatcher.update(t, camera)
     }
+    directionIndicator.update()
 
     // Update time for wind sway shaders
-    const t = clock.getElapsedTime()
     tree.update(t)
     scene.getObjectByName('Forest').children.forEach((o) => o.update(t))
     environment.update(t)
-
-    spectrogramModels.update()
-    directionIndicator.update()
 
     stats.update()
     renderer.render(scene, camera)
