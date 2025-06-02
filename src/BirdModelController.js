@@ -1,4 +1,6 @@
 // @ts-check
+import { CatmullRomCurve3, Euler, Quaternion, Vector3 } from 'three'
+
 import { loaders } from './loaders'
 
 /**
@@ -18,6 +20,8 @@ export class BirdModelController {
    */
   constructor(birdModelParam) {
     this.param = birdModelParam
+
+    this.curvePoints = BirdModelController.#generateMotion()
   }
 
   /**
@@ -55,13 +59,51 @@ export class BirdModelController {
   }
 
   /**
-   * Updates the bird model's position and rotation based on time.
    * @param {Number} time
+   * @returns {Vector3} - Returns the position of the bird model at the specified time.
    */
-  update(time) {
-    if (this.param.motion) {
-      this.mesh.position.y += 0.005 * Math.sin(time * 1.5)
-      this.mesh.rotation.y = 0.2 * Math.sin(time * 1.5 * 0.5)
+  getPosition(time) {
+    if (!this.param.motion) {
+      return new Vector3(this.param.position.x, this.param.position.y, this.param.position.z)
     }
+    const t = time * 0.05 // Convert time to seconds
+    const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
+    const point = this.curvePoints[index]
+    return point.clone()
+  }
+
+  /**
+   *
+   * @param {Number} time
+   * @returns {Quaternion} - Returns the quaternion representing the rotation of the bird model at the specified time.
+   */
+  getQuaternion(time) {
+    if (!this.param.motion) {
+      return new Quaternion().setFromEuler(new Euler(0, 0, 0)) // No motion, no rotation
+    }
+    const t = time * 0.05 // Convert time to seconds
+    const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
+    const point = this.curvePoints[index]
+    //  Rotate the bird model to face the direction of motion
+    const nextIndex = (index + 1) % this.curvePoints.length
+    const nextPoint = this.curvePoints[nextIndex]
+    const direction = nextPoint.clone().sub(point).normalize()
+    const lookAtPoint = point.clone().add(direction)
+    const quaternion = new Quaternion()
+    quaternion.setFromUnitVectors(new Vector3(0, 0, 1), lookAtPoint.clone().sub(point).normalize())
+    return quaternion.clone()
+  }
+
+  static #generateMotion() {
+    const randomPoints = []
+    for (let i = 0; i < 20; i++) {
+      const randomX = Math.random() * 5 + 1
+      const randomY = Math.random() * 5 + 1
+      const randomZ = Math.random() * 5 + 1
+      randomPoints.push(new Vector3(randomX, randomY, randomZ))
+    }
+    const curve = new CatmullRomCurve3(randomPoints, true, 'catmullrom', 0.5)
+    const points = curve.getPoints(2000)
+    return points
   }
 }
