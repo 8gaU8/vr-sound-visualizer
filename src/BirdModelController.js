@@ -96,7 +96,7 @@ export class BirdModelController {
 
   static #generateMotion() {
     const randomPoints = []
-    for (var i = 0; i < 20; i++) {
+    for (let i = 0; i < 20; i++) {
       const randomX = Math.random() * 5 + 1
       const randomY = Math.random() * 5 + 1
       const randomZ = Math.random() * 5 + 1
