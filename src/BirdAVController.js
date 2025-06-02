@@ -3,6 +3,7 @@
 /**
  * @typedef {import('./defaultConfigs/BirdModelParam.js').BirdModelParam} BirdModelParam
  * @typedef {import('three').AudioListener} AudioListener
+ * @typedef {import('three').Camera} Camera
  */
 
 import { Group } from 'three'
@@ -13,6 +14,11 @@ import { SpectrogramModelController } from './audioVisualizers/SpectrogramModelC
 
 /**
  * @description BirdAVController manages the audio and visual components of a bird model.
+ *
+ * **Children of `BirdAVController`**
+ * - `BirdModelController` (3D bird model)
+ * - `AudioController` (positional audio model)
+ * - `SpectrogramModelController` (spectrogram model)
  */
 export class BirdAVController {
   /** @type {Group} */
@@ -61,11 +67,22 @@ export class BirdAVController {
 
   /**
    * @param {number} time  - The elapsed time since the last update.
+   * @param {Camera} camera - The camera used for rendering the scene.
    * @description Updates the bird model and spectrogram based on the elapsed time.
    */
-  update(time) {
-    this.birdModelController.update(time)
-    this.spectrogramModelController.update()
+  update(time, camera) {
+    // update model position
+    const position = this.birdModelController.getPosition(time)
+    // add initial position offset
+    position.add(this.param.position)
+    this.meshGroup.position.copy(position)
+
+    // update model rotation
+    const quaternion = this.birdModelController.getQuaternion(time)
+    this.meshGroup.quaternion.copy(quaternion)
+
+    // update spectrogram
+    this.spectrogramModelController.update(camera)
   }
 
   get intensity() {
