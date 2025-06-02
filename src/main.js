@@ -27,7 +27,7 @@ async function main() {
     const t = clock.getElapsedTime()
     if (renderer.xr.isPresenting) {
       birdwatcher.update(t, renderer.xr.getCamera())
-      birdwatcher.udpateHaptics(renderer)
+      birdwatcher.updateHaptics(renderer)
     } else {
       controls.update()
       birdwatcher.update(t, camera)
