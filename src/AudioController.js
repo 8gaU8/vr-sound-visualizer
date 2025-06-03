@@ -10,9 +10,10 @@ import { Audio, PositionalAudio } from 'three'
 import { loaders } from './loaders.js'
 
 export class AudioController {
-  /**
-   * @type {PositionalAudio} -
-   */
+  /** @type {AudioListener} - The audio listener for the scene. */
+  audioListener
+
+  /** @type {PositionalAudio} - */
   audio
 
   /** @type {BirdModelParam} - The parameters for the bird model including paths, position, scale, and motion */
@@ -28,26 +29,19 @@ export class AudioController {
     this.audioListener = audioListener
   }
 
-  /**
-   * @returns {Promise<PositionalAudio>} - Returns a promise that resolves to the loaded audio object.
-   */
   async load() {
-    this.audio = await AudioController.#loadAudio(this.param.audioPath, this.audioListener)
-    this.audio.name = `${this.param.name}Audio`
+    const audio = await AudioController.#loadAudio(this.param.audioPath, this.audioListener)
+    audio.name = `${this.param.name}Audio`
+    this.audio = audio
     this.play()
-    return this.audio
   }
 
-  /**
-   * @description Play audio for specific model
-   */
+  /** @description Play audio for specific model */
   play() {
     this.audio.play()
   }
 
-  /**
-   * @description Stop audio for specific model
-   */
+  /** @description Stop audio for specific model */
   stopAudio() {
     this.audio.stop()
   }
@@ -68,9 +62,7 @@ export class AudioController {
     return audio
   }
 
-  /**
-   * @param {String} url
-   */
+  /** @param {String} url */
   static async #loadAudioBuffer(url) {
     return new Promise((resolve, reject) => {
       loaders.audioLoader.load(
