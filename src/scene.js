@@ -8,7 +8,7 @@ import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
 import { birdsParams } from './defaultConfigs/BirdModelParam.js'
 import { Environment } from './environment'
-import { initSky } from './sky-tmp.js'
+import { Skybox } from './sky-tmp.js'
 import { createSimplifiedMesh } from './utils'
 
 /**
@@ -42,6 +42,7 @@ export async function createScene(renderer) {
   tree.castShadow = true
   tree.receiveShadow = true
   tree.position.set(2, 0, 2)
+  tree.scale.set(0.1, 0.1, 0.1)
   scene.add(tree)
 
   // Add a forest of trees in the background
@@ -65,6 +66,7 @@ export async function createScene(renderer) {
     t.generate()
     t.castShadow = true
     t.receiveShadow = true
+    t.scale.set(0.1, 0.1, 0.1)
 
     forest.add(t)
   }
@@ -95,20 +97,20 @@ export async function createScene(renderer) {
   scene.add(forest)
 
   // scale every objects in the scene
-  scene.traverse((object) => {
-    if (object instanceof THREE.Mesh) {
-      object.scale.set(0.1, 0.1, 0.1)
-    }
-  })
+  // scene.traverse((object) => {
+  //   if (object instanceof THREE.Mesh) {
+  //     object.scale.set(0.1, 0.1, 0.1)
+  //   }
+  // })
 
-  initSky(scene)
+  new Skybox(scene)
   return {
     scene,
     environment,
     tree,
     camera,
     controls,
-    birdwatcher: birdsWatcher,
+    birdsWatcher,
     directionIndicator,
   }
 }

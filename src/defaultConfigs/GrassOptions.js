@@ -16,22 +16,22 @@ export class GrassOptions extends BaseOptions {
   /**
    * Size of the grass patches
    */
-  scale = 0.05
+  scale = 0.005
 
   /**
    * Patchiness of the grass
    */
-  patchiness = 0.1
+  patchiness = 0.01
 
   /**
    * Scale factor for the grass model
    */
-  size = { x: 1, y: 0.8, z: 1 }
+  size = { x: 0.1, y: 0.08, z: 0.1 }
 
   /**
    * Maximum variation in the grass size
    */
-  sizeVariation = { x: 1, y: 2, z: 1 }
+  sizeVariation = { x: 0.1, y: 0.2, z: 0.1 }
 
   /**
    * Strength of wind along each axis
@@ -79,7 +79,7 @@ export class GrassOptions extends BaseOptions {
    */
   generatePositions() {
     for (let i = 0; i < this.maxInstanceCount; i++) {
-      const r = 10 + this.random() * 50
+      const r = 1 + this.random() * 5
       const theta = this.random() * 2.0 * Math.PI
 
       // Set position randomly

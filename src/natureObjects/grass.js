@@ -1,3 +1,6 @@
+/**
+ * @typedef {import('../defaultConfigs/FlowerOptions.js').FlowerOptions} FlowerOptions
+ */
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
@@ -156,7 +159,7 @@ export class Grass extends THREE.Object3D {
   /**
    *
    * @param {THREE.Mesh} flowerMesh
-   * @param {FlowerOptions} flowerOptions
+   * @param {FlowersOptions} flowerOptions
    */
   generateFlowers(flowerMesh, flowerOptions) {
     for (let i = 0; i < flowerOptions.instanceCount; i++) {

@@ -18,7 +18,7 @@ async function main() {
 
   const renderer = initRenderer(container)
 
-  const { scene, environment, tree, camera, controls, birdwatcher, directionIndicator } =
+  const { scene, environment, tree, camera, controls, birdsWatcher, directionIndicator } =
     await createScene(renderer)
   const stats = new StatsWrapper(scene, camera)
 
@@ -26,11 +26,11 @@ async function main() {
   function render() {
     const t = clock.getElapsedTime()
     if (renderer.xr.isPresenting) {
-      birdwatcher.update(t, renderer.xr.getCamera())
-      birdwatcher.updateHaptics(renderer)
+      birdsWatcher.update(t, renderer.xr.getCamera())
+      birdsWatcher.updateHaptics(renderer)
     } else {
       controls.update()
-      birdwatcher.update(t, camera)
+      birdsWatcher.update(t, camera)
     }
     directionIndicator.update()
 
