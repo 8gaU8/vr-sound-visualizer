@@ -8,6 +8,7 @@ import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
 import { birdsParams } from './defaultConfigs/BirdModelParam.js'
 import { Environment } from './environment'
+import { initSky } from './sky-tmp.js'
 import { createSimplifiedMesh } from './utils'
 
 /**
@@ -100,6 +101,7 @@ export async function createScene(renderer) {
     }
   })
 
+  initSky(scene)
   return {
     scene,
     environment,
