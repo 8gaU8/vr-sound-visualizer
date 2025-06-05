@@ -40,7 +40,7 @@ export class RockOptions extends BaseOptions {
   generateRockPositions() {
     for (let i = 0; i < this.instanceCount; i++) {
       // Set position randomly
-      const p = new Array(20 * (this.random() - 0.5) * 5, 0.3, 20 * (this.random() - 0.5) * 5)
+      const p = new Array(2 * (this.random() - 0.5) * 10, 0.3, 2 * (this.random() - 0.5) * 10)
       this.positions.push(p)
 
       // Set rotation randomly
