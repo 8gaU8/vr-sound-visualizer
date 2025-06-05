@@ -1,10 +1,29 @@
-import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.17.0/dist/lil-gui.esm.js'; 
-import { InteractiveGroup } from 'three/addons/interactive/InteractiveGroup.js';
-import { HTMLMesh } from 'three/addons/interactive/HTMLMesh.js';
+// @ts-check
+
+/**
+ * @typedef {import('three').Scene} Scene
+ * @typedef {import('three').PerspectiveCamera} PerspectiveCamera
+ * @typedef {import('three').WebGLRenderer} WebGLRenderer
+ * @typedef {import('./audioVisualizers/DirectionIndicator.js').DirectionIndicator} DirectionIndicator
+ * @typedef {import('./haptics.js').HapticsManager} HapticsManager
+ * @typedef {import('./BirdsWatcher.js').BirdsWatcher} BirdsWatcher
+ */
+
+import { HTMLMesh } from 'three/examples/jsm/interactive/HTMLMesh.js';
+import { InteractiveGroup } from 'three/examples/jsm/interactive/InteractiveGroup.js';
+import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 import { VisualizeOptions } from './defaultConfigs/VisualizeOptions';
 
 
+/**
+ * @param {Scene} scene
+ * @param {PerspectiveCamera} camera
+ * @param {WebGLRenderer} renderer
+ * @param {DirectionIndicator} directionalIndicator
+ * @param {HapticsManager} hapticsManager
+ * @param {BirdsWatcher } birdsWatcher
+ */
 export function VRUI(scene, camera, renderer, directionalIndicator, hapticsManager, birdsWatcher) {
   const gui = new GUI();
 //   gui.domElement.style.zIndex = 1000;
@@ -30,11 +49,7 @@ export function VRUI(scene, camera, renderer, directionalIndicator, hapticsManag
         .name('Enabled')
         .onChange((value) => {
             // Toggle visibility of all spectrogram meshes in the scene
-            scene.traverse((object) => {
-                if (object.name && object.name.includes('SpectrogramMesh')) {
-                    object.visible = value;
-                }
-            });
+            birdsWatcher.setSpectrogramEnabled(value);
         });
 console.log('Initial spectrogram enabled state:', VisualizeOptions.spectrogramModel.enabled);
 
