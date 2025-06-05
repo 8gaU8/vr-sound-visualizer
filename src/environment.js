@@ -22,6 +22,7 @@ export class Environment extends THREE.Object3D {
 
     /** @type {Rocks} */
     this.rocks = new Rocks()
+    this.add(this.rocks)
 
     /** @type {Clouds} */
     const clouds = new Clouds()

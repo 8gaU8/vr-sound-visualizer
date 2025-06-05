@@ -9,12 +9,12 @@ export class RockOptions extends BaseOptions {
   /**
    * Scale factor
    */
-  size = { x: 0.4, y: 0.4, z: 0.4 }
+  size = { x: 0.2, y: 0.2, z: 0.2 }
 
   /**
    * Maximum variation in the rock size
    */
-  sizeVariation = { x: 3, y: 3, z: 3 }
+  sizeVariation = { x: 0.3, y: 0.3, z: 0.3 }
 
   /**
    * positions of the rocks
