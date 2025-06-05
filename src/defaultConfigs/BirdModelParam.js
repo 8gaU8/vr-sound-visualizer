@@ -55,7 +55,7 @@ export const birdsParams = [
     'woodpecker.glb',
     'PileatedWoodpecker.mp3',
     new Vector3(5, 2, 2),
-    new Vector3(0.05, 0.05, 0.05),
+    new Vector3(0.5, 0.5, 0.5),
     MOTION_ENABLED,
   ),
 ]
