@@ -94,4 +94,12 @@ export class BirdAVController {
   get position() {
     return this.meshGroup.position
   }
+
+  /**
+   * @description Enables or disables Spectrogram visualization
+   * @param {boolean} enabled - Whether to enable or disable the Spectrogram.
+   */
+  setSpectrogramEnabled(enabled) {
+    this.spectrogramModelController.mesh.visible = enabled
+  }
 }
