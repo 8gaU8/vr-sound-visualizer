@@ -13,10 +13,12 @@ export class FlowerOptions extends BaseOptions {
    */
   instanceCount = 50
 
+  patchiness = 0.5
+
   /**
    * Size of the grass patches
    */
-  scale = 0.05
+  scale = 10
 
   /**
    * positions of the flowers
@@ -44,7 +46,7 @@ export class FlowerOptions extends BaseOptions {
    */
   generateProperties() {
     for (let i = 0; i < this.instanceCount; i++) {
-      const r = 10 + this.random() * 5
+      const r = this.random() * 15 + 5
       const theta = this.random() * 2.0 * Math.PI
 
       // Set position randomly
@@ -62,8 +64,8 @@ export class FlowerOptions extends BaseOptions {
       this.rotations.push(2 * Math.PI * this.random())
 
       // Set scale randomly
-      const scale = 0.02 + 0.03 * this.random()
-      this.scales.push(scale * 0.1)
+      const scale = 0.002 + 0.003 * this.random()
+      this.scales.push(scale)
     }
   }
 }

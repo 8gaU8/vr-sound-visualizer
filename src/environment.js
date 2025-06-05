@@ -4,6 +4,7 @@ import { Clouds } from './natureObjects/clouds'
 import { Grass } from './natureObjects/grass'
 import { Ground } from './natureObjects/ground'
 import { Rocks } from './natureObjects/rocks'
+import { Skybox } from './natureObjects/skybox'
 
 /**
  * @extends THREE.Object3D
@@ -19,6 +20,9 @@ export class Environment extends THREE.Object3D {
     /** @type {Grass} */
     this.grass = new Grass()
     this.add(this.grass)
+
+    this.skybox = new Skybox()
+    this.add(this.skybox)
 
     /** @type {Rocks} */
     this.rocks = new Rocks()

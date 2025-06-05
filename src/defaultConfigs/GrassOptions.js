@@ -6,7 +6,7 @@ export class GrassOptions extends BaseOptions {
   /**
    * Number of grass instances
    */
-  instanceCount = 500
+  instanceCount = 5000
 
   /**
    * Maximum number of grass instances
@@ -16,17 +16,17 @@ export class GrassOptions extends BaseOptions {
   /**
    * Size of the grass patches
    */
-  scale = 0.005
+  scale = 100
 
   /**
    * Patchiness of the grass
    */
-  patchiness = 0.01
+  patchiness = 0.7
 
   /**
    * Scale factor for the grass model
    */
-  size = { x: 0.1, y: 0.08, z: 0.1 }
+  size = { x: 0.3, y: 0.2, z: 0.3 }
 
   /**
    * Maximum variation in the grass size
@@ -36,7 +36,7 @@ export class GrassOptions extends BaseOptions {
   /**
    * Strength of wind along each axis
    */
-  windStrength = { x: 0.3, y: 0, z: 0.3 }
+  windStrength = { x: 0.03, y: 0, z: 0.03 }
 
   /**
    * Oscillation frequency for wind movement
@@ -46,7 +46,7 @@ export class GrassOptions extends BaseOptions {
   /**
    * Controls how localized wind effects are
    */
-  windScale = 400.0
+  windScale = 40.0
 
   /**
    * positions of the glass
@@ -79,7 +79,7 @@ export class GrassOptions extends BaseOptions {
    */
   generatePositions() {
     for (let i = 0; i < this.maxInstanceCount; i++) {
-      const r = 1 + this.random() * 5
+      const r = 0.1 + this.random() * 20
       const theta = this.random() * 2.0 * Math.PI
 
       // Set position randomly
@@ -87,7 +87,10 @@ export class GrassOptions extends BaseOptions {
 
       const n = 0.5 + 0.5 * simplex2d(new Array(p[0] / this.scale, p[2] / this.scale))
 
-      if (n > this.patchiness && this.random() + 0.6 > this.patchiness) {
+      if (
+        n > this.patchiness
+        // && this.random() + 0.6 > this.patchiness
+      ) {
         continue
       }
 

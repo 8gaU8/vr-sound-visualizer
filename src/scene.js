@@ -8,7 +8,6 @@ import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
 import { birdsParams } from './defaultConfigs/BirdModelParam.js'
 import { Environment } from './environment'
-import { Skybox } from './sky-tmp.js'
 import { createSimplifiedMesh } from './utils'
 
 /**
@@ -96,14 +95,6 @@ export async function createScene(renderer) {
   await loadTrees(0)
   scene.add(forest)
 
-  // scale every objects in the scene
-  // scene.traverse((object) => {
-  //   if (object instanceof THREE.Mesh) {
-  //     object.scale.set(0.1, 0.1, 0.1)
-  //   }
-  // })
-
-  new Skybox(scene)
   return {
     scene,
     environment,

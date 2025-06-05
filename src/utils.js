@@ -10,7 +10,6 @@ export function createSimplifiedMesh(mesh) {
   const modifier = new SimplifyModifier()
   const simplified = mesh.clone()
   simplified.material = simplified.material.clone()
-  simplified.material.flatShading = true
   const count = Math.floor(simplified.geometry.attributes.position.count * 0.5) // number of vertices to remove
   simplified.geometry = modifier.modify(simplified.geometry, count)
   return simplified
