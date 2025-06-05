@@ -8,7 +8,6 @@ import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
 import { birdsParams } from './defaultConfigs/BirdModelParam.js'
 import { Environment } from './environment'
-import { Skybox } from './natureObjects/skybox.js'
 import { createSimplifiedMesh } from './utils'
 
 /**
@@ -95,9 +94,6 @@ export async function createScene(renderer) {
   // Start the tree loading process
   await loadTrees(0)
   scene.add(forest)
-
-  // add skybox to the scene
-  const _skybox = new Skybox(scene)
 
   return {
     scene,

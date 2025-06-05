@@ -3,20 +3,24 @@ import * as THREE from 'three'
 import { Sky } from 'three/examples/jsm/objects/Sky.js'
 import { degToRad } from 'three/src/math/MathUtils.js'
 
-export class Skybox {
-  constructor(scene) {
-    this.options = {
-      turbidity: 10,
-      rayleigh: 3,
-      mieCoefficient: 0.008,
-      mieDirectionalG: 0.9,
-      elevation: 45,
-      azimuth: 180,
-      sunColor: new THREE.Color(0xffe5b0).convertLinearToSRGB(),
-    }
+const _options = {
+  turbidity: 10,
+  rayleigh: 3,
+  mieCoefficient: 0.008,
+  mieDirectionalG: 0.9,
+  elevation: 45,
+  azimuth: 180,
+  sunColor: new THREE.Color(0xffe5b0).convertLinearToSRGB(),
+}
 
+export class Skybox extends THREE.Mesh {
+  constructor(options = _options) {
+    super()
+
+    this.name = 'Skybox'
+    this.options = options
     this.sky = this.initSky()
-    scene.add(this.sky)
+    this.add(this.sky)
 
     const el = degToRad(this.options.elevation)
     const az = degToRad(this.options.azimuth)
@@ -31,19 +35,19 @@ export class Skybox {
     this.sunLight.color = this.options.sunColor
     this.sunLight.position.copy(sunPosition)
     this.sunLight.castShadow = true
-    const cmmeraSize = 50
+    const cmmeraSize = 25
     this.sunLight.shadow.camera.left = -cmmeraSize
     this.sunLight.shadow.camera.right = cmmeraSize
     this.sunLight.shadow.camera.top = cmmeraSize
     this.sunLight.shadow.camera.bottom = -cmmeraSize
     const t = 2048
     this.sunLight.shadow.mapSize = new THREE.Vector2(t, t)
-    this.sunLight.shadow.bias = -0.001
-    this.sunLight.shadow.normalBias = 0.2
-    scene.add(this.sunLight)
+    // this.sunLight.shadow.bias = -0.001
+    this.sunLight.shadow.normalBias = 0.02
+    this.add(this.sunLight)
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
-    scene.add(ambientLight)
+    this.add(ambientLight)
   }
 
   initSky() {
