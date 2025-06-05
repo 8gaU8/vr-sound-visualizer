@@ -4,7 +4,6 @@ import { initRenderer } from './renderer'
 import { createScene } from './scene'
 import { StatsWrapper } from './stats'
 import { setupUI } from './ui'
-import {VRUI} from './VR-ui'
 
 async function main() {
   // Remove the loading overlay
@@ -41,13 +40,6 @@ async function main() {
     environment.update(t)
 
     stats.update()
-
-    //render ui in vr
-    const {htmlMesh} = VRUI(scene, camera, renderer, directionIndicator, birdsWatcher.hapticsManager, birdsWatcher)
-    if (htmlMesh&& htmlMesh.material.map){
-      htmlMesh.material.map.update()
-    }
-
     renderer.render(scene, camera)
   }
 
@@ -60,7 +52,6 @@ async function main() {
   window.addEventListener('resize', resize)
 
   setupUI(tree, environment, renderer, scene, camera, controls, 'Ash Medium')
-  VRUI(scene, camera, renderer, directionIndicator, birdsWatcher.hapticsManager)
   renderer.setAnimationLoop(render)
   resize()
 }
