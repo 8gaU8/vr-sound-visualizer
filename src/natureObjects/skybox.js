@@ -1,138 +1,95 @@
+//@ts-check
 import * as THREE from 'three'
+import { Sky } from 'three/examples/jsm/objects/Sky.js'
 import { degToRad } from 'three/src/math/MathUtils.js'
 
-import { SkyboxOptions } from '../defaultConfigs/SkyboxOptions'
-import fragmentShader from '../shaders/skybox.frag?raw'
-import vertexShader from '../shaders/skybox.vert?raw'
+export class Skybox {
+  constructor(scene) {
+    this.options = {
+      turbidity: 10,
+      rayleigh: 3,
+      mieCoefficient: 0.008,
+      mieDirectionalG: 0.9,
+      elevation: 45,
+      azimuth: 180,
+      sunColor: new THREE.Color(0xffe5b0).convertLinearToSRGB(),
+    }
 
-/**
- * Configurable skybox with sun and built-in lighting
- */
-export class Skybox extends THREE.Mesh {
-  /**
-   *
-   * @param {SkyboxOptions} options
-   */
-  constructor(options = new SkyboxOptions()) {
-    super()
+    this.sky = this.initSky()
+    scene.add(this.sky)
 
-    this.name = 'Skybox'
+    const el = degToRad(this.options.elevation)
+    const az = degToRad(this.options.azimuth)
+    const sunPosition = new THREE.Vector3(
+      20 * Math.cos(el) * Math.sin(az),
+      20 * Math.sin(el),
+      20 * Math.cos(el) * Math.cos(az),
+    )
 
-    // Create a box geometry and apply the skybox material
-    this.geometry = new THREE.SphereGeometry(900, 900, 900)
+    this.sunLight = new THREE.DirectionalLight()
+    this.sunLight.intensity = 4
+    this.sunLight.color = this.options.sunColor
+    this.sunLight.position.copy(sunPosition)
+    this.sunLight.castShadow = true
+    const cmmeraSize = 50
+    this.sunLight.shadow.camera.left = -cmmeraSize
+    this.sunLight.shadow.camera.right = cmmeraSize
+    this.sunLight.shadow.camera.top = cmmeraSize
+    this.sunLight.shadow.camera.bottom = -cmmeraSize
+    const t = 2048
+    this.sunLight.shadow.mapSize = new THREE.Vector2(t, t)
+    this.sunLight.shadow.bias = -0.001
+    this.sunLight.shadow.normalBias = 0.2
+    scene.add(this.sunLight)
 
-    // Create the skybox material with the shaders
-    this.material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        uSunAzimuth: { value: options.sunAzimuth },
-        uSunElevation: { value: options.sunElevation },
-        uSunColor: { value: options.sunColor },
-        uSkyColorLow: { value: options.skyColorLow },
-        uSkyColorHigh: { value: options.skyColorHigh },
-        uSunSize: { value: options.sunSize },
-      },
-      side: THREE.BackSide,
-    })
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    scene.add(ambientLight)
+  }
 
-    this.sun = new THREE.DirectionalLight()
-    this.sun.intensity = 5
-    this.sun.color = options.sunColor
-    this.sun.position.set(50, 100, 50)
-    this.sun.castShadow = true
-    this.sun.shadow.camera.left = -100
-    this.sun.shadow.camera.right = 100
-    this.sun.shadow.camera.top = 100
-    this.sun.shadow.camera.bottom = -100
-    this.sun.shadow.mapSize = new THREE.Vector2(512, 512)
-    this.sun.shadow.bias = -0.001
-    this.sun.shadow.normalBias = 0.2
-    this.add(this.sun)
+  initSky() {
+    const sky = new Sky()
+    sky.scale.setScalar(45000)
+    const phi = THREE.MathUtils.degToRad(90 - this.options.elevation)
+    const theta = THREE.MathUtils.degToRad(this.options.azimuth)
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4)
-    this.add(ambientLight)
+    const sun = new THREE.Vector3()
+
+    sun.setFromSphericalCoords(1, phi, theta)
+
+    sky.material.uniforms['sunPosition'].value.copy(sun)
+    sky.material.uniforms['turbidity'].value = this.options.turbidity
+    sky.material.uniforms['rayleigh'].value = this.options.rayleigh
+    sky.material.uniforms['mieCoefficient'].value = this.options.mieCoefficient
+    sky.material.uniforms['mieDirectionalG'].value = this.options.mieDirectionalG
+    return sky
+  }
+
+  onchange(options) {
+    this.options = options
+
+    const phi = THREE.MathUtils.degToRad(90 - this.options.elevation)
+    const theta = THREE.MathUtils.degToRad(this.options.azimuth)
+
+    const sun = new THREE.Vector3()
+    sun.setFromSphericalCoords(1, phi, theta)
+
+    this.sky.material.uniforms['sunPosition'].value.copy(sun)
+    this.sky.material.uniforms['turbidity'].value = this.options.turbidity
+    this.sky.material.uniforms['rayleigh'].value = this.options.rayleigh
+    this.sky.material.uniforms['mieCoefficient'].value = this.options.mieCoefficient
+    this.sky.material.uniforms['mieDirectionalG'].value = this.options.mieDirectionalG
 
     this.updateSunPosition()
   }
 
   updateSunPosition() {
-    const el = degToRad(this.sunElevation)
-    const az = degToRad(this.sunAzimuth)
+    const el = degToRad(this.options.elevation)
+    const az = degToRad(this.options.azimuth)
 
-    this.sun.position.set(
-      100 * Math.cos(el) * Math.sin(az),
-      100 * Math.sin(el),
-      100 * Math.cos(el) * Math.cos(az),
+    this.sunLight.position.set(
+      20 * Math.cos(el) * Math.sin(az),
+      20 * Math.sin(el),
+      20 * Math.cos(el) * Math.cos(az),
     )
-  }
-
-  /**
-   * @returns {number}
-   */
-  get sunAzimuth() {
-    return this.material.uniforms.uSunAzimuth.value
-  }
-
-  set sunAzimuth(azimuth) {
-    this.material.uniforms.uSunAzimuth.value = azimuth
-    this.updateSunPosition()
-  }
-
-  /**
-   * @returns {number}
-   */
-  get sunElevation() {
-    return this.material.uniforms.uSunElevation.value
-  }
-
-  set sunElevation(elevation) {
-    this.material.uniforms.uSunElevation.value = elevation
-    this.updateSunPosition()
-  }
-
-  /**
-   * @returns {THREE.Color}
-   */
-  get sunColor() {
-    return this.material.uniforms.uSunColor.value
-  }
-
-  set sunColor(color) {
-    this.material.uniforms.uSunColor.value = color
-    this.sun.color = color
-  }
-
-  /**
-   * @returns {THREE.Color}
-   */
-  get skyColorLow() {
-    return this.material.uniforms.uSkyColorLow.value
-  }
-
-  set skyColorLow(color) {
-    this.material.uniforms.uSkyColorLow.value = color
-  }
-
-  /**
-   * @returns {THREE.Color}
-   */
-  get skyColorHigh() {
-    return this.material.uniforms.uSkyColorHigh.value
-  }
-
-  set skyColorHigh(color) {
-    this.material.uniforms.uSkyColorHigh.value = color
-  }
-
-  /**
-   * @returns {number}
-   */
-  get sunSize() {
-    return this.material.uniforms.uSunSize.value
-  }
-
-  set sunSize(size) {
-    this.material.uniforms.uSunSize.value = size
   }
 }

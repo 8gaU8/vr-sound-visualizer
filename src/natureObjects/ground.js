@@ -22,7 +22,6 @@ async function fetchAssets() {
   _grassTexture.colorSpace = THREE.SRGBColorSpace
   _grassTexture.repeat.set(100, 100)
 
-
   _dirtTexture = await textureLoader.loadAsync('dirt_color.jpg')
   _dirtTexture.wrapS = THREE.RepeatWrapping
   _dirtTexture.wrapT = THREE.RepeatWrapping

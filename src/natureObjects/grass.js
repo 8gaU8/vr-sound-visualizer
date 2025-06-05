@@ -159,7 +159,7 @@ export class Grass extends THREE.Object3D {
   /**
    *
    * @param {THREE.Mesh} flowerMesh
-   * @param {FlowersOptions} flowerOptions
+   * @param {FlowerOptions} flowerOptions
    */
   generateFlowers(flowerMesh, flowerOptions) {
     for (let i = 0; i < flowerOptions.instanceCount; i++) {
