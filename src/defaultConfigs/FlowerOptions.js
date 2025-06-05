@@ -63,7 +63,7 @@ export class FlowerOptions extends BaseOptions {
 
       // Set scale randomly
       const scale = 0.02 + 0.03 * this.random()
-      this.scales.push(scale)
+      this.scales.push(scale * 0.1)
     }
   }
 }

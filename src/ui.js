@@ -157,11 +157,11 @@ export function setupUI(tree, environment, renderer, scene, camera, controls, in
   /** ENVIRONMENT */
 
   const environmentFolder = tab.pages[0].addFolder({ title: 'Environment', expanded: false })
-  environmentFolder.addBinding(environment.skybox, 'sunAzimuth', {
-    label: 'sunAngle',
-    min: 0,
-    max: 360,
-  })
+  // environmentFolder.addBinding(environment.skybox, 'sunAzimuth', {
+  //   label: 'sunAngle',
+  //   min: 0,
+  //   max: 360,
+  // })
   environmentFolder.addBinding(environment.grass, 'instanceCount', {
     label: 'grassCount',
     min: 0,
@@ -236,7 +236,7 @@ export function setupUI(tree, environment, renderer, scene, camera, controls, in
     scene.traverse((o) => {
       if (o.name === 'Skybox') {
         // Temporarily flip the skybox so it doesn't render
-        o.material.side = THREE.FrontSide
+        // o.material.side = THREE.FrontSide
       } else if (o.isMesh) {
         o.visible = false
       }
@@ -256,7 +256,7 @@ export function setupUI(tree, environment, renderer, scene, camera, controls, in
     scene.fog = fog
     scene.traverse((o) => {
       if (o.name === 'Skybox') {
-        o.material.side = THREE.BackSide
+        // o.material.side = THREE.BackSide
       }
       o.visible = true
     })

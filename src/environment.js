@@ -4,7 +4,6 @@ import { Clouds } from './natureObjects/clouds'
 import { Grass } from './natureObjects/grass'
 import { Ground } from './natureObjects/ground'
 import { Rocks } from './natureObjects/rocks'
-import { Skybox } from './natureObjects/skybox'
 
 /**
  * @extends THREE.Object3D
@@ -13,36 +12,23 @@ export class Environment extends THREE.Object3D {
   constructor() {
     super()
 
-    /**
-     * @type {Ground}
-     */
+    /** @type {Ground} */
     this.ground = new Ground()
     this.add(this.ground)
 
-    /**
-     * @type {Grass}
-     */
+    /** @type {Grass} */
     this.grass = new Grass()
     this.add(this.grass)
 
-    /**
-     * @type {Skybox}
-     */
-    this.skybox = new Skybox()
-    this.add(this.skybox)
-
-    /**
-     * @type {Rocks}
-     */
+    /** @type {Rocks} */
     this.rocks = new Rocks()
     this.add(this.rocks)
 
-    /**
-     * @type {Clouds}
-     */
-    this.clouds = new Clouds()
-    this.clouds.position.set(0, 200, 0)
-    this.clouds.rotation.x = Math.PI / 2
+    /** @type {Clouds} */
+    const clouds = new Clouds()
+    clouds.position.set(0, 200, 0)
+    clouds.rotation.x = Math.PI / 2
+    this.clouds = clouds
     this.add(this.clouds)
   }
 
