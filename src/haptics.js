@@ -4,6 +4,7 @@ export class HapticsManager {
   constructor() {
     this.gamepads = { left: null, right: null }
     this.analyzerMap = new Map()
+    this.enabled = true
   }
   updateGamepad(session) {
     if (session) {
@@ -32,7 +33,7 @@ export class HapticsManager {
   }
 
   update() {
-    if (!this.gamepads || (!this.gamepads.left && !this.gamepads.right)) return
+    if (!this.enabled &&!this.gamepads || (!this.gamepads.left && !this.gamepads.right)) return
 
     this.analyzerMap.forEach(({ analyzer, options }, audio) => {
       if (audio.isPlaying) {
@@ -105,4 +106,3 @@ export class HapticsManager {
   }
 }
 
-//TODO: haptics on/off button in gui
