@@ -21,8 +21,8 @@ export class Environment extends THREE.Object3D {
     this.grass = new Grass()
     this.add(this.grass)
 
-    this.skybox = new Skybox();
-    this.add(this.skybox);
+    this.skybox = new Skybox()
+    this.add(this.skybox)
 
     /** @type {Rocks} */
     this.rocks = new Rocks()

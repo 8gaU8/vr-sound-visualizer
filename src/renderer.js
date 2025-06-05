@@ -14,7 +14,8 @@ export function initRenderer(container) {
 
   // Configure renderer with WebGL2 support
   const renderer = new THREE.WebGLRenderer({
-    canvas: canvas, antialias: true
+    canvas: canvas,
+    antialias: true,
   })
   renderer.xr.enabled = true
   renderer.setClearColor(0)
