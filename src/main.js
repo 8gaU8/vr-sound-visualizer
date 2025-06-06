@@ -37,6 +37,7 @@ async function main() {
     if (renderer.xr.isPresenting) {
       birdsWatcher.update(t, renderer.xr.getCamera())
       birdsWatcher.updateHaptics(renderer)
+      controls.update()
     } else {
       controls.update()
       birdsWatcher.update(t, camera)
