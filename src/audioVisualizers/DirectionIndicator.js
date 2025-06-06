@@ -68,6 +68,7 @@ export class DirectionIndicator {
 
     const p = ringOptions.position
     indicator.position.set(p.x, p.y, p.z)
+
     return indicator
   }
 
@@ -95,8 +96,12 @@ export class DirectionIndicator {
    * @description Update the position of the indicator and the points
    */
   update() {
+
     this.points.forEach((point) => {
       point.update()
     })
+    this.indicator.lookAt(this.camera.position)
+
   }
+  
 }

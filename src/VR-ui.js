@@ -88,7 +88,8 @@ export function VRUI(scene, camera, renderer, directionalIndicator, hapticsManag
 
     // Create a simple HTML mesh for the UI
     const htmlMesh = new HTMLMesh(gui.domElement);
-    htmlMesh.position.set(-1, 1.5, -1);
+    htmlMesh.position.set(-1, 1, -1);
+    htmlMesh.rotation.y= Math.PI/4;
     interactiveGroup.add(htmlMesh);
     scene.add(interactiveGroup);
 

@@ -8,7 +8,7 @@ export const VisualizeOptions = {
       opacity: 0.8,
       position: {
         x: 0,
-        y: 0,
+        y:-0.5,
         z: -2,
       },
     },
@@ -17,7 +17,7 @@ export const VisualizeOptions = {
       opacity: 1.0,
       minSize: 0.0001,
       maxSize: 0.02,
-      z: 0.001,
+      z: 0.01,
     },
   },
   spectrogramModel: {

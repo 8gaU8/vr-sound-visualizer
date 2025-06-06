@@ -25,7 +25,7 @@ export async function createScene(renderer) {
 
   const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000)
   scene.add(camera)
-  camera.position.set(10, 1.7, 0)
+  camera.position.set(5, 1.7, 0)
 
   const controls = new OrbitControls(camera, renderer.domElement)
 
