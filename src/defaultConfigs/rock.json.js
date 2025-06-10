@@ -8,13 +8,13 @@ export const config = {
   patchness: 0.7,
   patchScale: 10,
   baseSize: {
-    x: 0.2,
-    y: 0.2,
-    z: 0.2,
+    x: 0.1,
+    y: 0.1,
+    z: 0.1,
   },
   sizeVariation: {
-    x: 0.3,
-    y: 0.3,
-    z: 0.3,
+    x: 0.1,
+    y: 0.1,
+    z: 0.1,
   },
 }
