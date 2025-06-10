@@ -1,5 +1,8 @@
 import Ajv from 'ajv'
 
+import { config as parrotTrellisConfig } from './birds/parrotTrellis.json.js'
+import { schema as birdSchema } from './birds/schemas/bird.schema.js'
+import { config as woodpeckerConfig } from './birds/woodpecker.json.js'
 import { config as blueFlowerConfig } from './natureObjects/blueFlower.json.js'
 import { config as grassConfig } from './natureObjects/grass.json.js'
 import { config as rockConfig } from './natureObjects/rock.json.js'
@@ -47,6 +50,7 @@ function validateConfig(config, schema) {
   if (config['seed'] !== undefined) {
     isUniqueSeed(config['id'], config['seed'])
   }
+  console.log('Configuration validated:', config.id)
 }
 
 /**
@@ -59,6 +63,8 @@ function validateAllConfigs() {
   validateConfig(whiteFlowerConfig, natureObjectSchema)
   validateConfig(yellowFlowerConfig, natureObjectSchema)
   validateConfig(windConfig, windSchema)
+  validateConfig(parrotTrellisConfig, birdSchema)
+  validateConfig(woodpeckerConfig, birdSchema)
 }
 
 // run validation on all configs
@@ -73,3 +79,6 @@ export const defaultConfigs = {
   wind: windConfig,
   yellowFlower: yellowFlowerConfig,
 }
+
+// Export only the bird configurations
+export const birdConfigs = [parrotTrellisConfig, woodpeckerConfig]

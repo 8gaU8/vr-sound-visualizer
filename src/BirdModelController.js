@@ -5,21 +5,21 @@ import { loaders } from './loaders'
 
 /**
  * @typedef {import('three').Mesh} Mesh
- * @typedef {import('./defaultConfigs/BirdModelParam.js').BirdModelParam} BirdModelParam
+ * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
  */
 
 export class BirdModelController {
   /** @type {Mesh} - The 3D mesh of the bird model */
   mesh
 
-  /** @type {BirdModelParam} - The parameters for the bird model including paths, position, scale, and motion */
-  param
+  /** @type {BirdConfig} */
+  config
 
   /**
-   * @param {BirdModelParam} birdModelParam - The parameters for the bird model including paths, position, scale, and motion.
+   * @param {BirdConfig} config - The parameters for the bird model including paths, position, scale, and motion.
    */
-  constructor(birdModelParam) {
-    this.param = birdModelParam
+  constructor(config) {
+    this.config = config
 
     this.curvePoints = BirdModelController.#generateMotion()
   }
@@ -28,15 +28,15 @@ export class BirdModelController {
    * @description Loads the bird model from the specified path
    */
   async load() {
-    const gltf = await this.#loadModel(this.param.modelPath)
+    const gltf = await this.#loadModel(this.config.modelPath)
 
     /** @type {Mesh} gltf.scene */
     const model = gltf.scene
     model.visible = true // Ensure visibility is on
     model.castShadow = true
     model.receiveShadow = true
-    model.scale.copy(this.param.scale)
-    model.name = `${this.param.name}Model`
+    model.scale.copy(this.config.scale)
+    model.name = `${this.config.name}Model`
     this.mesh = model
   }
 
@@ -63,8 +63,8 @@ export class BirdModelController {
    * @returns {Vector3} - Returns the position of the bird model at the specified time.
    */
   getPosition(time) {
-    if (!this.param.motion) {
-      return new Vector3(this.param.position.x, this.param.position.y, this.param.position.z)
+    if (!this.config.motion) {
+      return new Vector3(this.config.position.x, this.config.position.y, this.config.position.z)
     }
     const t = time * 0.05 // Convert time to seconds
     const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
@@ -78,7 +78,7 @@ export class BirdModelController {
    * @returns {Quaternion} - Returns the quaternion representing the rotation of the bird model at the specified time.
    */
   getQuaternion(time) {
-    if (!this.param.motion) {
+    if (!this.config.motion) {
       return new Quaternion().setFromEuler(new Euler(0, 0, 0)) // No motion, no rotation
     }
     const t = time * 0.05 // Convert time to seconds

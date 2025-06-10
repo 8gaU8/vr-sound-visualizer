@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @typedef {import('./defaultConfigs/BirdModelParam.js').BirdModelParam} BirdModelParam
+ * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
  * @typedef {import('three').AudioListener} AudioListener
  */
 
@@ -16,22 +16,22 @@ export class AudioController {
   /** @type {PositionalAudio} - */
   audio
 
-  /** @type {BirdModelParam} - The parameters for the bird model including paths, position, scale, and motion */
-  param
+  /** @type {BirdConfig} - The parameters for the bird model including paths, position, scale, and motion */
+  config
 
   /**
    * @description manage audio
-   * @param {BirdModelParam} birdModelParam - The parameters for the bird model including paths, position, scale, and motion.
+   * @param {BirdConfig} config - The parameters for the bird model including paths, position, scale, and motion.
    * @param {AudioListener} audioListener - The audio listener for the scene.
    */
-  constructor(birdModelParam, audioListener) {
-    this.param = birdModelParam
+  constructor(config, audioListener) {
+    this.config = config
     this.audioListener = audioListener
   }
 
   async load() {
-    const audio = await AudioController.#loadAudio(this.param.audioPath, this.audioListener)
-    audio.name = `${this.param.name}Audio`
+    const audio = await AudioController.#loadAudio(this.config.audioPath, this.audioListener)
+    audio.name = `${this.config.name}Audio`
     this.audio = audio
     this.play()
   }

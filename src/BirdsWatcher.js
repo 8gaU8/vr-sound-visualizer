@@ -2,7 +2,7 @@
 
 /**
  * @typedef {import('./AudioController.js').AudioController} AudioController
- * @typedef {import('./defaultConfigs/BirdModelParam.js').BirdModelParam} BirdModelParam
+ * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
  * @typedef {import('three').AudioListener} AudioListener
  * @typedef {import('three').Camera} Camera
  * @typedef {import('three').Scene} Scene
@@ -32,10 +32,10 @@ export class BirdsWatcher {
 
   /**
    * @description Adds a new bird model controller with audio and visual components.
-   * @param {BirdModelParam} birdModelParam - The parameters for the bird model including paths, position, scale, and motion.
+   * @param {BirdConfig} birdConfig - The parameters for the bird model including paths, position, scale, and motion.
    */
-  async addBird(birdModelParam) {
-    const birdAVController = new BirdAVController(birdModelParam, this.audioListener)
+  async addBird(birdConfig) {
+    const birdAVController = new BirdAVController(birdConfig, this.audioListener)
     await birdAVController.load()
     this.birds.push(birdAVController)
 

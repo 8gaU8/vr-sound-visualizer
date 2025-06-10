@@ -56,7 +56,7 @@ export class SpectrogramModelController {
       },
     }
     this.mesh = this.#generateSpectrogramMesh()
-    this.mesh.name = `${audioController.param.name}SpectrogramMesh`
+    this.mesh.name = `${audioController.config.name}SpectrogramMesh`
   }
 
   /**

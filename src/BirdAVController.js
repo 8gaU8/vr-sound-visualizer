@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @typedef {import('./defaultConfigs/BirdModelParam.js').BirdModelParam} BirdModelParam
+ * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
  * @typedef {import('three').AudioListener} AudioListener
  * @typedef {import('three').Camera} Camera
  */
@@ -36,16 +36,19 @@ export class BirdAVController {
   /** @type {AudioListener} */
   audioListener
 
+  /** @type {BirdConfig} */
+  config
+
   /**
-   * @param {BirdModelParam} birdModelParam - The parameters for the bird model including paths, position, scale, and motion.
+   * @param {BirdConfig} config - The parameters for the bird model including paths, position, scale, and motion.
    * @param {AudioListener} audioListener - The audio listener for the scene.
    */
-  constructor(birdModelParam, audioListener) {
-    this.param = birdModelParam
+  constructor(config, audioListener) {
+    this.config = config
     this.audioListener = audioListener
     // this.camera = camera
-    this.birdModelController = new BirdModelController(this.param)
-    this.audioController = new AudioController(this.param, this.audioListener)
+    this.birdModelController = new BirdModelController(this.config)
+    this.audioController = new AudioController(this.config, this.audioListener)
   }
 
   /**
@@ -58,13 +61,13 @@ export class BirdAVController {
     // this.spectrogramModelController = new SpectrogramModelController(this.audioController)
 
     this.meshGroup = new Group()
-    this.meshGroup.name = `${this.param.name}Controller`
+    this.meshGroup.name = `${this.config.name}Controller`
 
     this.meshGroup.add(this.birdModelController.mesh)
     this.meshGroup.add(this.spectrogramModelController.mesh)
     this.meshGroup.add(this.audioController.audio)
 
-    this.meshGroup.position.copy(this.param.position)
+    this.meshGroup.position.copy(this.config.position)
   }
 
   /**
@@ -76,7 +79,7 @@ export class BirdAVController {
     // update model position
     const position = this.birdModelController.getPosition(time)
     // add initial position offset
-    position.add(this.param.position)
+    position.add(this.config.position)
     this.meshGroup.position.copy(position)
 
     // update model rotation
