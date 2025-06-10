@@ -72,6 +72,7 @@ export class Grass extends THREE.Object3D {
           if (o.material.map) {
             o.material = new THREE.MeshPhongMaterial({ map: o.material.map })
           }
+          o = createSimplifiedMesh(o)
           this.appendWindShader(o.material)
         }
       })
@@ -101,8 +102,6 @@ export class Grass extends THREE.Object3D {
       side: THREE.DoubleSide,
     })
 
-    this.appendWindShader(grassMaterial, true)
-
     // Decrease grass brightness
     grassMaterial.color.multiplyScalar(0.6)
 
@@ -112,6 +111,8 @@ export class Grass extends THREE.Object3D {
       this.grassOptions.maxInstanceCount,
     )
     this.grassMesh = createSimplifiedMesh(this.grassMesh)
+
+    this.appendWindShader(this.grassMesh.material, true)
 
     this.generateGrassInstances()
 
@@ -159,7 +160,7 @@ export class Grass extends THREE.Object3D {
   /**
    *
    * @param {THREE.Mesh} flowerMesh
-   * @param {FlowersOptions} flowerOptions
+   * @param {FlowerOptions} flowerOptions
    */
   generateFlowers(flowerMesh, flowerOptions) {
     for (let i = 0; i < flowerOptions.instanceCount; i++) {

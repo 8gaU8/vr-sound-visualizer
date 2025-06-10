@@ -2,6 +2,7 @@
 
 /**
  * @typedef {import('../AudioController.js').AudioController} AudioController
+ * @typedef {import('../BirdModelController.js').BirdModelController} BirdModelController
  */
 
 import * as THREE from 'three'
@@ -41,7 +42,6 @@ export class SpectrogramModelController {
    * @param {AudioController} audioController
    */
   constructor(audioController) {
-    // this.camera = camera
     this.fftSize = 64
 
     this.analyser = new THREE.AudioAnalyser(audioController.audio, spectrogramOpt.fftSize)
@@ -137,5 +137,15 @@ export class SpectrogramModelController {
    */
   addToScene(scene) {
     scene.add(this.mesh)
+  }
+
+  /**
+   * @description スペクトログラム平面をカメラの方向に向ける
+   * @param {THREE.Camera} camera
+   */
+  faceToCamera(camera) {
+    if (this.mesh && camera) {
+      this.mesh.lookAt(camera.position)
+    }
   }
 }
