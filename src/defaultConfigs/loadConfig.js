@@ -1,13 +1,13 @@
 import Ajv from 'ajv'
 
-import { config as blueFlowerConfig } from './blueFlower.json.js'
-import { config as grassConfig } from './grass.json.js'
-import { config as rockConfig } from './rock.json.js'
-import { schema as natureObjectSchema } from './schemas/natureObject.schema.js'
-import { schema as windSchema } from './schemas/wind.schema.js'
-import { config as whiteFlowerConfig } from './whiteFlower.json.js'
-import { config as windConfig } from './wind.json.js'
-import { config as yellowFlowerConfig } from './yellowFlower.json.js'
+import { config as blueFlowerConfig } from './natureObjects/blueFlower.json.js'
+import { config as grassConfig } from './natureObjects/grass.json.js'
+import { config as rockConfig } from './natureObjects/rock.json.js'
+import { schema as natureObjectSchema } from './natureObjects/schemas/natureObject.schema.js'
+import { schema as windSchema } from './natureObjects/schemas/wind.schema.js'
+import { config as whiteFlowerConfig } from './natureObjects/whiteFlower.json.js'
+import { config as windConfig } from './natureObjects/wind.json.js'
+import { config as yellowFlowerConfig } from './natureObjects/yellowFlower.json.js'
 
 // Store for unique seeds
 /** @type {Record<string, number>} */
