@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "baseSize": {
+      "$ref": "./vector3.schema.json"
+    },
+    "sizeVariation": {
+      "$ref": "./vector3.schema.json"
+    }
+  },
+  "required": ["baseSize", "sizeVariation"]
+}

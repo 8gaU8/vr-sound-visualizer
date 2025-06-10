@@ -1,0 +1,22 @@
+{
+  "$comment": "This schema defines a 3D vector",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "./schemas/wind.schema.json"
+    },
+    "strength": {
+      "ref": "./vector3.schema.json"
+    },
+    "frequency": {
+      "type": "number",
+      "minimum": 0
+    },
+    "scale": {
+      "type": "number",
+      "minimum": 0
+    }
+  },
+  "additionalProperties": false
+}

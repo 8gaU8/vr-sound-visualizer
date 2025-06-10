@@ -1,0 +1,51 @@
+{
+  "type": "object",
+  "$comment": "This schema defines the options for flower configurations, including model type, instance count, radii, patchness, patch scale, base size, and size variation.",
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "const": "./schemas/grass.schema.json"
+    },
+    "model": {
+      "type": "string"
+    },
+    "instanceCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "maxInstanceCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "innerRadius": {
+      "type": "number",
+      "minimum": 0
+    },
+    "maxRadius": {
+      "type": "number",
+      "minimum": 0
+    },
+    "patchness": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "patchScale": {
+      "type": "number",
+      "minimum": 0
+    },
+    "baseSize": {
+      "$ref": "./vector3.schema.json"
+    },
+    "sizeVariation": {
+      "$ref": "./vector3.schema.json"
+    }
+  },
+  "required": ["$schema", "seed", "baseSize", "instanceCount", "sizeVariation"],
+  "optional": ["model", "patchness", "patchScale", "maxInstanceCount", "innerRadius", "maxRadius"],
+  "additionalProperties": false
+}
