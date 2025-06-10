@@ -92,4 +92,15 @@ export class BirdsWatcher {
       scene.add(controller.meshGroup)
     })
   }
+
+  /**
+   * @description Enables or disables Spectrogram visualization for all birds.
+   * @param {boolean} enabled - Whether to enable or disable the Spectrogram.
+   */
+  setSpectrogramEnabled(enabled) {
+    console.log('Setting spectrogram enabled:', enabled)
+    this.birds.forEach((birdAVController) => {
+      birdAVController.setSpectrogramEnabled(enabled)
+    })
+  }
 }
