@@ -2,7 +2,8 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 
-import { RockOptions } from '../defaultConfigs/RockOptions'
+import { defaultConfigs } from '../defaultConfigs/loadConfig'
+import { RNG } from '../noise'
 import { createSimplifiedMesh } from '../utils'
 
 let loaded = false
@@ -34,13 +35,8 @@ async function fetchAssets() {
 }
 
 export class Rocks extends THREE.Group {
-  constructor(options = new RockOptions()) {
+  constructor() {
     super()
-
-    /**
-     * @type {RockOptions}
-     */
-    this.options = options
 
     fetchAssets().then(() => {
       this.add(this.generateInstances(_rock1Mesh))
@@ -53,22 +49,27 @@ export class Rocks extends THREE.Group {
     const instancedMesh = new THREE.InstancedMesh(mesh.geometry, mesh.material, 200)
 
     const dummy = new THREE.Object3D()
+    const rng = new RNG(defaultConfigs.rock.seed)
 
     let count = 0
-    for (let i = 0; i < this.options.instanceCount; i++) {
+    for (let i = 0; i < defaultConfigs.rock.instanceCount; i++) {
       // Set position randomly
-      const p = this.options.positions[i]
+      const p = new THREE.Vector3(2 * (rng.random() - 0.5) * 10, 0.0, 2 * (rng.random() - 0.5) * 10)
 
-      dummy.position.set(p[0], p[1], p[2])
+      dummy.position.copy(p)
 
       // Set rotation randomly
-      const r = this.options.rotations[i]
+      const r = 2 * Math.PI * rng.random()
 
-      dummy.rotation.set(r[0], r[1], r[2])
+      dummy.rotation.y = r
 
       // Set scale randomly
-      const s = this.options.scales[i]
-      dummy.scale.set(s[0], s[1], s[2])
+      const scale = new THREE.Vector3(
+        defaultConfigs.rock.sizeVariation.x * rng.random() + defaultConfigs.rock.baseSize.x,
+        defaultConfigs.rock.sizeVariation.y * rng.random() + defaultConfigs.rock.baseSize.y,
+        defaultConfigs.rock.sizeVariation.z * rng.random() + defaultConfigs.rock.baseSize.z,
+      )
+      dummy.scale.copy(scale)
 
       // Apply the transformation to the instance
       dummy.updateMatrix()
