@@ -1,5 +1,6 @@
 {
-  "$schema": "./schemas/grass.schema.json",
+  "$schema": "./schemas/natureObject.schema.json",
+  "id": "whiteFlower",
   "model": "whiteFlower.glb",
   "seed": 2,
   "instanceCount": 50,
