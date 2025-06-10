@@ -2,6 +2,7 @@
 import { CatmullRomCurve3, Euler, Quaternion, Vector3 } from 'three'
 
 import { loaders } from './loaders'
+import { RNG } from './noise.js'
 
 /**
  * @typedef {import('three').Mesh} Mesh
@@ -21,7 +22,7 @@ export class BirdModelController {
   constructor(config) {
     this.config = config
 
-    this.curvePoints = BirdModelController.#generateMotion()
+    this.curvePoints = this.#generateMotion()
   }
 
   /**
@@ -94,12 +95,14 @@ export class BirdModelController {
     return quaternion.clone()
   }
 
-  static #generateMotion() {
+  #generateMotion() {
+    const rng = new RNG(this.config.seed) // Seed for consistent random generation
+
     const randomPoints = []
     for (let i = 0; i < 20; i++) {
-      const randomX = Math.random() * 5 + 1
-      const randomY = Math.random() * 5 + 1
-      const randomZ = Math.random() * 5 + 1
+      const randomX = rng.random() * 5
+      const randomY = rng.random() * 3
+      const randomZ = rng.random() * 5
       randomPoints.push(new Vector3(randomX, randomY, randomZ))
     }
     const curve = new CatmullRomCurve3(randomPoints, true, 'catmullrom', 0.5)

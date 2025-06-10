@@ -11,6 +11,11 @@ export const schema = {
       type: 'string',
       description: 'Unique identifier for the bird object configuration.',
     },
+    seed: {
+      type: 'integer',
+      description:
+        'Seed for random generation, used to ensure consistent behavior across sessions.',
+    },
     name: {
       type: 'string',
       description: 'Name of the bird model, used for identification.',
