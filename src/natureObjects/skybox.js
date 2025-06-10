@@ -1,29 +1,25 @@
 //@ts-check
+
+/**
+ * @typedef {typeof import('../defaultConfigs/natureObjects/sky.json.js').config} SkyConfig
+ */
+
 import * as THREE from 'three'
 import { Sky } from 'three/examples/jsm/objects/Sky.js'
 import { degToRad } from 'three/src/math/MathUtils.js'
 
-const _options = {
-  turbidity: 10,
-  rayleigh: 3,
-  mieCoefficient: 0.008,
-  mieDirectionalG: 0.9,
-  elevation: 45,
-  azimuth: 180,
-  sunColor: new THREE.Color(0xffe5b0).convertLinearToSRGB(),
-}
+import { defaultConfigs } from '../defaultConfigs/loadConfig'
 
 export class Skybox extends THREE.Mesh {
-  constructor(options = _options) {
+  constructor() {
     super()
 
     this.name = 'Skybox'
-    this.options = options
     this.sky = this.initSky()
     this.add(this.sky)
 
-    const el = degToRad(this.options.elevation)
-    const az = degToRad(this.options.azimuth)
+    const el = degToRad(defaultConfigs.sky.elevation)
+    const az = degToRad(defaultConfigs.sky.azimuth)
     const sunPosition = new THREE.Vector3(
       20 * Math.cos(el) * Math.sin(az),
       20 * Math.sin(el),
@@ -31,8 +27,11 @@ export class Skybox extends THREE.Mesh {
     )
 
     this.sunLight = new THREE.DirectionalLight()
-    this.sunLight.intensity = 4
-    this.sunLight.color = this.options.sunColor
+    this.sunLight.intensity = defaultConfigs.sky.intensity
+
+    // normalize color values to [0, 1] range
+    const color = defaultConfigs.sky.sunColor
+    this.sunLight.color.setRGB(color.r / 255, color.g / 255, color.b / 255)
     this.sunLight.position.copy(sunPosition)
     this.sunLight.castShadow = true
     const cmmeraSize = 25
@@ -46,49 +45,59 @@ export class Skybox extends THREE.Mesh {
     this.sunLight.shadow.normalBias = 0.02
     this.add(this.sunLight)
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+    const ambientColorValue = defaultConfigs.sky.ambientColor
+    const ambientColor = new THREE.Color(
+      ambientColorValue.r / 255,
+      ambientColorValue.g / 255,
+      ambientColorValue.b / 255,
+    )
+
+    const ambientLight = new THREE.AmbientLight(ambientColor, defaultConfigs.sky.ambientIntensity)
     this.add(ambientLight)
   }
 
   initSky() {
     const sky = new Sky()
     sky.scale.setScalar(45000)
-    const phi = THREE.MathUtils.degToRad(90 - this.options.elevation)
-    const theta = THREE.MathUtils.degToRad(this.options.azimuth)
+    const phi = THREE.MathUtils.degToRad(90 - defaultConfigs.sky.elevation)
+    const theta = THREE.MathUtils.degToRad(defaultConfigs.sky.azimuth)
 
     const sun = new THREE.Vector3()
 
     sun.setFromSphericalCoords(1, phi, theta)
 
     sky.material.uniforms['sunPosition'].value.copy(sun)
-    sky.material.uniforms['turbidity'].value = this.options.turbidity
-    sky.material.uniforms['rayleigh'].value = this.options.rayleigh
-    sky.material.uniforms['mieCoefficient'].value = this.options.mieCoefficient
-    sky.material.uniforms['mieDirectionalG'].value = this.options.mieDirectionalG
+    sky.material.uniforms['turbidity'].value = defaultConfigs.sky.turbidity
+    sky.material.uniforms['rayleigh'].value = defaultConfigs.sky.rayleigh
+    sky.material.uniforms['mieCoefficient'].value = defaultConfigs.sky.mieCoefficient
+    sky.material.uniforms['mieDirectionalG'].value = defaultConfigs.sky.mieDirectionalG
     return sky
   }
 
-  onchange(options) {
-    this.options = options
+  // /**
+  //  * @param {SkyConfig} options
+  //  */
+  // onchange(options) {
+  //   defaultConfigs.sky = options
 
-    const phi = THREE.MathUtils.degToRad(90 - this.options.elevation)
-    const theta = THREE.MathUtils.degToRad(this.options.azimuth)
+  //   const phi = THREE.MathUtils.degToRad(90 - defaultConfigs.sky.elevation)
+  //   const theta = THREE.MathUtils.degToRad(defaultConfigs.sky.azimuth)
 
-    const sun = new THREE.Vector3()
-    sun.setFromSphericalCoords(1, phi, theta)
+  //   const sun = new THREE.Vector3()
+  //   sun.setFromSphericalCoords(1, phi, theta)
 
-    this.sky.material.uniforms['sunPosition'].value.copy(sun)
-    this.sky.material.uniforms['turbidity'].value = this.options.turbidity
-    this.sky.material.uniforms['rayleigh'].value = this.options.rayleigh
-    this.sky.material.uniforms['mieCoefficient'].value = this.options.mieCoefficient
-    this.sky.material.uniforms['mieDirectionalG'].value = this.options.mieDirectionalG
+  //   this.sky.material.uniforms['sunPosition'].value.copy(sun)
+  //   this.sky.material.uniforms['turbidity'].value = defaultConfigs.sky.turbidity
+  //   this.sky.material.uniforms['rayleigh'].value = defaultConfigs.sky.rayleigh
+  //   this.sky.material.uniforms['mieCoefficient'].value = defaultConfigs.sky.mieCoefficient
+  //   this.sky.material.uniforms['mieDirectionalG'].value = defaultConfigs.sky.mieDirectionalG
 
-    this.updateSunPosition()
-  }
+  //   this.updateSunPosition()
+  // }
 
   updateSunPosition() {
-    const el = degToRad(this.options.elevation)
-    const az = degToRad(this.options.azimuth)
+    const el = degToRad(defaultConfigs.sky.elevation)
+    const az = degToRad(defaultConfigs.sky.azimuth)
 
     this.sunLight.position.set(
       20 * Math.cos(el) * Math.sin(az),
