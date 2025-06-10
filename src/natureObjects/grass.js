@@ -165,7 +165,7 @@ export class Grass extends THREE.Object3D {
     }
 
     // Set count to only show up to `instanceCount` instances
-    this.grassMesh.count = defaultConfigs.grass.instanceCount
+    this.instanceCount = defaultConfigs.grass.instanceCount
 
     this.grassMesh.receiveShadow = true
     this.grassMesh.castShadow = true
@@ -185,7 +185,7 @@ export class Grass extends THREE.Object3D {
     for (let i = 0; i < flowerOptions.instanceCount; i++) {
       const flower = flowerMesh.clone()
 
-      const r = rng.random() * 15 + 5
+      const r = rng.random() * defaultConfigs.grass.maxRadius + defaultConfigs.grass.innerRadius
       const theta = rng.random() * 2.0 * Math.PI
 
       const p = new THREE.Vector3(r * Math.cos(theta), 0, r * Math.sin(theta))
