@@ -54,7 +54,11 @@ export class Rocks extends THREE.Group {
     let count = 0
     for (let i = 0; i < defaultConfigs.rock.instanceCount; i++) {
       // Set position randomly
-      const p = new THREE.Vector3(2 * (rng.random() - 0.5) * 10, 0.0, 2 * (rng.random() - 0.5) * 10)
+      const p = new THREE.Vector3(
+        (rng.random() - 0.5) * defaultConfigs.rock.maxRadius,
+        0.0,
+        (rng.random() - 0.5) * defaultConfigs.rock.maxRadius,
+      )
 
       dummy.position.copy(p)
 
