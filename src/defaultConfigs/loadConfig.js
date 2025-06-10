@@ -7,7 +7,9 @@ import { config as blueFlowerConfig } from './natureObjects/blueFlower.json.js'
 import { config as grassConfig } from './natureObjects/grass.json.js'
 import { config as rockConfig } from './natureObjects/rock.json.js'
 import { schema as natureObjectSchema } from './natureObjects/schemas/natureObject.schema.js'
+import { schema as skySchema } from './natureObjects/schemas/sky.schema.js'
 import { schema as windSchema } from './natureObjects/schemas/wind.schema.js'
+import { config as skyConfig } from './natureObjects/sky.json.js'
 import { config as whiteFlowerConfig } from './natureObjects/whiteFlower.json.js'
 import { config as windConfig } from './natureObjects/wind.json.js'
 import { config as yellowFlowerConfig } from './natureObjects/yellowFlower.json.js'
@@ -65,6 +67,7 @@ function validateAllConfigs() {
   validateConfig(windConfig, windSchema)
   validateConfig(parrotTrellisConfig, birdSchema)
   validateConfig(woodpeckerConfig, birdSchema)
+  validateConfig(skyConfig, skySchema)
 }
 
 // run validation on all configs
@@ -78,6 +81,7 @@ export const defaultConfigs = {
   whiteFlower: whiteFlowerConfig,
   wind: windConfig,
   yellowFlower: yellowFlowerConfig,
+  sky: skyConfig,
 }
 
 // Export only the bird configurations
