@@ -1,7 +1,7 @@
 // @ts-check
 import * as THREE from 'three'
 
-import { GrassOptions } from '../defaultConfigs/GrassOptions.js'
+import { defaultConfigs } from '../defaultConfigs/loadConfig.js'
 
 let loaded = false
 let _grassTexture = null
@@ -35,13 +35,8 @@ async function fetchAssets() {
 }
 
 export class Ground extends THREE.Mesh {
-  constructor(options = new GrassOptions()) {
+  constructor() {
     super()
-
-    /**
-     * @type {GrassOptions}
-     */
-    this.options = options
 
     fetchAssets().then(() => {
       // Ground plane with procedural grass/dirt texture
@@ -53,8 +48,8 @@ export class Ground extends THREE.Mesh {
       })
 
       this.material.onBeforeCompile = (shader) => {
-        shader.uniforms.uNoiseScale = { value: this.options.scale }
-        shader.uniforms.uPatchiness = { value: this.options.patchiness }
+        shader.uniforms.uNoiseScale = { value: defaultConfigs.grass.scale }
+        shader.uniforms.uPatchiness = { value: defaultConfigs.grass.patchiness }
         shader.uniforms.uGrassTexture = { value: _grassTexture }
         shader.uniforms.uDirtTexture = { value: _dirtTexture }
 
