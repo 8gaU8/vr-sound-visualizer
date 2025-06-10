@@ -1,11 +1,9 @@
-/**
- * @typedef {import('../defaultConfigs/FlowerOptions.js').FlowerOptions} FlowerOptions
- */
+// @ts-check
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
-import { AllFlowersOptions } from '../defaultConfigs/FlowerOptions'
-import { GrassOptions } from '../defaultConfigs/GrassOptions'
+import { defaultConfigs } from '../defaultConfigs/loadConfig.js'
+import { RNG, simplex2d } from '../noise.js'
 import { createSimplifiedMesh } from '../utils'
 
 let loaded = false
@@ -15,32 +13,26 @@ let _whiteFlower = null
 let _yellowFlower = null
 
 export class Grass extends THREE.Object3D {
-  constructor(grassOptions = new GrassOptions(), flowerOptions = new AllFlowersOptions()) {
+  constructor() {
     super()
-
-    /**
-     * @type {GrassOptions}
-     */
-    this.grassOptions = grassOptions
-
-    /**
-     * @type {AllFlowersOptions}
-     */
-    this.flowerOptions = flowerOptions
 
     this.flowers = new THREE.Group()
     this.add(this.flowers)
 
-    this.fetchAssets().then(() => {
-      this.generateGrass()
-      this.generateFlowers(_whiteFlower, this.flowerOptions.white)
-      this.generateFlowers(_blueFlower, this.flowerOptions.blue)
-      this.generateFlowers(_yellowFlower, this.flowerOptions.yellow)
-    })
+    this.fetchAssets()
+      .then(() => {
+        this.generateGrass()
+        this.generateFlowers(_whiteFlower, defaultConfigs.whiteFlower)
+        this.generateFlowers(_blueFlower, defaultConfigs.blueFlower)
+        this.generateFlowers(_yellowFlower, defaultConfigs.yellowFlower)
+      })
+      .catch((error) => {
+        console.error('Error fetching grass assets:', error)
+      })
   }
 
   get instanceCount() {
-    return this.grassMesh?.count ?? this.grassOptions.instanceCount
+    return this.grassMesh?.count ?? defaultConfigs.grass.instanceCount
   }
 
   set instanceCount(value) {
@@ -50,29 +42,31 @@ export class Grass extends THREE.Object3D {
 
   /**
    *
-   * @returns {Promise<THREE.Geometry>}
+   * @returns {Promise<void>}
    */
   async fetchAssets() {
     if (loaded) return
 
     const gltfLoader = new GLTFLoader()
-
-    _grassMesh = (await gltfLoader.loadAsync('grass.glb')).scene.children[0]
-    _whiteFlower = (await gltfLoader.loadAsync(this.flowerOptions.white.modelPath)).scene
-      .children[0]
-    _blueFlower = (await gltfLoader.loadAsync(this.flowerOptions.blue.modelPath)).scene.children[0]
-    _yellowFlower = (await gltfLoader.loadAsync(this.flowerOptions.yellow.modelPath)).scene
+    _grassMesh = (await gltfLoader.loadAsync(defaultConfigs.grass.model)).scene.children[0]
+    _whiteFlower = (await gltfLoader.loadAsync(defaultConfigs.whiteFlower.model)).scene.children[0]
+    _blueFlower = (await gltfLoader.loadAsync(defaultConfigs.blueFlower.model)).scene.children[0]
+    _yellowFlower = (await gltfLoader.loadAsync(defaultConfigs.yellowFlower.model)).scene
       .children[0]
 
     // The flower is composed of multiple meshes with different materials. Append the
     // wind shader code to each material
     ;[_whiteFlower, _blueFlower, _yellowFlower].forEach((mesh) => {
       mesh.traverse((o) => {
+        // @ts-ignore
         if (o.isMesh && o.material) {
+          // @ts-ignore
           if (o.material.map) {
+            // @ts-ignore
             o.material = new THREE.MeshPhongMaterial({ map: o.material.map })
           }
           o = createSimplifiedMesh(o)
+          // @ts-ignore
           this.appendWindShader(o.material)
         }
       })
@@ -83,7 +77,9 @@ export class Grass extends THREE.Object3D {
 
   update(elapsedTime) {
     this.traverse((o) => {
+      // @ts-ignore
       if (o.isMesh && o.material?.userData.shader) {
+        // @ts-ignore
         o.material.userData.shader.uniforms.uTime.value = elapsedTime
       }
     })
@@ -108,7 +104,7 @@ export class Grass extends THREE.Object3D {
     this.grassMesh = new THREE.InstancedMesh(
       _grassMesh.geometry,
       grassMaterial,
-      this.grassOptions.maxInstanceCount,
+      defaultConfigs.grass.maxInstanceCount,
     )
     this.grassMesh = createSimplifiedMesh(this.grassMesh)
 
@@ -121,25 +117,47 @@ export class Grass extends THREE.Object3D {
 
   generateGrassInstances() {
     const dummy = new THREE.Object3D()
+    const rng = new RNG(defaultConfigs.grass.seed)
 
     let count = 0
-    for (let i = 0; i < this.grassOptions.maxInstanceCount; i++) {
-      const p = this.grassOptions.positions[i]
-      dummy.position.set(p[0], p[1], p[2])
+    for (let i = 0; i < defaultConfigs.grass.maxInstanceCount; i++) {
+      const radius = 0.1 + rng.random() * 20
+      const theta = rng.random() * 2.0 * Math.PI
+
+      // Set position randomly
+      const position = new Array(radius * Math.cos(theta), 0, radius * Math.sin(theta))
+
+      const n =
+        0.5 +
+        0.5 *
+          simplex2d(
+            new THREE.Vector2(
+              position[0] / defaultConfigs.grass.scale,
+              position[2] / defaultConfigs.grass.scale,
+            ),
+          )
+      if (n > defaultConfigs.grass.patchiness) {
+        continue
+      }
+
+      dummy.position.set(position[0], position[1], position[2])
 
       // Set rotation randomly
-      const r = this.grassOptions.rotations[i]
+      const r = 2 * Math.PI * rng.random()
       dummy.rotation.set(0, r, 0)
 
       // Set scale randomly
-      const s = this.grassOptions.scales[i]
-      dummy.scale.set(s[0], s[1], s[2])
+      const s = new THREE.Vector3(
+        defaultConfigs.grass.sizeVariation.x * rng.random() + defaultConfigs.grass.baseSize.x,
+        defaultConfigs.grass.sizeVariation.y * rng.random() + defaultConfigs.grass.baseSize.y,
+        defaultConfigs.grass.sizeVariation.z * rng.random() + defaultConfigs.grass.baseSize.z,
+      )
+      dummy.scale.copy(s)
 
       // Apply the transformation to the instance
       dummy.updateMatrix()
 
-      const c = this.grassOptions.colors[i]
-      const color = new THREE.Color(c[0], c[1], c[2])
+      const color = new THREE.Color(0.25 + rng.random() * 0.1, 0.3 + rng.random() * 0.3, 0.1)
 
       this.grassMesh.setMatrixAt(count, dummy.matrix)
       this.grassMesh.setColorAt(count, color)
@@ -147,7 +165,7 @@ export class Grass extends THREE.Object3D {
     }
 
     // Set count to only show up to `instanceCount` instances
-    this.grassMesh.count = this.grassOptions.instanceCount
+    this.grassMesh.count = defaultConfigs.grass.instanceCount
 
     this.grassMesh.receiveShadow = true
     this.grassMesh.castShadow = true
@@ -160,20 +178,32 @@ export class Grass extends THREE.Object3D {
   /**
    *
    * @param {THREE.Mesh} flowerMesh
-   * @param {FlowerOptions} flowerOptions
+   * @param {typeof defaultConfigs.yellowFlower} flowerOptions
    */
   generateFlowers(flowerMesh, flowerOptions) {
+    const rng = new RNG(flowerOptions.seed)
     for (let i = 0; i < flowerOptions.instanceCount; i++) {
       const flower = flowerMesh.clone()
 
-      const p = flowerOptions.positions[i]
+      const r = rng.random() * 15 + 5
+      const theta = rng.random() * 2.0 * Math.PI
+
+      const p = new THREE.Vector3(r * Math.cos(theta), 0, r * Math.sin(theta))
+      const n =
+        0.5 +
+        0.5 * simplex2d(new THREE.Vector2(p[0] / flowerOptions.scale, p[2] / flowerOptions.scale))
+
+      if (n > flowerOptions.patchiness && rng.random() + 0.6 > flowerOptions.patchiness) {
+        continue
+      }
+
       flower.position.set(p[0], p[1], p[2])
 
-      const r = flowerOptions.rotations[i]
-      flower.rotation.set(0, r, 0)
+      const rotation = 2 * Math.PI * rng.random()
+      flower.rotation.set(0, rotation, 0)
 
-      const s = flowerOptions.scales[i]
-      flower.scale.set(s, s, s)
+      const scale = 0.002 + 0.003 * rng.random()
+      flower.scale.set(scale, scale, scale)
 
       this.flowers.add(flower)
     }
@@ -186,9 +216,9 @@ export class Grass extends THREE.Object3D {
   appendWindShader(material, instanced = false) {
     material.onBeforeCompile = (shader) => {
       shader.uniforms.uTime = { value: 0 }
-      shader.uniforms.uWindStrength = { value: this.grassOptions.windStrength }
-      shader.uniforms.uWindFrequency = { value: this.grassOptions.windFrequency }
-      shader.uniforms.uWindScale = { value: this.grassOptions.windScale }
+      shader.uniforms.uWindStrength = { value: defaultConfigs.wind.strength }
+      shader.uniforms.uWindFrequency = { value: defaultConfigs.wind.frequency }
+      shader.uniforms.uWindScale = { value: defaultConfigs.wind.scale }
 
       shader.vertexShader =
         `

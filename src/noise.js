@@ -1,3 +1,5 @@
+// @ts-check
+import prand from 'pure-rand'
 import * as THREE from 'three'
 
 function mod3(v) {
@@ -86,4 +88,29 @@ export function simplex2d(v) {
   const n = 130.0 * m.dot(g)
 
   return n
+}
+
+export class RNG {
+  /** @type {number} */
+  #seed
+  /** @type {prand.RandomGenerator} */
+  #rng
+
+  /**
+   *
+   * @param {number} seed
+   */
+  constructor(seed) {
+    if (seed === undefined) {
+      throw new Error('seed is undefined')
+    }
+    this.seed = seed
+    this.#rng = prand.xoroshiro128plus(this.#seed)
+  }
+
+  random() {
+    const g1 = prand.unsafeUniformIntDistribution(0, (1 << 24) - 1, this.#rng)
+    const value = g1 / (1 << 24)
+    return value
+  }
 }
