@@ -217,8 +217,8 @@ export class Grass extends THREE.Object3D {
     material.onBeforeCompile = (shader) => {
       shader.uniforms.uTime = { value: 0 }
       shader.uniforms.uWindStrength = { value: defaultConfigs.wind.strength }
-      shader.uniforms.uWindFrequency = { value: defaultConfigs.wind.frequency}
-      shader.uniforms.uWindScale = { value: defaultConfigs.wind.scale}
+      shader.uniforms.uWindFrequency = { value: defaultConfigs.wind.frequency }
+      shader.uniforms.uWindScale = { value: defaultConfigs.wind.scale }
 
       shader.vertexShader =
         `
