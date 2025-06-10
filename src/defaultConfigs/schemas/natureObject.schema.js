@@ -18,6 +18,9 @@ export const schema = {
       type: 'integer',
       minimum: 0,
     },
+    scale: {
+      type: 'number',
+    },
     maxInstanceCount: {
       type: 'integer',
       minimum: 0,

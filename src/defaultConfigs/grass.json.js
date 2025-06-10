@@ -6,6 +6,7 @@ export const config = {
   instanceCount: 5000,
   maxInstanceCount: 25000,
   innerRadius: 0.1,
+  scale: 100,
   maxRadius: 20,
   patchness: 0.7,
   patchScale: 10,
