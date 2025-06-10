@@ -17,7 +17,7 @@ import { createSimplifiedMesh } from './utils'
  */
 export async function createScene(renderer) {
   const scene = new THREE.Scene()
-  scene.fog = new THREE.FogExp2(0x94b9f8, 0.01)
+  scene.fog = new THREE.FogExp2(0x94b9f8, 0.06);
 
   const environment = new Environment()
   scene.add(environment)
