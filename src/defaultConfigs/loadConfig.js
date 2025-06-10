@@ -1,0 +1,75 @@
+import Ajv from 'ajv'
+
+import { config as blueFlowerConfig } from './blueFlower.json.js'
+import { config as grassConfig } from './grass.json.js'
+import { config as rockConfig } from './rock.json.js'
+import { schema as natureObjectSchema } from './schemas/natureObject.schema.js'
+import { schema as windSchema } from './schemas/wind.schema.js'
+import { config as whiteFlowerConfig } from './whiteFlower.json.js'
+import { config as windConfig } from './wind.json.js'
+import { config as yellowFlowerConfig } from './yellowFlower.json.js'
+
+// Store for unique seeds
+/** @type {Record<string, number>} */
+const seedStore = {}
+
+/**
+ * @description Checks if the seed is unique across all configurations.
+ * @param {string } id
+ * @param {any} seed
+ */
+function isUniqueSeed(id, seed) {
+  for (const [key, value] of Object.entries(seedStore)) {
+    if (value === seed && key !== id) {
+      console.error(`Seed ${seed} in ${id} already used in ${key}`)
+      throw new Error(`Seed ${seed} in ${id} already used in ${key}`)
+    }
+  }
+  seedStore[id] = seed
+  return true
+}
+
+// validate configs using the schema
+const ajv = new Ajv({ allErrors: true, strict: true })
+
+/**
+ * @description Validates the configuration against the provided schema
+ * @param {object} config
+ * @param {object} schema
+ */
+function validateConfig(config, schema) {
+  const validate = ajv.compile(schema)
+  if (!validate(config)) {
+    console.error('Configuration validation errors:', 'at', config.id, validate.errors)
+    throw new Error('Invalid configuration')
+  }
+
+  if (config['seed'] !== undefined) {
+    isUniqueSeed(config['id'], config['seed'])
+  }
+}
+
+/**
+ * @description Validates all configurations against their respective schemas
+ */
+function validateAllConfigs() {
+  validateConfig(blueFlowerConfig, natureObjectSchema)
+  validateConfig(grassConfig, natureObjectSchema)
+  validateConfig(rockConfig, natureObjectSchema)
+  validateConfig(whiteFlowerConfig, natureObjectSchema)
+  validateConfig(yellowFlowerConfig, natureObjectSchema)
+  validateConfig(windConfig, windSchema)
+}
+
+// run validation on all configs
+validateAllConfigs()
+
+// Export the validated configurations
+export const defaultConfigs = {
+  blueFlower: blueFlowerConfig,
+  grass: grassConfig,
+  rock: rockConfig,
+  whiteFlower: whiteFlowerConfig,
+  wind: windConfig,
+  yellowFlower: yellowFlowerConfig,
+}
