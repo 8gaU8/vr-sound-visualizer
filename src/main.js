@@ -1,10 +1,9 @@
 import * as THREE from 'three'
 
+import { VRUI } from './VR-ui'
 import { initRenderer } from './renderer'
 import { createScene } from './scene'
 import { StatsWrapper } from './stats'
-import { setupUI } from './ui'
-import { VRUI } from './VR-ui'
 
 async function main() {
   // Remove the loading overlay
@@ -21,7 +20,7 @@ async function main() {
 
   const { scene, environment, tree, camera, controls, birdsWatcher, directionIndicator } =
     await createScene(renderer)
-  const { gui, interactiveGroup, htmlMesh } = VRUI(
+  const { htmlMesh } = VRUI(
     scene,
     camera,
     renderer,
