@@ -5,7 +5,7 @@ export const config = {
   seed: 100,
   instanceCount: 5000,
   maxInstanceCount: 25000,
-  innerRadius: 5,
+  innerRadius: 0.1,
   scale: 100,
   maxRadius: 20,
   patchness: 0.7,

@@ -121,7 +121,8 @@ export class Grass extends THREE.Object3D {
 
     let count = 0
     for (let i = 0; i < defaultConfigs.grass.maxInstanceCount; i++) {
-      const radius = 0.1 + rng.random() * 20
+      const radius =
+        defaultConfigs.grass.innerRadius + rng.random() * defaultConfigs.grass.maxRadius
       const theta = rng.random() * 2.0 * Math.PI
 
       // Set position randomly
@@ -185,7 +186,7 @@ export class Grass extends THREE.Object3D {
     for (let i = 0; i < flowerOptions.instanceCount; i++) {
       const flower = flowerMesh.clone()
 
-      const r = rng.random() * defaultConfigs.grass.maxRadius + defaultConfigs.grass.innerRadius
+      const r = rng.random() * flowerOptions.maxRadius + flowerOptions.innerRadius
       const theta = rng.random() * 2.0 * Math.PI
 
       const p = new THREE.Vector3(r * Math.cos(theta), 0, r * Math.sin(theta))
