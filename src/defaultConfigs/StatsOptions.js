@@ -1,8 +1,8 @@
 export const StatsOptions = {
   enable: true,
   position: {
-    x: 0,
-    y: 0.5,
+    x: -0.7,
+    y: -1.4,
     z: -4,
   },
 }

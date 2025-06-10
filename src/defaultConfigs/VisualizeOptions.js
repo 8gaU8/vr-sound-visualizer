@@ -8,7 +8,7 @@ export const VisualizeOptions = {
       opacity: 0.8,
       position: {
         x: 0,
-        y: 0,
+        y: -0.5,
         z: -2,
       },
     },
