@@ -198,7 +198,6 @@ controller1.addEventListener('selectend', onSelectEnd);
 controller2.addEventListener('selectstart', onSelectStart);
 controller2.addEventListener('selectend', onSelectEnd);
 
-// In your animation loop (main.js), add this logic:
 function updateTeleportMarker() {
   INTERSECTION = undefined;
   [controller1, controller2].forEach(event => {
