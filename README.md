@@ -1,5 +1,7 @@
 # VR Sound Visualizer
 
+![deploy status](https://github.com/8gaU8/vr-sound-visualizer/actions/workflows/deploy.yml/badge.svg)
+
 ## Installation
 
 1. Install Node.js
