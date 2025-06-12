@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { AudioController } from './AudioController.js'
 import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
-import { birdConfigs } from './defaultConfigs/loadConfig.js'
+import { configValidator } from './defaultConfigs/loadConfig.js'
 import { Environment } from './environment'
 import { createSimplifiedMesh } from './utils'
 
@@ -84,7 +84,7 @@ export async function createScene(renderer) {
   AudioController.loadAmbientAudio('ambient.mp3', audioListener)
 
   const birdsWatcher = new BirdsWatcher(audioListener)
-  for (const birdConfig of birdConfigs) {
+  for (const birdConfig of configValidator.getConfigsBySchema('schemas/bird.schema.json')) {
     console.log('Adding bird:', birdConfig.name)
     await birdsWatcher.addBird(birdConfig)
   }

@@ -5,15 +5,18 @@
 
 import Ajv from 'ajv'
 
-import { config as blueFlowerConfig } from './configs/blueFlower.json.js'
-import { config as grassConfig } from './configs/grass.json.js'
-import { config as parrotTrellisConfig } from './configs/parrotTrellis.json.js'
-import { config as rockConfig } from './configs/rock.json.js'
-import { config as skyConfig } from './configs/sky.json.js'
-import { config as whiteFlowerConfig } from './configs/whiteFlower.json.js'
-import { config as windConfig } from './configs/wind.json.js'
-import { config as woodpeckerConfig } from './configs/woodpecker.json.js'
-import { config as yellowFlowerConfig } from './configs/yellowFlower.json.js'
+// CONSTS
+const CONFIG_KEYS = [
+  'grass',
+  'blueFlower',
+  'yellowFlower',
+  'whiteFlower',
+  'rock',
+  'sky',
+  'wind',
+  'parrotTrellis',
+  'woodpecker',
+]
 
 class ConfigManager {
   /** @type {string} */
@@ -24,6 +27,9 @@ class ConfigManager {
 
   /** @type {Record<string, number>} */
   seedStore = {}
+
+  /** @type {Record<string, object> */
+  configStore = {}
 
   /** @type {Record<string, ValidateFunction} */
   schemaValidators = {}
@@ -37,12 +43,21 @@ class ConfigManager {
     }
   }
 
+  async initialize() {
+    for (const key of CONFIG_KEYS) {
+      const configPath = this.#originalConfigPath(key)
+      const module = await import(/* @vite-ignore */ configPath)
+      const config = module.config
+      await this.validateAndStoreConfig(config)
+    }
+  }
+
   /**
    * @description Validates the configuration against the provided schema
    * @param {object} config
    * @throws {Error}
    */
-  async validateConfig(config) {
+  async validateAndStoreConfig(config) {
     const validator = await this.#loadSchema(config['$schema'])
     if (!validator(config)) {
       console.error('Configuration validation errors:', 'at', config.id, validator.errors)
@@ -52,6 +67,7 @@ class ConfigManager {
       this.#isUniqueSeed(config['id'], config['seed'])
     }
     console.debug('Configuration validated:', config.id)
+    this.configStore[config.id] = config
   }
 
   /**
@@ -67,7 +83,6 @@ class ConfigManager {
       // if the seed is already used in another config, then erro
       if (seed === storedSeed) {
         if (id === key) {
-          console.debug(`Seed ${seed} in "${id}" config is already stored`)
           return
         }
         throw new Error(`Seed ${seed} in "${id}" config already used in "${key}" config`)
@@ -75,6 +90,10 @@ class ConfigManager {
     }
     this.seedStore[id] = seed
     return
+  }
+
+  #originalConfigPath(configKey) {
+    return this.configRoot + 'configs/' + configKey + '.json.js'
   }
 
   /**
@@ -118,33 +137,32 @@ class ConfigManager {
     if (!config['$schema']) {
       throw new Error('Configuration must have a $schema property')
     }
-    await this.validateConfig(config)
+    await this.validateAndStoreConfig(config)
     console.debug('Uploaded configuration validated:', config.id)
   }
-}
 
-/**
- * @description Validates all configurations against their respective schemas
- * Only used in initialization phase to ensure all configs are valid
- * @param {ConfigManager} validator
- */
-function validateAllConfigs(validator) {
-  validator.validateConfig(blueFlowerConfig)
-  validator.validateConfig(grassConfig)
-  validator.validateConfig(rockConfig)
-  validator.validateConfig(whiteFlowerConfig)
-  validator.validateConfig(yellowFlowerConfig)
-  validator.validateConfig(windConfig)
-  validator.validateConfig(parrotTrellisConfig)
-  validator.validateConfig(woodpeckerConfig)
-  validator.validateConfig(skyConfig)
+  /**
+   * @param {string} schemaPath
+   * @return {object[]}
+   */
+  getConfigsBySchema(schemaPath) {
+    const foundConfigs = []
+    Object.keys(this.configStore).forEach((key) => {
+      const config = this.configStore[key]
+      if (config['$schema'] === schemaPath) {
+        foundConfigs.push(config)
+      }
+    })
+    if (foundConfigs.length === 0) {
+      console.error(`No configurations found for schema: ${schemaPath}`)
+    }
+    return foundConfigs
+  }
 }
 
 // =================== INITIALIZATION ==============================
 const configValidator = new ConfigManager()
-
-// run validation on all configs
-validateAllConfigs(configValidator)
+configValidator.initialize()
 
 // =================== Configuration File Input Handler ==================
 
@@ -200,19 +218,9 @@ export function registerFileChangeListener(inputElement) {
   inputElement.addEventListener('change', fileChangeEventListner.bind(inputElement))
 }
 
-// =================== Export the validator for use in other modules ==================
-export { configValidator }
-
 // =================== Export the configurations ==================
-export const defaultConfigs = {
-  blueFlower: blueFlowerConfig,
-  grass: grassConfig,
-  rock: rockConfig,
-  whiteFlower: whiteFlowerConfig,
-  wind: windConfig,
-  yellowFlower: yellowFlowerConfig,
-  sky: skyConfig,
-}
+export { configValidator }
+export const defaultConfigs = configValidator.configStore
 
 // Export only the bird configurations
-export const birdConfigs = [parrotTrellisConfig, woodpeckerConfig]
+// export const birdConfigs = configValidator.getConfigsBySchema('schemas/bird.schema.json')
