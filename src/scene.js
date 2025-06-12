@@ -9,6 +9,8 @@ import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
 import { birdConfigs } from './defaultConfigs/loadConfig.js'
 import { Environment } from './environment'
 import { createSimplifiedMesh } from './utils'
+import {Ground} from './natureObjects/ground.js'
+
 
 /**
  * Creates a new instance of the Three.js scene
@@ -18,6 +20,9 @@ import { createSimplifiedMesh } from './utils'
 export async function createScene(renderer) {
   const scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0x94b9f8, 0.06)
+
+  const ground = new Ground()
+  scene.add(ground)
 
   const environment = new Environment()
   scene.add(environment)

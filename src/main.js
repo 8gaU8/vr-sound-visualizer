@@ -20,6 +20,7 @@ async function main() {
 
   const { scene, environment, tree, camera, controls, birdsWatcher, directionIndicator } =
     await createScene(renderer)
+    const ground = scene.getObjectByName('Ground')
   const { htmlMesh } = VRUI(
     scene,
     camera,
@@ -27,7 +28,20 @@ async function main() {
     directionIndicator,
     birdsWatcher.hapticsManager,
     birdsWatcher,
+    ground
   )
+
+  const vrUI = VRUI(
+    scene,
+    camera,
+    renderer,
+    directionIndicator,
+    birdsWatcher.hapticsManager,
+    birdsWatcher,
+    ground
+)
+
+
   const stats = new StatsWrapper(scene, camera)
 
   const clock = new THREE.Clock()
@@ -36,6 +50,8 @@ async function main() {
     if (renderer.xr.isPresenting) {
       birdsWatcher.update(t, renderer.xr.getCamera())
       birdsWatcher.updateHaptics(renderer)
+      // vrUI.teleportVR.update();
+      vrUI.updateTeleportMarker();
     } else {
       controls.update()
       birdsWatcher.update(t, camera)

@@ -56,7 +56,7 @@ export class BirdsWatcher {
       frequencyRange: [0, 32],
       minIntensity: 0.05,
       maxIntensity: 0.5,
-      threshold: 0.3,
+      threshold: 0.2,
     })
   }
 

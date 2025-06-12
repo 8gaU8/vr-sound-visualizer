@@ -37,7 +37,8 @@ async function fetchAssets() {
 export class Ground extends THREE.Mesh {
   constructor() {
     super()
-
+    this.name = 'Ground'
+    
     fetchAssets().then(() => {
       // Ground plane with procedural grass/dirt texture
       this.material = new THREE.MeshPhongMaterial({
