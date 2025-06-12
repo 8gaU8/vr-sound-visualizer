@@ -15,9 +15,12 @@ import { config as windConfig } from './configs/wind.json.js'
 import { config as woodpeckerConfig } from './configs/woodpecker.json.js'
 import { config as yellowFlowerConfig } from './configs/yellowFlower.json.js'
 
-class ConfigValidator {
+class ConfigManager {
+  /** @type {string} */
+  configRoot = './'
+
   /** @type {Ajv} */
-  ajv
+  ajv = new Ajv({ allErrors: true, strict: true })
 
   /** @type {Record<string, number>} */
   seedStore = {}
@@ -25,8 +28,29 @@ class ConfigValidator {
   /** @type {Record<string, ValidateFunction} */
   schemaValidators = {}
 
-  constructor() {
-    this.ajv = new Ajv({ allErrors: true, strict: true })
+  /**
+   * @param {string | undefined} [configRoot]
+   */
+  constructor(configRoot) {
+    if (configRoot) {
+      this.configRoot = configRoot
+    }
+  }
+
+  /**
+   * @description Validates the configuration against the provided schema
+   * @param {object} config
+   */
+  async validateConfig(config) {
+    const validator = await this.#loadSchema(config['$schema'])
+    if (!validator(config)) {
+      console.error('Configuration validation errors:', 'at', config.id, validator.errors)
+      throw new Error('Invalid configuration')
+    }
+    if (config['seed'] !== undefined) {
+      this.#isUniqueSeed(config['id'], config['seed'])
+    }
+    console.debug('Configuration validated:', config.id)
   }
 
   /**
@@ -34,7 +58,7 @@ class ConfigValidator {
    * @param {string } id
    * @param {number} seed
    */
-  isUniqueSeed(id, seed) {
+  #isUniqueSeed(id, seed) {
     for (const [key, value] of Object.entries(this.seedStore)) {
       if (id === key) {
         console.warn(`Skipping seed check for ${id} as it is already being processed`)
@@ -49,29 +73,13 @@ class ConfigValidator {
   }
 
   /**
-   * @description Validates the configuration against the provided schema
-   * @param {object} config
-   */
-  async validateConfig(config) {
-    const validator = await this.loadSchema(config['$schema'])
-    if (!validator(config)) {
-      console.error('Configuration validation errors:', 'at', config.id, validator.errors)
-      throw new Error('Invalid configuration')
-    }
-    if (config['seed'] !== undefined) {
-      this.isUniqueSeed(config['id'], config['seed'])
-    }
-    console.debug('Configuration validated:', config.id)
-  }
-
-  /**
    * @description Loads the schema from the specified path and compiles it into a validator function.
    * This function caches the validator to avoid reloading the schema multiple times.
    * @param {string} _schemaPath
    * @returns {Promise<ValidateFunction>}
    */
-  async loadSchema(_schemaPath) {
-    const schemaPath = _schemaPath + '.js'
+  async #loadSchema(_schemaPath) {
+    const schemaPath = this.configRoot + _schemaPath + '.js'
     // Try to retrieve the validator from cache
     if (this.schemaValidators[schemaPath]) {
       console.debug(`Using cached validator for schema: ${schemaPath}`)
@@ -98,7 +106,7 @@ class ConfigValidator {
  * @description Validates all configurations against their respective schemas
  */
 function validateAllConfigs() {
-  const validator = new ConfigValidator()
+  const validator = new ConfigManager()
 
   validator.validateConfig(blueFlowerConfig)
   validator.validateConfig(grassConfig)
