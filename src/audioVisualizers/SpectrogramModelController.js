@@ -120,6 +120,7 @@ export class SpectrogramModelController {
     const worldPosition = new THREE.Vector3()
     this.mesh.getWorldPosition(worldPosition)
     this.updateVisibility(camera, worldPosition)
+    this.faceToCamera(camera)
   }
 
   /**
