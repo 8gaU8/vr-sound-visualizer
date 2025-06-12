@@ -17,7 +17,7 @@ import { config as yellowFlowerConfig } from './configs/yellowFlower.json.js'
 
 class ConfigManager {
   /** @type {string} */
-  configRoot = './'
+  configRoot = document.URL
 
   /** @type {Ajv} */
   ajv = new Ajv({ allErrors: true, strict: true })
@@ -29,17 +29,18 @@ class ConfigManager {
   schemaValidators = {}
 
   /**
-   * @param {string | undefined} [configRoot]
+   * @param {string | undefined} [configBase]
    */
-  constructor(configRoot) {
-    if (configRoot) {
-      this.configRoot = configRoot
+  constructor(configBase) {
+    if (configBase) {
+      this.configRoot = document.URL + configBase
     }
   }
 
   /**
    * @description Validates the configuration against the provided schema
    * @param {object} config
+   * @throws {Error}
    */
   async validateConfig(config) {
     const validator = await this.#loadSchema(config['$schema'])
@@ -57,19 +58,23 @@ class ConfigManager {
    * @description Checks if the seed is unique across all configurations.
    * @param {string } id
    * @param {number} seed
+   * @throws {Error}
    */
   #isUniqueSeed(id, seed) {
-    for (const [key, value] of Object.entries(this.seedStore)) {
-      if (id === key) {
-        console.warn(`Skipping seed check for ${id} as it is already being processed`)
-        break
-      }
-      if (value === seed) {
+    for (const key of Object.keys(this.seedStore)) {
+      const storedSeed = this.seedStore[key]
+
+      // if the seed is already used in another config, then erro
+      if (seed === storedSeed) {
+        if (id === key) {
+          console.debug(`Seed ${seed} in "${id}" config is already stored`)
+          return
+        }
         throw new Error(`Seed ${seed} in "${id}" config already used in "${key}" config`)
       }
     }
     this.seedStore[id] = seed
-    return true
+    return
   }
 
   /**
@@ -87,7 +92,7 @@ class ConfigManager {
     }
 
     try {
-      const module = await import(schemaPath)
+      const module = await import(/* @vite-ignore */ schemaPath)
       if (!module.schema) {
         throw new Error(`Schema not found in module: ${schemaPath}`)
       }
@@ -100,14 +105,30 @@ class ConfigManager {
       throw error
     }
   }
+
+  /**
+   * @description Accepts an uploaded configuration object and validates it against the schema.
+   * @param {object} config
+   * @returns {Promise<void>}
+   */
+  async validateUploadedConfig(config) {
+    if (!config || typeof config !== 'object') {
+      throw new Error('Invalid configuration object')
+    }
+    if (!config['$schema']) {
+      throw new Error('Configuration must have a $schema property')
+    }
+    await this.validateConfig(config)
+    console.debug('Uploaded configuration validated:', config.id)
+  }
 }
 
 /**
  * @description Validates all configurations against their respective schemas
+ * Only used in initialization phase to ensure all configs are valid
+ * @param {ConfigManager} validator
  */
-function validateAllConfigs() {
-  const validator = new ConfigManager()
-
+function validateAllConfigs(validator) {
   validator.validateConfig(blueFlowerConfig)
   validator.validateConfig(grassConfig)
   validator.validateConfig(rockConfig)
@@ -119,10 +140,70 @@ function validateAllConfigs() {
   validator.validateConfig(skyConfig)
 }
 
-// run validation on all configs
-validateAllConfigs()
+// =================== INITIALIZATION ==============================
+const configValidator = new ConfigManager()
 
-// Export the validated configurations
+// run validation on all configs
+validateAllConfigs(configValidator)
+
+// =================== Configuration File Input Handler ==================
+
+function fileChangeEventListner(event) {
+  function _onload(e) {
+    try {
+      const options = JSON.parse(e.target.result)
+      configValidator.validateUploadedConfig(options)
+      console.log('Parsed options:', options)
+    } catch (error) {
+      console.error('Error parsing JSON:', error)
+      alert('Invalid configuration file. Please upload a valid JSON file.')
+    }
+  }
+
+  function _onerror(e) {
+    const msg = 'Error reading file: ' + e
+    console.error(msg)
+    alert(msg)
+  }
+
+  const file = event.target.files[0]
+  console.log(event.target.files.length)
+  if (!file) {
+    // No file selected, exit the function
+    return
+  }
+
+  const reader = new FileReader()
+
+  // setting the READER
+  reader.onload = _onload.bind(reader)
+  reader.onerror = _onerror.bind(reader)
+
+  // Read the file as text
+  reader.readAsText(file)
+}
+
+function resetFileInput(event) {
+  // Reset the file input value to allow re-uploading the same file
+  event.target.value = ''
+}
+
+/**
+ * @param {HTMLInputElement} inputElement
+ */
+export function registerFileChangeListener(inputElement) {
+  if (!inputElement || !(inputElement instanceof HTMLInputElement)) {
+    throw new Error('Input element must be an HTMLInputElement')
+  }
+
+  inputElement.addEventListener('click', resetFileInput.bind(inputElement))
+  inputElement.addEventListener('change', fileChangeEventListner.bind(inputElement))
+}
+
+// =================== Export the validator for use in other modules ==================
+export { configValidator }
+
+// =================== Export the configurations ==================
 export const defaultConfigs = {
   blueFlower: blueFlowerConfig,
   grass: grassConfig,
