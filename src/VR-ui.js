@@ -88,13 +88,16 @@ export function VRUI(scene, camera, renderer, directionalIndicator, hapticsManag
   interactiveGroup.listenToPointerEvents(renderer, camera)
   interactiveGroup.listenToXRControllerEvents(controller1)
   interactiveGroup.listenToXRControllerEvents(controller2)
-  camera.add(interactiveGroup)
+  scene.add(interactiveGroup)
   //   const interactiveGroup = new InteractiveGroup(renderer, camera);
   //   scene.add(interactiveGroup);
 
   // Create a simple HTML mesh for the UI
   const htmlMesh = new HTMLMesh(gui.domElement)
-  htmlMesh.position.set(0.6,-0.6,-2)
+    htmlMesh.position.set(1, 2.3, -2)
+    htmlMesh.rotation.y = -Math.PI/6
+
+  // htmlMesh.position.set(0.6,-0.6,-2)
   htmlMesh.scale.set(2.5,2.5,2.5)
   interactiveGroup.add(htmlMesh)
 
