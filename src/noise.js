@@ -90,27 +90,52 @@ export function simplex2d(v) {
   return n
 }
 
+const seedStore = new Array()
+
+function addSeedToStore(seed) {
+  if (seedStore.includes(seed)) {
+    throw new Error(`Seed ${seed} is already in use.`)
+  }
+  seedStore.push(seed)
+}
+
 export class RNG {
   /** @type {number} */
-  #seed
+  seed
   /** @type {prand.RandomGenerator} */
-  #rng
+  rng
 
   /**
    *
    * @param {number} seed
    */
   constructor(seed) {
-    if (seed === undefined) {
-      throw new Error('seed is undefined')
-    }
+    if (seed === undefined) throw new Error('seed is undefined')
+
+    addSeedToStore(seed)
+
     this.seed = seed
-    this.#rng = prand.xoroshiro128plus(this.#seed)
+    this.rng = prand.xoroshiro128plus(this.seed)
+    this.#initRNG()
   }
 
+  /**
+   * @description Initializes the random number generator with a seed.
+   * First two or three calls to `random()` will return similar values regardless of seeds.
+   */
+  #initRNG() {
+    this.rng = prand.skipN(this.rng, this.seed * this.seed)
+  }
+
+  /**
+   * @description Generates a random number in [0, 1) using the xoroshiro128+ algorithm.
+   * @returns {number} - Returns a random number between 0 and 1 in 64bit.
+   */
   random() {
-    const g1 = prand.unsafeUniformIntDistribution(0, (1 << 24) - 1, this.#rng)
-    const value = g1 / (1 << 24)
+    const g1 = prand.unsafeUniformIntDistribution(0, (1 << 26) - 1, this.rng)
+    const g2 = prand.unsafeUniformIntDistribution(0, (1 << 27) - 1, this.rng)
+    const value = (g1 * Math.pow(2, 27) + g2) * Math.pow(2, -53)
+
     return value
   }
 }

@@ -21,13 +21,16 @@ const seedStore = {}
 /**
  * @description Checks if the seed is unique across all configurations.
  * @param {string } id
- * @param {any} seed
+ * @param {number} seed
  */
 function isUniqueSeed(id, seed) {
   for (const [key, value] of Object.entries(seedStore)) {
-    if (value === seed && key !== id) {
-      console.error(`Seed ${seed} in ${id} already used in ${key}`)
-      throw new Error(`Seed ${seed} in ${id} already used in ${key}`)
+    if (id === key) {
+      console.warn(`Skipping seed check for ${id} as it is already being processed`)
+      break
+    }
+    if (value === seed) {
+      throw new Error(`Seed ${seed} in "${id}" config already used in "${key}" config`)
     }
   }
   seedStore[id] = seed
@@ -48,11 +51,10 @@ function validateConfig(config, schema) {
     console.error('Configuration validation errors:', 'at', config.id, validate.errors)
     throw new Error('Invalid configuration')
   }
-
   if (config['seed'] !== undefined) {
     isUniqueSeed(config['id'], config['seed'])
   }
-  console.log('Configuration validated:', config.id)
+  console.debug('Configuration validated:', config.id)
 }
 
 /**

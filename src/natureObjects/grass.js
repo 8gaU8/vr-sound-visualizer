@@ -198,7 +198,7 @@ export class Grass extends THREE.Object3D {
         continue
       }
 
-      flower.position.set(p[0], p[1], p[2])
+      flower.position.copy(p)
 
       const rotation = 2 * Math.PI * rng.random()
       flower.rotation.set(0, rotation, 0)

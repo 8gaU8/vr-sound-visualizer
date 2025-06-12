@@ -1,11 +1,11 @@
 // @ts-check
-import { CatmullRomCurve3, Euler, Quaternion, Vector3 } from 'three'
 
+import { MotionGenerator } from './MotionGenerator.js'
 import { loaders } from './loaders'
-import { RNG } from './noise.js'
 
 /**
  * @typedef {import('three').Mesh} Mesh
+ * @typedef {import('three').Object3D} Object3D
  * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
  */
 
@@ -22,7 +22,7 @@ export class BirdModelController {
   constructor(config) {
     this.config = config
 
-    this.curvePoints = this.#generateMotion()
+    this.motionGenerator = new MotionGenerator(config)
   }
 
   /**
@@ -60,53 +60,20 @@ export class BirdModelController {
   }
 
   /**
-   * @param {Number} time
-   * @returns {Vector3} - Returns the position of the bird model at the specified time.
+   * @description Updates the position and rotation of the bird model based on the elapsed time.
+   * @param {number} time
+   * @param {Object3D} model
    */
-  getPosition(time) {
-    if (!this.config.motion) {
-      return new Vector3(this.config.position.x, this.config.position.y, this.config.position.z)
-    }
-    const t = time * 0.05 // Convert time to seconds
-    const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
-    const point = this.curvePoints[index]
-    return point.clone()
-  }
+  updateModelPosition(time, model) {
+    // If motion is disabled, do not update position or rotation
+    if (!this.config.motion) return
 
-  /**
-   *
-   * @param {Number} time
-   * @returns {Quaternion} - Returns the quaternion representing the rotation of the bird model at the specified time.
-   */
-  getQuaternion(time) {
-    if (!this.config.motion) {
-      return new Quaternion().setFromEuler(new Euler(0, 0, 0)) // No motion, no rotation
-    }
-    const t = time * 0.05 // Convert time to seconds
-    const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
-    const point = this.curvePoints[index]
-    //  Rotate the bird model to face the direction of motion
-    const nextIndex = (index + 1) % this.curvePoints.length
-    const nextPoint = this.curvePoints[nextIndex]
-    const direction = nextPoint.clone().sub(point).normalize()
-    const lookAtPoint = point.clone().add(direction)
-    const quaternion = new Quaternion()
-    quaternion.setFromUnitVectors(new Vector3(0, 0, 1), lookAtPoint.clone().sub(point).normalize())
-    return quaternion.clone()
-  }
+    // update model position
+    const position = this.motionGenerator.getPosition(time)
+    model.position.copy(position)
 
-  #generateMotion() {
-    const rng = new RNG(this.config.seed) // Seed for consistent random generation
-
-    const randomPoints = []
-    for (let i = 0; i < 20; i++) {
-      const randomX = rng.random() * 5
-      const randomY = rng.random() * 3
-      const randomZ = rng.random() * 5
-      randomPoints.push(new Vector3(randomX, randomY, randomZ))
-    }
-    const curve = new CatmullRomCurve3(randomPoints, true, 'catmullrom', 0.5)
-    const points = curve.getPoints(2000)
-    return points
+    // update model rotation
+    const quaternion = this.motionGenerator.getQuaternion(time)
+    model.quaternion.copy(quaternion)
   }
 }

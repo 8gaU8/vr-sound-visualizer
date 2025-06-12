@@ -77,15 +77,7 @@ export class BirdAVController {
    */
   update(time, camera) {
     // update model position
-    const position = this.birdModelController.getPosition(time)
-    // add initial position offset
-    position.add(this.config.position)
-    this.meshGroup.position.copy(position)
-
-    // update model rotation
-    const quaternion = this.birdModelController.getQuaternion(time)
-    this.meshGroup.quaternion.copy(quaternion)
-
+    this.birdModelController.updateModelPosition(time, this.meshGroup)
     // update spectrogram
     this.spectrogramModelController.update(camera)
   }

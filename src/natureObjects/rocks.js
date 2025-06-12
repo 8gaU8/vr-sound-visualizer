@@ -39,17 +39,17 @@ export class Rocks extends THREE.Group {
     super()
 
     fetchAssets().then(() => {
-      this.add(this.generateInstances(_rock1Mesh))
-      this.add(this.generateInstances(_rock2Mesh))
-      this.add(this.generateInstances(_rock3Mesh))
+      this.add(this.generateInstances(_rock1Mesh, 1))
+      this.add(this.generateInstances(_rock2Mesh, 2))
+      this.add(this.generateInstances(_rock3Mesh, 3))
     })
   }
 
-  generateInstances(mesh) {
+  generateInstances(mesh, seedVar) {
     const instancedMesh = new THREE.InstancedMesh(mesh.geometry, mesh.material, 200)
 
     const dummy = new THREE.Object3D()
-    const rng = new RNG(defaultConfigs.rock.seed)
+    const rng = new RNG(defaultConfigs.rock.seed + seedVar)
 
     let count = 0
     for (let i = 0; i < defaultConfigs.rock.instanceCount; i++) {
