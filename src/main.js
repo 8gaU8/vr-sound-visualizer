@@ -1,9 +1,8 @@
 import * as THREE from 'three'
 
 import { VRUI } from './VR-ui'
-import { registerFileChangeListener } from './defaultConfigs/loadConfig'
+import { configValidator, registerFileChangeListener } from './defaultConfigs/loadConfig'
 import { initRenderer } from './renderer'
-import { createScene } from './scene'
 import { StatsWrapper } from './stats'
 
 async function main() {
@@ -12,6 +11,13 @@ async function main() {
   if (overlay) {
     overlay.remove()
   }
+
+  // initialize the configuration manager
+  await configValidator.initialize()
+
+  // Import scene dynamically to make sure the module is loaded after the configuration is ready
+  const sceneModule = await import('./scene.js')
+  const createScene = sceneModule.createScene
 
   // File input element for configuration files
   const inputElement = document.getElementById('fileInput')

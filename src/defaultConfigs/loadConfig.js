@@ -60,7 +60,7 @@ class ConfigManager {
   async validateAndStoreConfig(config) {
     const validator = await this.#loadSchema(config['$schema'])
     if (!validator(config)) {
-      console.error('Configuration validation errors:', 'at', config.id, validator.errors)
+      console.error('Configuration validation errors:', 'at', config['id'], validator.errors)
       throw new Error('Invalid configuration')
     }
     if (config['seed'] !== undefined) {
@@ -162,7 +162,6 @@ class ConfigManager {
 
 // =================== INITIALIZATION ==============================
 const configValidator = new ConfigManager()
-configValidator.initialize()
 
 // =================== Configuration File Input Handler ==================
 
@@ -221,6 +220,3 @@ export function registerFileChangeListener(inputElement) {
 // =================== Export the configurations ==================
 export { configValidator }
 export const defaultConfigs = configValidator.configStore
-
-// Export only the bird configurations
-// export const birdConfigs = configValidator.getConfigsBySchema('schemas/bird.schema.json')
