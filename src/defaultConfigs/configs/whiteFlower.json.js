@@ -1,5 +1,5 @@
 export const config = {
-  $schema: './schemas/natureObject.schema.json',
+  $schema: 'schemas/natureObject.schema.json',
   id: 'whiteFlower',
   model: 'flower_white.glb',
   seed: 2,

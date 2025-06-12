@@ -5,7 +5,7 @@ export const schema = {
   properties: {
     $schema: {
       type: 'string',
-      const: './schemas/wind.schema.json',
+      const: 'schemas/wind.schema.json',
     },
     id: {
       type: 'string',

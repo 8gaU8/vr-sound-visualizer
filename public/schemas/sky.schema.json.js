@@ -5,7 +5,7 @@ export const schema = {
   properties: {
     $schema: {
       type: 'string',
-      const: './schemas/sky.schema.json',
+      const: 'schemas/sky.schema.json',
     },
     id: {
       type: 'string',
