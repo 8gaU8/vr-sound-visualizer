@@ -9,7 +9,8 @@
     "localbuild": "vite build --mode localbuild",
     "preview": "vite preview",
     "format": "prettier --write .",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "checkConfig": "cd src/defaultConfigs && node loadConfig.js"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.27.1",

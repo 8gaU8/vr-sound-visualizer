@@ -1,75 +1,114 @@
+// @ts-check
+/**
+ * @typedef {import('ajv').ValidateFunction} ValidateFunction
+ */
+
 import Ajv from 'ajv'
 
-import { config as parrotTrellisConfig } from './birds/parrotTrellis.json.js'
-import { schema as birdSchema } from './birds/schemas/bird.schema.js'
-import { config as woodpeckerConfig } from './birds/woodpecker.json.js'
-import { config as blueFlowerConfig } from './natureObjects/blueFlower.json.js'
-import { config as grassConfig } from './natureObjects/grass.json.js'
-import { config as rockConfig } from './natureObjects/rock.json.js'
-import { schema as natureObjectSchema } from './natureObjects/schemas/natureObject.schema.js'
-import { schema as skySchema } from './natureObjects/schemas/sky.schema.js'
-import { schema as windSchema } from './natureObjects/schemas/wind.schema.js'
-import { config as skyConfig } from './natureObjects/sky.json.js'
-import { config as whiteFlowerConfig } from './natureObjects/whiteFlower.json.js'
-import { config as windConfig } from './natureObjects/wind.json.js'
-import { config as yellowFlowerConfig } from './natureObjects/yellowFlower.json.js'
+import { config as blueFlowerConfig } from './configs/blueFlower.json.js'
+import { config as grassConfig } from './configs/grass.json.js'
+import { config as parrotTrellisConfig } from './configs/parrotTrellis.json.js'
+import { config as rockConfig } from './configs/rock.json.js'
+import { config as skyConfig } from './configs/sky.json.js'
+import { config as whiteFlowerConfig } from './configs/whiteFlower.json.js'
+import { config as windConfig } from './configs/wind.json.js'
+import { config as woodpeckerConfig } from './configs/woodpecker.json.js'
+import { config as yellowFlowerConfig } from './configs/yellowFlower.json.js'
 
-// Store for unique seeds
-/** @type {Record<string, number>} */
-const seedStore = {}
+class ConfigValidator {
+  /** @type {Ajv} */
+  ajv
 
-/**
- * @description Checks if the seed is unique across all configurations.
- * @param {string } id
- * @param {number} seed
- */
-function isUniqueSeed(id, seed) {
-  for (const [key, value] of Object.entries(seedStore)) {
-    if (id === key) {
-      console.warn(`Skipping seed check for ${id} as it is already being processed`)
-      break
+  /** @type {Record<string, number>} */
+  seedStore = {}
+
+  /** @type {Record<string, ValidateFunction} */
+  schemaValidators = {}
+
+  constructor() {
+    this.ajv = new Ajv({ allErrors: true, strict: true })
+  }
+
+  /**
+   * @description Checks if the seed is unique across all configurations.
+   * @param {string } id
+   * @param {number} seed
+   */
+  isUniqueSeed(id, seed) {
+    for (const [key, value] of Object.entries(this.seedStore)) {
+      if (id === key) {
+        console.warn(`Skipping seed check for ${id} as it is already being processed`)
+        break
+      }
+      if (value === seed) {
+        throw new Error(`Seed ${seed} in "${id}" config already used in "${key}" config`)
+      }
     }
-    if (value === seed) {
-      throw new Error(`Seed ${seed} in "${id}" config already used in "${key}" config`)
+    this.seedStore[id] = seed
+    return true
+  }
+
+  /**
+   * @description Validates the configuration against the provided schema
+   * @param {object} config
+   */
+  async validateConfig(config) {
+    const validator = await this.loadSchema(config['$schema'])
+    if (!validator(config)) {
+      console.error('Configuration validation errors:', 'at', config.id, validator.errors)
+      throw new Error('Invalid configuration')
+    }
+    if (config['seed'] !== undefined) {
+      this.isUniqueSeed(config['id'], config['seed'])
+    }
+    console.debug('Configuration validated:', config.id)
+  }
+
+  /**
+   * @description Loads the schema from the specified path and compiles it into a validator function.
+   * This function caches the validator to avoid reloading the schema multiple times.
+   * @param {string} _schemaPath
+   * @returns {Promise<ValidateFunction>}
+   */
+  async loadSchema(_schemaPath) {
+    const schemaPath = _schemaPath + '.js'
+    // Try to retrieve the validator from cache
+    if (this.schemaValidators[schemaPath]) {
+      console.debug(`Using cached validator for schema: ${schemaPath}`)
+      return this.schemaValidators[schemaPath]
+    }
+
+    try {
+      const module = await import(schemaPath)
+      if (!module.schema) {
+        throw new Error(`Schema not found in module: ${schemaPath}`)
+      }
+      const schema = module.schema
+      const validator = this.ajv.compile(schema)
+      this.schemaValidators[schemaPath] = validator
+      return validator
+    } catch (error) {
+      console.error(`Failed to load schema from ${schemaPath}:`, error)
+      throw error
     }
   }
-  seedStore[id] = seed
-  return true
-}
-
-// validate configs using the schema
-const ajv = new Ajv({ allErrors: true, strict: true })
-
-/**
- * @description Validates the configuration against the provided schema
- * @param {object} config
- * @param {object} schema
- */
-function validateConfig(config, schema) {
-  const validate = ajv.compile(schema)
-  if (!validate(config)) {
-    console.error('Configuration validation errors:', 'at', config.id, validate.errors)
-    throw new Error('Invalid configuration')
-  }
-  if (config['seed'] !== undefined) {
-    isUniqueSeed(config['id'], config['seed'])
-  }
-  console.debug('Configuration validated:', config.id)
 }
 
 /**
  * @description Validates all configurations against their respective schemas
  */
 function validateAllConfigs() {
-  validateConfig(blueFlowerConfig, natureObjectSchema)
-  validateConfig(grassConfig, natureObjectSchema)
-  validateConfig(rockConfig, natureObjectSchema)
-  validateConfig(whiteFlowerConfig, natureObjectSchema)
-  validateConfig(yellowFlowerConfig, natureObjectSchema)
-  validateConfig(windConfig, windSchema)
-  validateConfig(parrotTrellisConfig, birdSchema)
-  validateConfig(woodpeckerConfig, birdSchema)
-  validateConfig(skyConfig, skySchema)
+  const validator = new ConfigValidator()
+
+  validator.validateConfig(blueFlowerConfig)
+  validator.validateConfig(grassConfig)
+  validator.validateConfig(rockConfig)
+  validator.validateConfig(whiteFlowerConfig)
+  validator.validateConfig(yellowFlowerConfig)
+  validator.validateConfig(windConfig)
+  validator.validateConfig(parrotTrellisConfig)
+  validator.validateConfig(woodpeckerConfig)
+  validator.validateConfig(skyConfig)
 }
 
 // run validation on all configs
