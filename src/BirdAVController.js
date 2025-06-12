@@ -1,7 +1,7 @@
 // @ts-check
 
 /**
- * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
+ * @typedef {typeof import('./defaultConfigs/_configs/woodpecker.json.js').config} BirdConfig
  * @typedef {import('three').AudioListener} AudioListener
  * @typedef {import('three').Camera} Camera
  */

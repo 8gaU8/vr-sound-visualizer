@@ -1,4 +1,5 @@
 export const config = {
+  $schema: 'schemas/sky.schema.json',
   id: 'sky',
   intensity: 4,
   turbidity: 10,

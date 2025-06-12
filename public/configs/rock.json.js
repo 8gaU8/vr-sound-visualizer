@@ -1,5 +1,5 @@
 export const config = {
-  $schema: './schemas/natureObject.schema.json',
+  $schema: 'schemas/natureObject.schema.json',
   id: 'rock',
   seed: 300,
   instanceCount: 30,

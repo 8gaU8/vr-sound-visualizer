@@ -5,7 +5,7 @@ export const schema = {
   properties: {
     $schema: {
       type: 'string',
-      const: './schemas/natureObject.schema.json',
+      const: 'schemas/natureObject.schema.json',
     },
     id: {
       type: 'string',
