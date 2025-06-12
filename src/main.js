@@ -34,7 +34,7 @@ async function initialization() {
 async function main() {
   const { createScene, renderer, container } = await initialization()
 
-  const { scene, environment, tree, camera, controls, birdsWatcher } = await createScene(renderer)
+  const { scene, environment, camera, controls, birdsWatcher } = await createScene(renderer)
   const { htmlMesh, updateTeleportMarker } = VRUI(
     scene,
     camera,
@@ -58,7 +58,6 @@ async function main() {
     }
 
     // Update time for wind sway shaders
-    tree.update(t)
     scene.getObjectByName('Forest').children.forEach((o) => o.update(t))
     environment.update(t)
 
