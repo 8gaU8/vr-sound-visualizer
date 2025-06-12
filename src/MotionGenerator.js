@@ -34,7 +34,7 @@ export class MotionGenerator {
     const randomPoints = []
     for (let i = 0; i < 20; i++) {
       const randomX = this.rng.random() * 5 + this.config.position.x
-      const randomY = this.rng.random() * 3 + this.config.position.y
+      const randomY = this.rng.random() * 1 + this.config.position.y
       const randomZ = this.rng.random() * 5 + this.config.position.z
       randomPoints.push(new Vector3(randomX, randomY, randomZ))
     }
@@ -48,7 +48,7 @@ export class MotionGenerator {
    * @returns {Vector3} - Returns the position of the bird model at the specified time.
    */
   getPosition(time) {
-    const t = time * 0.05 // Convert time to seconds
+    const t = time * 0.025 // Convert time to seconds
     const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
     const point = this.curvePoints[index]
     return point.clone()
