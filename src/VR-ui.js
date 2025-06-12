@@ -67,7 +67,7 @@ export function VRUI(scene, camera, renderer, directionalIndicator, hapticsManag
     }
   }
   // Initialize GUI
-  const uploadFile = gui.add({ upload: validateFile }, 'upload')
+  gui.add({ upload: validateFile }, 'upload')
 
   // Create an interactive group for the UI
   // Add VR controllers

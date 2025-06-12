@@ -6,7 +6,7 @@ import { loaders } from './loaders'
 /**
  * @typedef {import('three').Mesh} Mesh
  * @typedef {import('three').Object3D} Object3D
- * @typedef {typeof import('./defaultConfigs/configs/woodpecker.json.js').config} BirdConfig
+ * @typedef {typeof import('./defaultConfigs/_configs/woodpecker.json.js').config} BirdConfig
  */
 
 export class BirdModelController {
