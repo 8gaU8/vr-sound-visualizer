@@ -5,7 +5,7 @@ export const schema = {
   properties: {
     $schema: {
       type: 'string',
-      const: './schemas/wind.schema.json',
+      const: 'schemas/wind.schema.json',
     },
     id: {
       type: 'string',
@@ -30,6 +30,6 @@ export const schema = {
       minimum: 0,
     },
   },
-  required: ['id', 'strength', 'frequency', 'scale'],
+  required: ['id', '$schema', 'strength', 'frequency', 'scale'],
   additionalProperties: false,
 }

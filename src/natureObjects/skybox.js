@@ -8,7 +8,7 @@ import * as THREE from 'three'
 import { Sky } from 'three/examples/jsm/objects/Sky.js'
 import { degToRad } from 'three/src/math/MathUtils.js'
 
-import { defaultConfigs } from '../defaultConfigs/loadConfig'
+import { defaultConfigs } from '../defaultConfigs/loadConfig.js'
 
 export class Skybox extends THREE.Mesh {
   constructor() {

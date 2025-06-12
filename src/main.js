@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 
 import { VRUI } from './VR-ui'
+import { registerFileChangeListener } from './defaultConfigs/loadConfig'
 import { initRenderer } from './renderer'
 import { createScene } from './scene'
 import { StatsWrapper } from './stats'
@@ -11,6 +12,10 @@ async function main() {
   if (overlay) {
     overlay.remove()
   }
+
+  // File input element for configuration files
+  const inputElement = document.getElementById('fileInput')
+  registerFileChangeListener(inputElement)
 
   // Create container for renderer
   const container = document.createElement('div')

@@ -1,5 +1,5 @@
 export const config = {
-  $schema: './schemas/bird.schema.json',
+  $schema: 'schemas/bird.schema.json',
   id: 'woodpecker',
   name: 'woodpecker',
   seed: 1001,

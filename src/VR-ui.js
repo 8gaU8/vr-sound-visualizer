@@ -68,6 +68,16 @@ export function VRUI(
     })
   console.log('Initial spectrogram enabled state:', VisualizeOptions.spectrogramModel.enabled)
 
+  const validateFile = () => {
+    const fileInput = document.getElementById('fileInput')
+    if (fileInput !== null && fileInput) {
+      console.log('clicked')
+      fileInput.click()
+    }
+  }
+  // Initialize GUI
+  gui.add({ upload: validateFile }, 'upload')
+
   // Create an interactive group for the UI
   // Add VR controllers
   const geometry = new THREE.BufferGeometry()
