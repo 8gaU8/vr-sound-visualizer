@@ -20,7 +20,7 @@ async function main() {
 
   const { scene, environment, tree, camera, controls, birdsWatcher, directionIndicator } =
     await createScene(renderer)
-    const ground = scene.getObjectByName('Ground')
+  const ground = scene.getObjectByName('Ground')
   const { htmlMesh } = VRUI(
     scene,
     camera,
@@ -28,7 +28,7 @@ async function main() {
     directionIndicator,
     birdsWatcher.hapticsManager,
     birdsWatcher,
-    ground
+    ground,
   )
 
   const vrUI = VRUI(
@@ -38,9 +38,8 @@ async function main() {
     directionIndicator,
     birdsWatcher.hapticsManager,
     birdsWatcher,
-    ground
-)
-
+    ground,
+  )
 
   const stats = new StatsWrapper(scene, camera)
 
@@ -51,7 +50,7 @@ async function main() {
       birdsWatcher.update(t, renderer.xr.getCamera())
       birdsWatcher.updateHaptics(renderer)
       // vrUI.teleportVR.update();
-      vrUI.updateTeleportMarker();
+      vrUI.updateTeleportMarker()
     } else {
       controls.update()
       birdsWatcher.update(t, camera)

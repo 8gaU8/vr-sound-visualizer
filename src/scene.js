@@ -8,9 +8,8 @@ import { BirdsWatcher } from './BirdsWatcher.js'
 import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
 import { birdConfigs } from './defaultConfigs/loadConfig.js'
 import { Environment } from './environment'
+import { Ground } from './natureObjects/ground.js'
 import { createSimplifiedMesh } from './utils'
-import {Ground} from './natureObjects/ground.js'
-
 
 /**
  * Creates a new instance of the Three.js scene

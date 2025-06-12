@@ -13,10 +13,8 @@ import { HTMLMesh } from 'three/examples/jsm/interactive/HTMLMesh.js'
 import { InteractiveGroup } from 'three/examples/jsm/interactive/InteractiveGroup.js'
 import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min.js'
 import { XRControllerModelFactory } from 'three/examples/jsm/webxr/XRControllerModelFactory.js'
-import { VisualizeOptions } from './defaultConfigs/VisualizeOptions'
-import TeleportVR from "teleportvr";
-import { update } from 'three/examples/jsm/libs/tween.module.js'
 
+import { VisualizeOptions } from './defaultConfigs/VisualizeOptions'
 
 /**
  * @param {Scene} scene
@@ -26,7 +24,15 @@ import { update } from 'three/examples/jsm/libs/tween.module.js'
  * @param {HapticsManager} hapticsManager
  * @param {BirdsWatcher } birdsWatcher
  */
-export function VRUI(scene, camera, renderer, directionalIndicator, hapticsManager, birdsWatcher,ground) {
+export function VRUI(
+  scene,
+  camera,
+  renderer,
+  directionalIndicator,
+  hapticsManager,
+  birdsWatcher,
+  ground,
+) {
   const gui = new GUI()
   //   gui.domElement.style.zIndex = 1000;
 
@@ -94,135 +100,133 @@ export function VRUI(scene, camera, renderer, directionalIndicator, hapticsManag
 
   // Create a simple HTML mesh for the UI
   const htmlMesh = new HTMLMesh(gui.domElement)
-    htmlMesh.position.set(1, 2.3, -2)
-    htmlMesh.rotation.y = -Math.PI/6
+  htmlMesh.position.set(1, 2.3, -2)
+  htmlMesh.rotation.y = -Math.PI / 6
 
   // htmlMesh.position.set(0.6,-0.6,-2)
-  htmlMesh.scale.set(2.5,2.5,2.5)
+  htmlMesh.scale.set(2.5, 2.5, 2.5)
   interactiveGroup.add(htmlMesh)
 
   //hide/show gui when pressing A or X
-// let rightController;
+  // let rightController;
 
-// controller1.addEventListener('connected', (event) => {
-//   if (event.data.handedness === "right") {
-//     rightController = controller1;
-//     // Listen for the 'selectstart' event directly
-//     rightController.addEventListener('selectstart', () => {
-//       htmlMesh.visible = !htmlMesh.visible;
-//       // console.log('A pressed', gamepad)
-//     });
-//   }
-// });
+  // controller1.addEventListener('connected', (event) => {
+  //   if (event.data.handedness === "right") {
+  //     rightController = controller1;
+  //     // Listen for the 'selectstart' event directly
+  //     rightController.addEventListener('selectstart', () => {
+  //       htmlMesh.visible = !htmlMesh.visible;
+  //       // console.log('A pressed', gamepad)
+  //     });
+  //   }
+  // });
 
-// controller2.addEventListener('connected', (event) => {
-//   if (event.data.handedness === "right") {
-//     rightController = controller2;
-//     // Listen for the 'selectstart' event directly
-//     rightController.addEventListener('selectstart', () => {
-//       htmlMesh.visible = !htmlMesh.visible;
-//     });
-//   }
-
+  // controller2.addEventListener('connected', (event) => {
+  //   if (event.data.handedness === "right") {
+  //     rightController = controller2;
+  //     // Listen for the 'selectstart' event directly
+  //     rightController.addEventListener('selectstart', () => {
+  //       htmlMesh.visible = !htmlMesh.visible;
+  //     });
+  //   }
 
   // if (event.data.handedness === "right") {
   //   //do something here
   // }
   //get buttons inputs from controller 1
   // const gamepad = event.data.gamepad;
-// });
+  // });
 
-// const teleportVR = new TeleportVR(scene, camera);
-// const lefthand = new THREE.Mesh(
-//     new THREE.CylinderGeometry(0.05, 0.05, 0.4, 16, 1, true),
-//     new THREE.MeshBasicMaterial({
-//         color: 0x00ff88,
-//         wireframe: true,
-//     })
-// )
-// // const controllerGrip1 = renderer.xr.getControllerGrip(0)
-// controllerGrip1.addEventListener('connected', (event) => {
-//     controllerGrip1.add(lefthand)
-//     if( event.data.gamepad){
-//     teleportVR.add(0, controllerGrip1, event.data.gamepad)}
-// })
+  // const teleportVR = new TeleportVR(scene, camera);
+  // const lefthand = new THREE.Mesh(
+  //     new THREE.CylinderGeometry(0.05, 0.05, 0.4, 16, 1, true),
+  //     new THREE.MeshBasicMaterial({
+  //         color: 0x00ff88,
+  //         wireframe: true,
+  //     })
+  // )
+  // // const controllerGrip1 = renderer.xr.getControllerGrip(0)
+  // controllerGrip1.addEventListener('connected', (event) => {
+  //     controllerGrip1.add(lefthand)
+  //     if( event.data.gamepad){
+  //     teleportVR.add(0, controllerGrip1, event.data.gamepad)}
+  // })
 
-// const righthand = new THREE.Mesh(
-//     new THREE.CylinderGeometry(0.05, 0.05, 0.4, 16, 1, true),
-//     new THREE.MeshBasicMaterial({
-//         color: 0x00ff88,
-//         wireframe: true,
-//     })
-// )
-// // const controllerGrip1 = renderer.xr.getControllerGrip(1)
-// controllerGrip2.addEventListener('connected', (event) => {
-//     controllerGrip2.add(righthand)
-//     if (event.data.gamepad){
-//     teleportVR.add(1, controllerGrip2, event.data.gamepad)}
-// })
+  // const righthand = new THREE.Mesh(
+  //     new THREE.CylinderGeometry(0.05, 0.05, 0.4, 16, 1, true),
+  //     new THREE.MeshBasicMaterial({
+  //         color: 0x00ff88,
+  //         wireframe: true,
+  //     })
+  // )
+  // // const controllerGrip1 = renderer.xr.getControllerGrip(1)
+  // controllerGrip2.addEventListener('connected', (event) => {
+  //     controllerGrip2.add(righthand)
+  //     if (event.data.gamepad){
+  //     teleportVR.add(1, controllerGrip2, event.data.gamepad)}
+  // })
 
-// Add a marker to show teleport target
-const marker = new THREE.Mesh(
-  new THREE.CircleGeometry(0.25, 32).rotateX(-Math.PI / 2),
-  new THREE.MeshBasicMaterial({ color: 0xbcbcbc })
-);
-scene.add(marker);
-marker.visible = false;
+  // Add a marker to show teleport target
+  const marker = new THREE.Mesh(
+    new THREE.CircleGeometry(0.25, 32).rotateX(-Math.PI / 2),
+    new THREE.MeshBasicMaterial({ color: 0xbcbcbc }),
+  )
+  scene.add(marker)
+  marker.visible = false
 
-// Raycaster for teleportation
-const raycaster = new THREE.Raycaster();
-const tempMatrix = new THREE.Matrix4();
-let INTERSECTION;
-let baseReferenceSpace;
+  // Raycaster for teleportation
+  const raycaster = new THREE.Raycaster()
+  const tempMatrix = new THREE.Matrix4()
+  let INTERSECTION
+  let baseReferenceSpace
 
-// Listen for XR session start to get reference space
-renderer.xr.addEventListener('sessionstart', () => {
-  baseReferenceSpace = renderer.xr.getReferenceSpace();
-});
+  // Listen for XR session start to get reference space
+  renderer.xr.addEventListener('sessionstart', () => {
+    baseReferenceSpace = renderer.xr.getReferenceSpace()
+  })
 
-// Teleport logic for controllers
-function onSelectStart() {
-  this.userData.isSelecting = true;
-}
-function onSelectEnd() {
-  this.userData.isSelecting = false;
-  if (INTERSECTION && baseReferenceSpace) {
-    const offsetPosition = { x: -INTERSECTION.x, y: -INTERSECTION.y, z: -INTERSECTION.z, w: 1 };
-    const offsetRotation = new THREE.Quaternion();
-    const transform = new XRRigidTransform(offsetPosition, offsetRotation);
-    const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace(transform);
-    renderer.xr.setReferenceSpace(teleportSpaceOffset);
+  // Teleport logic for controllers
+  function onSelectStart() {
+    this.userData.isSelecting = true
   }
-}
-
-// Attach events to controllers
-controller1.addEventListener('selectstart', onSelectStart);
-controller1.addEventListener('selectend', onSelectEnd);
-controller2.addEventListener('selectstart', onSelectStart);
-controller2.addEventListener('selectend', onSelectEnd);
-
-function updateTeleportMarker() {
-  INTERSECTION = undefined;
-  [controller1, controller2].forEach(event => {
-    if (event.userData.isSelecting === true) {
-      tempMatrix.identity().extractRotation(event.matrixWorld);
-      raycaster.ray.origin.setFromMatrixPosition(event.matrixWorld);
-      raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
-      const intersects = raycaster.intersectObjects([ground]);
-      if (intersects.length > 0) {
-        INTERSECTION = intersects[0].point;
-      }
+  function onSelectEnd() {
+    this.userData.isSelecting = false
+    if (INTERSECTION && baseReferenceSpace) {
+      const offsetPosition = { x: -INTERSECTION.x, y: -INTERSECTION.y, z: -INTERSECTION.z, w: 1 }
+      const offsetRotation = new THREE.Quaternion()
+      const transform = new XRRigidTransform(offsetPosition, offsetRotation)
+      const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace(transform)
+      renderer.xr.setReferenceSpace(teleportSpaceOffset)
     }
-  });
-  if (INTERSECTION) {
-    marker.position.copy(INTERSECTION);
-    marker.position.y += 0.01; // Slightly above the ground, prevent glitching
-    marker.visible = true;
-  } else {
-    marker.visible = false;
   }
-}
 
+  // Attach events to controllers
+  controller1.addEventListener('selectstart', onSelectStart)
+  controller1.addEventListener('selectend', onSelectEnd)
+  controller2.addEventListener('selectstart', onSelectStart)
+  controller2.addEventListener('selectend', onSelectEnd)
+
+  function updateTeleportMarker() {
+    INTERSECTION = undefined
+    ;[controller1, controller2].forEach((event) => {
+      if (event.userData.isSelecting === true) {
+        tempMatrix.identity().extractRotation(event.matrixWorld)
+        raycaster.ray.origin.setFromMatrixPosition(event.matrixWorld)
+        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix)
+        const intersects = raycaster.intersectObjects([ground])
+        if (intersects.length > 0) {
+          INTERSECTION = intersects[0].point
+        }
+      }
+    })
+    if (INTERSECTION) {
+      marker.position.copy(INTERSECTION)
+      marker.position.y += 0.01 // Slightly above the ground, prevent glitching
+      marker.visible = true
+    } else {
+      marker.visible = false
+    }
+  }
 
   return {
     gui,
