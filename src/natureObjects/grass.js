@@ -208,8 +208,12 @@ export class Grass extends THREE.Object3D {
       const rotation = 2 * Math.PI * rng.random()
       flower.rotation.set(0, rotation, 0)
 
-      const scale = 0.002 + 0.003 * rng.random()
-      flower.scale.set(scale, scale, scale)
+      const scale = new THREE.Vector3(
+        flowerOptions.sizeVariation.x * rng.random() + flowerOptions.baseSize.x,
+        flowerOptions.sizeVariation.y * rng.random() + flowerOptions.baseSize.y,
+        flowerOptions.sizeVariation.z * rng.random() + flowerOptions.baseSize.z,
+      )
+      flower.scale.copy(scale)
 
       this.flowers.add(flower)
     }
