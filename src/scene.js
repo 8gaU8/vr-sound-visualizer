@@ -32,11 +32,6 @@ export async function createScene(renderer) {
 
   const controls = new OrbitControls(camera, renderer.domElement)
 
-  // Add a directional indicator
-  const directionIndicator = new DirectionIndicator(camera)
-  const indicator = directionIndicator.indicator
-  camera.add(indicator)
-
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
   tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
@@ -87,13 +82,12 @@ export async function createScene(renderer) {
   // load ambient sounds
   AudioController.loadAmbientAudio('ambient.mp3', audioListener)
 
-  const birdsWatcher = new BirdsWatcher(audioListener)
+  const birdsWatcher = new BirdsWatcher(audioListener, camera)
   for (const birdConfig of configValidator.getConfigsBySchema('schemas/bird.schema.json')) {
     console.log('Adding bird:', birdConfig.name)
     await birdsWatcher.addBird(birdConfig)
   }
   birdsWatcher.addToScene(scene)
-  directionIndicator.addTargets(birdsWatcher.birds)
 
   // Start the tree loading process
   await loadTrees(0)
@@ -106,6 +100,5 @@ export async function createScene(renderer) {
     camera,
     controls,
     birdsWatcher,
-    directionIndicator,
   }
 }

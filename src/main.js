@@ -5,7 +5,7 @@ import { configValidator, registerFileChangeListener } from './defaultConfigs/lo
 import { initRenderer } from './renderer'
 import { StatsWrapper } from './stats'
 
-async function main() {
+async function initialization() {
   // Remove the loading overlay
   const overlay = document.getElementById('overlay')
   if (overlay) {
@@ -28,28 +28,19 @@ async function main() {
   document.body.appendChild(container)
 
   const renderer = initRenderer(container)
+  return { createScene, renderer, container }
+}
 
-  const { scene, environment, tree, camera, controls, birdsWatcher, directionIndicator } =
-    await createScene(renderer)
-  const ground = scene.getObjectByName('Ground')
-  const { htmlMesh } = VRUI(
+async function main() {
+  const { createScene, renderer, container } = await initialization()
+
+  const { scene, environment, tree, camera, controls, birdsWatcher } = await createScene(renderer)
+  const { htmlMesh, updateTeleportMarker } = VRUI(
     scene,
     camera,
     renderer,
-    directionIndicator,
-    birdsWatcher.hapticsManager,
     birdsWatcher,
-    ground,
-  )
-
-  const vrUI = VRUI(
-    scene,
-    camera,
-    renderer,
-    directionIndicator,
-    birdsWatcher.hapticsManager,
-    birdsWatcher,
-    ground,
+    environment.ground,
   )
 
   const stats = new StatsWrapper(scene, camera)
@@ -60,13 +51,11 @@ async function main() {
     if (renderer.xr.isPresenting) {
       birdsWatcher.update(t, renderer.xr.getCamera())
       birdsWatcher.updateHaptics(renderer)
-      // vrUI.teleportVR.update();
-      vrUI.updateTeleportMarker()
+      updateTeleportMarker()
     } else {
       controls.update()
       birdsWatcher.update(t, camera)
     }
-    directionIndicator.update()
 
     // Update time for wind sway shaders
     tree.update(t)
@@ -90,7 +79,6 @@ async function main() {
 
   window.addEventListener('resize', resize)
 
-  // setupUI(tree, environment, renderer, scene, camera, controls, 'Ash Medium')
   renderer.setAnimationLoop(render)
   resize()
 }

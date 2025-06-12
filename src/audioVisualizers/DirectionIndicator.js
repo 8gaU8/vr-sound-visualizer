@@ -40,6 +40,7 @@ export class DirectionIndicator {
   constructor(camera) {
     this.camera = camera
     this.indicator = this.#generateIndicator()
+    this.camera.add(this.indicator)
   }
 
   #generateRing() {
