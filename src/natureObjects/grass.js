@@ -1,4 +1,9 @@
 // @ts-check
+
+/**
+ * @typedef {typeof import('../../public/configs/blueFlower.json.js').config} FlowerConfig
+ */
+
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
@@ -179,7 +184,7 @@ export class Grass extends THREE.Object3D {
   /**
    *
    * @param {THREE.Mesh} flowerMesh
-   * @param {typeof defaultConfigs.yellowFlower} flowerOptions
+   * @param {FlowerConfig} flowerOptions
    */
   generateFlowers(flowerMesh, flowerOptions) {
     const rng = new RNG(flowerOptions.seed)
