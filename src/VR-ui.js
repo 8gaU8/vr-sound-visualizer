@@ -7,6 +7,7 @@
  * @typedef {import('./audioVisualizers/DirectionIndicator.js').DirectionIndicator} DirectionIndicator
  * @typedef {import('./haptics.js').HapticsManager} HapticsManager
  * @typedef {import('./BirdsWatcher.js').BirdsWatcher} BirdsWatcher
+ * @typedef {import('./natureObjects/ground.js').Ground} Ground
  */
 import * as THREE from 'three'
 import { HTMLMesh } from 'three/examples/jsm/interactive/HTMLMesh.js'
@@ -22,7 +23,8 @@ import { VisualizeOptions } from './defaultConfigs/VisualizeOptions'
  * @param {WebGLRenderer} renderer
  * @param {DirectionIndicator} directionalIndicator
  * @param {HapticsManager} hapticsManager
- * @param {BirdsWatcher } birdsWatcher
+ * @param {BirdsWatcher} birdsWatcher
+ * @param {Ground} ground
  */
 export function VRUI(
   scene,
