@@ -28,7 +28,7 @@ class ConfigManager {
   /** @type {Record<string, number>} */
   seedStore = {}
 
-  /** @type {Record<string, object> */
+  /** @type {Record<string, object>} */
   configStore = {}
 
   /** @type {Record<string, ValidateFunction} */
