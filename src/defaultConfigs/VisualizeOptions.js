@@ -16,7 +16,7 @@ export const VisualizeOptions = {
       color: 0xff0000,
       opacity: 1.0,
       minSize: 0.0001,
-      maxSize: 0.02,
+      maxSize: 0.05,
       z: 0.001,
     },
   },
