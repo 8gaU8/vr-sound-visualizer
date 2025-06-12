@@ -5,7 +5,7 @@ export const schema = {
   properties: {
     $schema: {
       type: 'string',
-      const: './schemas/natureObject.schema.json',
+      const: './schemas/sky.schema.json',
     },
     id: {
       type: 'string',
@@ -72,6 +72,7 @@ export const schema = {
   },
   required: [
     'id',
+    '$schema',
     'intensity',
     'turbidity',
     'rayleigh',

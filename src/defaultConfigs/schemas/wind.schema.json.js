@@ -30,6 +30,6 @@ export const schema = {
       minimum: 0,
     },
   },
-  required: ['id', 'strength', 'frequency', 'scale'],
+  required: ['id', '$schema', 'strength', 'frequency', 'scale'],
   additionalProperties: false,
 }

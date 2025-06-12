@@ -3,7 +3,7 @@
 /**
  * @typedef {import('three').Mesh} Mesh
  * @typedef {import('three').Object3D} Object3D
- * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
+ * @typedef {typeof import('./defaultConfigs/configs/woodpecker.json.js').config} BirdConfig
  */
 
 import { CatmullRomCurve3, Quaternion, Vector3 } from 'three'
