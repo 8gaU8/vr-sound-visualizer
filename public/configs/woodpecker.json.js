@@ -5,7 +5,7 @@ export const config = {
   seed: 1001,
   modelPath: 'woodpecker.glb',
   audioPath: 'PileatedWoodpecker.mp3',
-  position: { x: 3, y: 1, z: 0 },
+  position: { x: 2, y: 1, z: -4 },
   scale: { x: 0.5, y: 0.5, z: 0.5 },
   motion: true,
 }
