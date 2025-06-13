@@ -1,20 +1,20 @@
 import { Tree, TreePreset } from '@dgreenheck/ez-tree'
 import { Group } from 'three'
 
-import { createSimplifiedMesh } from './utils'
+import { RNG } from './noise'
+// import { createSimplifiedMesh } from './utils'
 
-function createTree() {
-  const minDistance = 5
-  const maxDistance = 15
-  const r = minDistance + Math.random() * maxDistance
-  const theta = 2 * Math.PI * Math.random()
+function createTree(rng) {
+  const range = 20
+  const x = (rng.random() - 0.5) * range
+  const y = (rng.random() - 0.5) * range
   const presets = Object.keys(TreePreset)
-  const index = Math.floor(Math.random() * presets.length)
+  const index = Math.floor(rng.random() * presets.length)
 
   const t = new Tree()
-  t.position.set(r * Math.cos(theta), 0, r * Math.sin(theta))
+  t.position.set(x, 0, y)
   t.loadPreset(presets[index])
-  t.options.seed = 10000 * Math.random()
+  t.options.seed = 10000 * rng.random()
   t.generate()
   t.castShadow = true
   t.receiveShadow = true
@@ -24,23 +24,24 @@ function createTree() {
 }
 
 async function loadAndAddTrees(treeCount, forest) {
+  const rng = new RNG('Tree', 999)
   let i = 0
   while (i < treeCount) {
-    const tree = createTree()
+    const tree = createTree(rng)
     forest.add(tree)
     i++
   }
 }
 
 export function createForest() {
-  // Add a forest of trees in the background
+  // Add a forest of trees in the backgroune
   const forest = new Group()
   forest.name = 'Forest'
 
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
-  tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
-  tree.branchesMesh = createSimplifiedMesh(tree.branchesMesh)
+  // tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
+  // tree.branchesMesh = createSimplifiedMesh(tree.branchesMesh)
   tree.generate()
   tree.castShadow = true
   tree.receiveShadow = true
@@ -48,7 +49,7 @@ export function createForest() {
   tree.scale.set(0.1, 0.1, 0.1)
   forest.add(tree)
 
-  const treeCount = 20
+  const treeCount = 50
   loadAndAddTrees(treeCount, forest)
   return forest
 }
