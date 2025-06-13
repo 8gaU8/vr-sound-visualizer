@@ -14,6 +14,10 @@ async function initialization() {
 
   // initialize the configuration manager
   await configValidator.initialize()
+  const color = new THREE.Color().setHex((configValidator.configStore.woodpecker.color))
+  console.log(color)
+
+
 
   // Import scene dynamically to make sure the module is loaded after the configuration is ready
   const sceneModule = await import('./scene.js')

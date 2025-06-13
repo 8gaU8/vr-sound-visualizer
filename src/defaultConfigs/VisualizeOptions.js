@@ -4,7 +4,7 @@ export const VisualizeOptions = {
     ring: {
       radius: 0.2,
       thickness: 0.02,
-      color: 0x00ff00,
+      color: 0x8ac926,
       opacity: 0.8,
       position: {
         x: 0,
@@ -13,7 +13,7 @@ export const VisualizeOptions = {
       },
     },
     point: {
-      color: 0xff0000,
+      color: 0xff595e,
       opacity: 1.0,
       minSize: 0.0001,
       maxSize: 0.05,
@@ -23,7 +23,7 @@ export const VisualizeOptions = {
   spectrogramModel: {
     enabled: true,
     fftSize: 64,
-    width: 1,
-    height: 1,
+    width: 0.2,
+    height: 0.2,
   },
 }
