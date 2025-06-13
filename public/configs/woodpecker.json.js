@@ -6,7 +6,7 @@ export const config = {
   modelPath: 'woodpecker.glb',
   audioPath: 'PileatedWoodpecker.mp3',
   position: { x: 2, y: 1, z: -4 },
-  scale: { x: 0.5, y: 0.5, z: 0.5 },
+  scale: { x: 0.25, y: 0.25, z: 0.25 },
   color: 0xff206e,
   motion: true,
   spectrogramPosition: {
