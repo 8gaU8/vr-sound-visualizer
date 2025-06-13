@@ -25,5 +25,9 @@ export const VisualizeOptions = {
     fftSize: 64,
     width: 0.25,
     height: 0.25,
+    visibleThresholds: {
+      distance: 7,
+      angle: 0.2,
+    },
   },
 }
