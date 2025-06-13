@@ -1,4 +1,9 @@
 // @ts-check
+
+/**
+ * @typedef {typeof import('../../public/configs/blueFlower.json.js').config} FlowerConfig
+ */
+
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/Addons.js'
 
@@ -179,7 +184,7 @@ export class Grass extends THREE.Object3D {
   /**
    *
    * @param {THREE.Mesh} flowerMesh
-   * @param {typeof defaultConfigs.yellowFlower} flowerOptions
+   * @param {FlowerConfig} flowerOptions
    */
   generateFlowers(flowerMesh, flowerOptions) {
     const rng = new RNG(flowerOptions.seed)
@@ -203,8 +208,12 @@ export class Grass extends THREE.Object3D {
       const rotation = 2 * Math.PI * rng.random()
       flower.rotation.set(0, rotation, 0)
 
-      const scale = 0.002 + 0.003 * rng.random()
-      flower.scale.set(scale, scale, scale)
+      const scale = new THREE.Vector3(
+        flowerOptions.sizeVariation.x * rng.random() + flowerOptions.baseSize.x,
+        flowerOptions.sizeVariation.y * rng.random() + flowerOptions.baseSize.y,
+        flowerOptions.sizeVariation.z * rng.random() + flowerOptions.baseSize.z,
+      )
+      flower.scale.copy(scale)
 
       this.flowers.add(flower)
     }
@@ -310,5 +319,24 @@ export class Grass extends THREE.Object3D {
 
       material.userData.shader = shader
     }
+  }
+
+  /**
+   * Regenerates the grass and flowers based on the current configuration.
+   */
+  applyConfig() {
+    // Remove existing grass and flowers
+    if (this.grassMesh) {
+      this.remove(this.grassMesh)
+      this.grassMesh = null
+    }
+    if (this.flowers) {
+      this.flowers.clear()
+    }
+    // Regenerate grass and flowers
+    this.generateGrass()
+    this.generateFlowers(_whiteFlower, defaultConfigs.whiteFlower)
+    this.generateFlowers(_blueFlower, defaultConfigs.blueFlower)
+    this.generateFlowers(_yellowFlower, defaultConfigs.yellowFlower)
   }
 }

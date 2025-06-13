@@ -112,7 +112,7 @@ export class RNG {
   constructor(seed) {
     if (seed === undefined) throw new Error('seed is undefined')
 
-    addSeedToStore(seed)
+    // addSeedToStore(seed)
 
     this.seed = seed
     this.rng = prand.xoroshiro128plus(this.seed)

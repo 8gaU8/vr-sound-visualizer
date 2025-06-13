@@ -21,22 +21,13 @@ import { VisualizeOptions } from './defaultConfigs/VisualizeOptions'
  * @param {Scene} scene
  * @param {PerspectiveCamera} camera
  * @param {WebGLRenderer} renderer
- * @param {DirectionIndicator} directionalIndicator
- * @param {HapticsManager} hapticsManager
  * @param {BirdsWatcher} birdsWatcher
  * @param {Ground} ground
  */
-export function VRUI(
-  scene,
-  camera,
-  renderer,
-  directionalIndicator,
-  hapticsManager,
-  birdsWatcher,
-  ground,
-) {
+export function VRUI(scene, camera, renderer, birdsWatcher, ground) {
   const gui = new GUI()
-  //   gui.domElement.style.zIndex = 1000;
+  const directionalIndicator = birdsWatcher.directionIndicator
+  const hapticsManager = birdsWatcher.hapticsManager
 
   const DirectionFolder = gui.addFolder('Directional Indicator')
   DirectionFolder.add(directionalIndicator.indicator, 'visible')

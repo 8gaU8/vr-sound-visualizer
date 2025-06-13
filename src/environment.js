@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 
+import { createForest } from './forest'
 import { Clouds } from './natureObjects/clouds'
 import { Grass } from './natureObjects/grass'
 import { Ground } from './natureObjects/ground'
@@ -34,6 +35,11 @@ export class Environment extends THREE.Object3D {
     clouds.rotation.x = Math.PI / 2
     this.clouds = clouds
     this.add(this.clouds)
+
+    // Add a forest of trees in the background
+    const forest = createForest()
+    this.forest = forest
+    this.add(forest)
   }
 
   /**
@@ -42,5 +48,6 @@ export class Environment extends THREE.Object3D {
   update(elapsedTime) {
     this.grass.update(elapsedTime)
     this.clouds.update(elapsedTime)
+    this.forest.children.forEach((o) => o.update(elapsedTime))
   }
 }

@@ -45,6 +45,22 @@ export class Rocks extends THREE.Group {
     })
   }
 
+  /**
+   * 設定を反映して岩を再生成する
+   */
+  applyConfig() {
+    // 既存の岩インスタンスを全て削除
+    while (this.children.length > 0) {
+      this.remove(this.children[0])
+    }
+    // 再生成
+    if (_rock1Mesh && _rock2Mesh && _rock3Mesh) {
+      this.add(this.generateInstances(_rock1Mesh, 1))
+      this.add(this.generateInstances(_rock2Mesh, 2))
+      this.add(this.generateInstances(_rock3Mesh, 3))
+    }
+  }
+
   generateInstances(mesh, seedVar) {
     const instancedMesh = new THREE.InstancedMesh(mesh.geometry, mesh.material, 200)
 

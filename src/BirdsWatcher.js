@@ -2,7 +2,7 @@
 
 /**
  * @typedef {import('./AudioController.js').AudioController} AudioController
- * @typedef {typeof import('./defaultConfigs/birds/woodpecker.json.js').config} BirdConfig
+ * @typedef {typeof import('../public/configs/woodpecker.json.js').config} BirdConfig
  * @typedef {import('three').AudioListener} AudioListener
  * @typedef {import('three').Camera} Camera
  * @typedef {import('three').Scene} Scene
@@ -10,6 +10,7 @@
  */
 
 import { BirdAVController } from './BirdAVController.js'
+import { DirectionIndicator } from './audioVisualizers/DirectionIndicator.js'
 import { HapticsManager } from './haptics.js'
 
 export class BirdsWatcher {
@@ -19,15 +20,19 @@ export class BirdsWatcher {
   hapticsManager
   /** @type {Array<BirdAVController>} */
   birds
+  /** @type {DirectionIndicator} */
+  directionIndicator
 
   /**
-   * @param {AudioListener} audioListener - The audio listener for the scene.
    * @description BirdWatcher manages the audio and visual components of a bird model.
+   * @param {AudioListener} audioListener - The audio listener for the scene.
+   * @param {Camera} camera - The camera used for rendering the scene.
    */
-  constructor(audioListener) {
+  constructor(audioListener, camera) {
     this.audioListener = audioListener
     this.hapticsManager = new HapticsManager()
     this.birds = []
+    this.directionIndicator = new DirectionIndicator(camera)
   }
 
   /**
@@ -72,6 +77,8 @@ export class BirdsWatcher {
     // Update the audio listener's position and orientation to match the camera
     this.audioListener.position.copy(camera.position)
     this.audioListener.quaternion.copy(camera.quaternion)
+
+    this.directionIndicator.update()
   }
 
   /**
@@ -91,6 +98,7 @@ export class BirdsWatcher {
     this.birds.forEach((controller) => {
       scene.add(controller.meshGroup)
     })
+    this.directionIndicator.addTargets(this.birds)
   }
 
   /**

@@ -1,6 +1,7 @@
 // @ts-check
 /**
  * @typedef {import('ajv').ValidateFunction} ValidateFunction
+ * @typedef {import('../environment').Environment} Environment
  */
 
 import Ajv from 'ajv'
@@ -34,6 +35,9 @@ class ConfigManager {
   /** @type {Record<string, ValidateFunction} */
   schemaValidators = {}
 
+  /** @type {Environment} */
+  environment
+
   /**
    * @param {string | undefined} [configBase]
    */
@@ -60,7 +64,7 @@ class ConfigManager {
   async validateAndStoreConfig(config) {
     const validator = await this.#loadSchema(config['$schema'])
     if (!validator(config)) {
-      console.error('Configuration validation errors:', 'at', config.id, validator.errors)
+      console.error('Configuration validation errors:', 'at', config['id'], validator.errors)
       throw new Error('Invalid configuration')
     }
     if (config['seed'] !== undefined) {
@@ -83,6 +87,7 @@ class ConfigManager {
       // if the seed is already used in another config, then erro
       if (seed === storedSeed) {
         if (id === key) {
+          // allow the same config to have the same seed
           return
         }
         throw new Error(`Seed ${seed} in "${id}" config already used in "${key}" config`)
@@ -139,6 +144,16 @@ class ConfigManager {
     }
     await this.validateAndStoreConfig(config)
     console.debug('Uploaded configuration validated:', config.id)
+
+    // Notify the environment that the configuration has been updated
+    this.onConfigUpdated()
+  }
+
+  /**
+   * @param {Environment} environment
+   */
+  registerEnvironment(environment) {
+    this.environment = environment
   }
 
   /**
@@ -158,11 +173,16 @@ class ConfigManager {
     }
     return foundConfigs
   }
+
+  onConfigUpdated() {
+    this.environment.grass.applyConfig()
+    this.environment.skybox.applyConfig()
+    this.environment.rocks.applyConfig()
+  }
 }
 
 // =================== INITIALIZATION ==============================
 const configValidator = new ConfigManager()
-configValidator.initialize()
 
 // =================== Configuration File Input Handler ==================
 
@@ -221,6 +241,3 @@ export function registerFileChangeListener(inputElement) {
 // =================== Export the configurations ==================
 export { configValidator }
 export const defaultConfigs = configValidator.configStore
-
-// Export only the bird configurations
-// export const birdConfigs = configValidator.getConfigsBySchema('schemas/bird.schema.json')
