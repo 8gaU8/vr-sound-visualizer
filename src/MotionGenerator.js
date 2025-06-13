@@ -49,7 +49,7 @@ export class MotionGenerator {
    * @returns {Vector3} - Returns the position of the bird model at the specified time.
    */
   getPosition(time) {
-    const t = time * 0.05 // Convert time to seconds
+    const t = time * 0.03 // Convert time to seconds
     const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
     const point = this.curvePoints[index]
     return point.clone()
@@ -61,7 +61,7 @@ export class MotionGenerator {
    * @returns {Quaternion} - Returns the quaternion representing the rotation of the bird model at the specified time.
    */
   getQuaternion(time) {
-    const t = time * 0.05 // Convert time to seconds
+    const t = time * 0.03 // Convert time to seconds
     const index = Math.floor(t * this.curvePoints.length) % this.curvePoints.length
     const point = this.curvePoints[index]
     //  Rotate the bird model to face the direction of motion
