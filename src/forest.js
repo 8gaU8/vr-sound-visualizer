@@ -2,7 +2,7 @@ import { Tree, TreePreset } from '@dgreenheck/ez-tree'
 import { Group } from 'three'
 
 import { RNG } from './noise'
-// import { createSimplifiedMesh } from './utils'
+import { createSimplifiedMesh } from './utils'
 
 function createTree(rng) {
   const range = 20
@@ -40,8 +40,8 @@ export function createForest() {
 
   const tree = new Tree()
   tree.loadPreset('Ash Medium')
-  // tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
-  // tree.branchesMesh = createSimplifiedMesh(tree.branchesMesh)
+  tree.leavesMesh = createSimplifiedMesh(tree.leavesMesh)
+  tree.branchesMesh = createSimplifiedMesh(tree.branchesMesh)
   tree.generate()
   tree.castShadow = true
   tree.receiveShadow = true
@@ -49,7 +49,7 @@ export function createForest() {
   tree.scale.set(0.1, 0.1, 0.1)
   forest.add(tree)
 
-  const treeCount = 50
+  const treeCount = 20
   loadAndAddTrees(treeCount, forest)
   return forest
 }
