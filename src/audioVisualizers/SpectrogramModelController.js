@@ -54,7 +54,6 @@ export class SpectrogramModelController {
    * @param {Camera} camera
    */
   constructor(audioController, camera) {
-    this.fftSize = 64
     this.camera = camera
     this.config = audioController.config
 
@@ -148,6 +147,7 @@ export class SpectrogramModelController {
    * @param {THREE.Mesh} targetMesh
    */
   update(targetMesh) {
+    // update shader material to represent audio data
     this.analyser.getFrequencyData()
     this.uniforms.tAudioData.value.needsUpdate = true
     this.intensity = this.#calcIntensity(this.analyser.data)
