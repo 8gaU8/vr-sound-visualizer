@@ -90,29 +90,45 @@ export function simplex2d(v) {
   return n
 }
 
-const seedStore = new Array()
+/** @type {Record<string, number>} */
+const seedStore = {}
 
-function addSeedToStore(seed) {
-  if (seedStore.includes(seed)) {
-    throw new Error(`Seed ${seed} is already in use.`)
+function addSeedToStore(name, seed) {
+  for (const key of Object.keys(seedStore)) {
+    const storedSeed = seedStore[key]
+
+    // if the seed is already used in another config, then erro
+    if (seed === storedSeed) {
+      if (key === name) {
+        // allow the same config to have the same seed
+        return
+      }
+      throw new Error(`Seed ${seed} in "${name}" config already used in "${key}" config`)
+    }
   }
-  seedStore.push(seed)
+  seedStore[name] = seed
 }
 
 export class RNG {
+  /** @type {string} */
+  name
+
   /** @type {number} */
   seed
+
   /** @type {prand.RandomGenerator} */
   rng
 
   /**
-   *
-   * @param {number} seed
+   * @param {string} name - The name of the RNG instance.
+   * @param {number} seed - The seed for the random number generator.
    */
-  constructor(seed) {
+  constructor(name, seed) {
     if (seed === undefined) throw new Error('seed is undefined')
+    if (name === undefined) throw new Error('name is undefined')
+    this.name = name
 
-    // addSeedToStore(seed)
+    addSeedToStore(name, seed)
 
     this.seed = seed
     this.rng = prand.xoroshiro128plus(this.seed)
