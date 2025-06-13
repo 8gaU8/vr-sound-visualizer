@@ -63,7 +63,6 @@ export class BirdAVController {
     this.spectrogramModelController = new SpectrogramModelController(
       this.audioController,
       this.camera,
-      this.config,
     )
 
     this.meshGroup = new Group()

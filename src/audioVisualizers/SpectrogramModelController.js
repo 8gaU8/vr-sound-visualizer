@@ -52,14 +52,13 @@ export class SpectrogramModelController {
   /**
    * @param {AudioController} audioController
    * @param {Camera} camera
-   * @param {BirdConfig} config
    */
-  constructor(audioController, camera, config) {
+  constructor(audioController, camera) {
     this.fftSize = 64
     this.camera = camera
-    this.config = config
+    this.config = audioController.config
 
-    const color = new THREE.Color().setHex(config.color)
+    const color = new THREE.Color().setHex(this.config.color)
 
     this.analyser = new THREE.AudioAnalyser(audioController.audio, spectrogramOpt.fftSize)
     this.uniforms = {
