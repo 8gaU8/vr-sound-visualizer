@@ -1,0 +1,22 @@
+{
+  "$schema": "schemas/sky.schema.json",
+  "id": "sky",
+  "intensity": 5,
+  "turbidity": 10,
+  "rayleigh": 3,
+  "mieCoefficient": 0.008,
+  "mieDirectionalG": 0.9,
+  "elevation": 5,
+  "azimuth": 180,
+  "sunColor": {
+    "r": 238,
+    "g": 93,
+    "b": 108
+  },
+  "ambientColor": {
+    "r": 255,
+    "g": 255,
+    "b": 255
+  },
+  "ambientIntensity": 0.4
+}

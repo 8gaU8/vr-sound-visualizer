@@ -11,7 +11,7 @@
   "scale": 10,
   "baseSize": {
     "x": 0.002,
-    "y": 0.002,
+    "y": 0.2,
     "z": 0.002
   },
   "sizeVariation": {
