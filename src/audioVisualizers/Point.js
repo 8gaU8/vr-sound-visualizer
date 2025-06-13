@@ -58,10 +58,9 @@ export class Point {
     const pointMaterial = new THREE.MeshBasicMaterial({
       color: color,
       side: THREE.FrontSide,
-      depthTest: false,
-      depthWrite: false,
       transparent: true,
       opacity: pointOptions.opacity,
+      depthFunc: THREE.AlwaysDepth,
     })
     const point = new THREE.Mesh(pointGeometry, pointMaterial)
     return point

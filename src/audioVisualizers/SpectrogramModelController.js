@@ -97,6 +97,7 @@ export class SpectrogramModelController {
       transparent: true,
       side: THREE.DoubleSide,
     })
+    material.depthFunc = THREE.AlwaysDepth
 
     const geometry = new THREE.PlaneGeometry(spectrogramOpt.width, spectrogramOpt.height)
 
