@@ -26,7 +26,7 @@ export const VisualizeOptions = {
     width: 0.25,
     height: 0.25,
     visibleThresholds: {
-      distance: 7,
+      distance: 5,
       angle: 0.2,
     },
   },
