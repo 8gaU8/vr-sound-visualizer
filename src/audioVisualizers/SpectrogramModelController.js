@@ -161,14 +161,4 @@ export class SpectrogramModelController {
     const intensity = Math.max(...data.map(Math.abs))
     return intensity
   }
-
-  /**
-   * @description Make the spectrogram plane face the camera direction
-   * @param {THREE.Camera} camera
-   */
-  faceToCamera(camera) {
-    if (this.mesh && camera) {
-      this.mesh.lookAt(camera.position)
-    }
-  }
 }

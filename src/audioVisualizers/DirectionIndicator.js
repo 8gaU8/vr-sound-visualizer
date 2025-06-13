@@ -3,6 +3,7 @@
 /**
  * @typedef {import('../BirdsWatcher.js').BirdsWatcher} BirdWatcher
  * @typedef {import('../BirdAVController.js').BirdAVController} BirdAVController
+ * @typedef {typeof import('../../public/configs/woodpecker.json.js').config} BirdConfig
  */
 
 import * as THREE from 'three'

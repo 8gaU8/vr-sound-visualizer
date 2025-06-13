@@ -10,8 +10,8 @@ export const config = {
   color: 0xff206e,
   motion: true,
   spectrogramPosition: {
-    x: 1,
+    x: 0,
     y: -0.5,
-    z: -1.5,
+    z: -2,
   },
 }

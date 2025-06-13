@@ -23,7 +23,7 @@ export const VisualizeOptions = {
   spectrogramModel: {
     enabled: true,
     fftSize: 64,
-    width: 0.2,
-    height: 0.2,
+    width: 0.25,
+    height: 0.25,
   },
 }
