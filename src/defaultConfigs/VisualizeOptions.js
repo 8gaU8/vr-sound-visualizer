@@ -22,9 +22,9 @@ export const VisualizeOptions = {
   },
   spectrogramModel: {
     enabled: true,
-    fftSize: 64,
-    width: 0.25,
-    height: 0.25,
+    fftSize: 32,
+    width: 0.23,
+    height: 0.23,
     visibleThresholds: {
       distance: 5,
       angle: 0.2,
