@@ -46,14 +46,14 @@ export class Rocks extends THREE.Group {
   }
 
   /**
-   * 設定を反映して岩を再生成する
+   * Reflect the configuration and regenerate the rocks
    */
   applyConfig() {
-    // 既存の岩インスタンスを全て削除
+    // Remove all existing rock instances
     while (this.children.length > 0) {
       this.remove(this.children[0])
     }
-    // 再生成
+    // Regenerate
     if (_rock1Mesh && _rock2Mesh && _rock3Mesh) {
       this.add(this.generateInstances(_rock1Mesh, 1))
       this.add(this.generateInstances(_rock2Mesh, 2))

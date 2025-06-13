@@ -43,7 +43,7 @@ export class Environment extends THREE.Object3D {
   }
 
   /**
-   * @param {number} elapsedTime - アプリケーション開始からの経過時間
+   * @param {number} elapsedTime - Elapsed time since the application started
    */
   update(elapsedTime) {
     this.grass.update(elapsedTime)

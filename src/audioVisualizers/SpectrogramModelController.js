@@ -141,7 +141,7 @@ export class SpectrogramModelController {
   }
 
   /**
-   * @description スペクトログラム平面をカメラの方向に向ける
+   * @description Make the spectrogram plane face the camera direction
    * @param {THREE.Camera} camera
    */
   faceToCamera(camera) {
