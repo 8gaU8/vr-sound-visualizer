@@ -47,6 +47,31 @@
 - [DEMO](https://8gau8.github.io/vr-sound-visualizer/)
 - GH Repo :[https://github.com/8gaU8/vr-sound-visualizer](https://github.com/8gaU8/vr-sound-visualizer/pull/26)
 
+## Features
+
+1. **Visualization & haptics**
+
+   Our main features of this project.
+   Create immersive experience with visualizations and haptics.
+
+   - Show direction of the sound
+   - Code: [`src/audioVisualizers/DirectionIndicator.js`](src/audioVisualizers/DirectionIndicator.js)
+   - Show spectrogram of the sound
+   - Code: [`src/audioVisualizers/SpectrogramModelController.js`](src/audioVisualizers/SpectrogramModelController.js)
+   - Provide haptics of the global sound based on the distance to birds
+   - Code: [`src/haptics.js`](src/haptics.js)
+
+2. **Custimization**
+
+   You can use your configuration files to customize your experience and environment.
+
+   - Basic configuration files: [`public/configs/*.json.js`](public/configs/)
+   - Correspondin schemas: [`public/schemas/*.json.js`](public/schemas/)
+   - Example custimizations:
+      - Increase the number of blue flowers: [`testConfigurations/manyBlueFlowers.json`](./testConfigurations/manyBlueFlowers.json)
+      - Sunset view: [`testConfigurations/sunset.json`]('testConfigurations/sunset.json)
+   - Validation script for custom configuration: [`src/defaultConfigs/loadConfig.js`](src/defaultConfigs/loadConfig.js)
+
 ## Project Structure and Main Components
 
 This project is a VR sound visualizer built with JavaScript and Vite. Below is a summary of the main files and classes, and their roles in the application:
