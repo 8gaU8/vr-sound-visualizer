@@ -320,4 +320,23 @@ export class Grass extends THREE.Object3D {
       material.userData.shader = shader
     }
   }
+
+  /**
+   * Regenerates the grass and flowers based on the current configuration.
+   */
+  applyConfig() {
+    // Remove existing grass and flowers
+    if (this.grassMesh) {
+      this.remove(this.grassMesh)
+      this.grassMesh = null
+    }
+    if (this.flowers) {
+      this.flowers.clear()
+    }
+    // Regenerate grass and flowers
+    this.generateGrass()
+    this.generateFlowers(_whiteFlower, defaultConfigs.whiteFlower)
+    this.generateFlowers(_blueFlower, defaultConfigs.blueFlower)
+    this.generateFlowers(_yellowFlower, defaultConfigs.yellowFlower)
+  }
 }

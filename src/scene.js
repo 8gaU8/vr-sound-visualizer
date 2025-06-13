@@ -6,7 +6,6 @@ import { AudioController } from './AudioController.js'
 import { BirdsWatcher } from './BirdsWatcher.js'
 import { configValidator } from './defaultConfigs/loadConfig.js'
 import { Environment } from './environment'
-import { createForest } from './forest.js'
 
 /**
  * Creates a new instance of the Three.js scene
@@ -39,9 +38,8 @@ export async function createScene(renderer) {
   }
   birdsWatcher.addToScene(scene)
 
-  // Start the tree loading process
-  const forest = createForest()
-  scene.add(forest)
+  // Register the environment with the config validator
+  configValidator.registerEnvironment(environment)
 
   return {
     scene,

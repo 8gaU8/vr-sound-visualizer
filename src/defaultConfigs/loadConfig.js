@@ -1,6 +1,7 @@
 // @ts-check
 /**
  * @typedef {import('ajv').ValidateFunction} ValidateFunction
+ * @typedef {import('../environment').Environment} Environment
  */
 
 import Ajv from 'ajv'
@@ -33,6 +34,9 @@ class ConfigManager {
 
   /** @type {Record<string, ValidateFunction} */
   schemaValidators = {}
+
+  /** @type {Environment} */
+  environment
 
   /**
    * @param {string | undefined} [configBase]
@@ -83,6 +87,7 @@ class ConfigManager {
       // if the seed is already used in another config, then erro
       if (seed === storedSeed) {
         if (id === key) {
+          // allow the same config to have the same seed
           return
         }
         throw new Error(`Seed ${seed} in "${id}" config already used in "${key}" config`)
@@ -139,6 +144,16 @@ class ConfigManager {
     }
     await this.validateAndStoreConfig(config)
     console.debug('Uploaded configuration validated:', config.id)
+
+    // Notify the environment that the configuration has been updated
+    this.onConfigUpdated()
+  }
+
+  /**
+   * @param {Environment} environment
+   */
+  registerEnvironment(environment) {
+    this.environment = environment
   }
 
   /**
@@ -157,6 +172,12 @@ class ConfigManager {
       console.error(`No configurations found for schema: ${schemaPath}`)
     }
     return foundConfigs
+  }
+
+  onConfigUpdated() {
+    this.environment.grass.applyConfig()
+    this.environment.skybox.applyConfig()
+    this.environment.rocks.applyConfig()
   }
 }
 

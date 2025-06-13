@@ -57,10 +57,6 @@ async function main() {
       birdsWatcher.update(t, camera)
     }
 
-    // Update time for wind sway shaders
-    scene.getObjectByName('Forest').children.forEach((o) => o.update(t))
-    environment.update(t)
-
     stats.update()
 
     if (htmlMesh && htmlMesh.material.map) {
