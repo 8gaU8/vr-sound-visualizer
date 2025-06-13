@@ -110,69 +110,10 @@ export function VRUI(scene, camera, renderer, birdsWatcher, ground) {
   htmlMesh.scale.set(2.5, 2.5, 2.5)
   interactiveGroup.add(htmlMesh)
 
-  //hide/show gui when pressing A or X
-  // let rightController;
-
-  // controller1.addEventListener('connected', (event) => {
-  //   if (event.data.handedness === "right") {
-  //     rightController = controller1;
-  //     // Listen for the 'selectstart' event directly
-  //     rightController.addEventListener('selectstart', () => {
-  //       htmlMesh.visible = !htmlMesh.visible;
-  //       // console.log('A pressed', gamepad)
-  //     });
-  //   }
-  // });
-
-  // controller2.addEventListener('connected', (event) => {
-  //   if (event.data.handedness === "right") {
-  //     rightController = controller2;
-  //     // Listen for the 'selectstart' event directly
-  //     rightController.addEventListener('selectstart', () => {
-  //       htmlMesh.visible = !htmlMesh.visible;
-  //     });
-  //   }
-
-  // if (event.data.handedness === "right") {
-  //   //do something here
-  // }
-  //get buttons inputs from controller 1
-  // const gamepad = event.data.gamepad;
-  // });
-
-  // const teleportVR = new TeleportVR(scene, camera);
-  // const lefthand = new THREE.Mesh(
-  //     new THREE.CylinderGeometry(0.05, 0.05, 0.4, 16, 1, true),
-  //     new THREE.MeshBasicMaterial({
-  //         color: 0x00ff88,
-  //         wireframe: true,
-  //     })
-  // )
-  // // const controllerGrip1 = renderer.xr.getControllerGrip(0)
-  // controllerGrip1.addEventListener('connected', (event) => {
-  //     controllerGrip1.add(lefthand)
-  //     if( event.data.gamepad){
-  //     teleportVR.add(0, controllerGrip1, event.data.gamepad)}
-  // })
-
-  // const righthand = new THREE.Mesh(
-  //     new THREE.CylinderGeometry(0.05, 0.05, 0.4, 16, 1, true),
-  //     new THREE.MeshBasicMaterial({
-  //         color: 0x00ff88,
-  //         wireframe: true,
-  //     })
-  // )
-  // // const controllerGrip1 = renderer.xr.getControllerGrip(1)
-  // controllerGrip2.addEventListener('connected', (event) => {
-  //     controllerGrip2.add(righthand)
-  //     if (event.data.gamepad){
-  //     teleportVR.add(1, controllerGrip2, event.data.gamepad)}
-  // })
-
   // Add a marker to show teleport target
   const marker = new THREE.Mesh(
     new THREE.CircleGeometry(0.25, 32).rotateX(-Math.PI / 2),
-    new THREE.MeshBasicMaterial({ color: 0xbcbcbc }),
+    new THREE.MeshBasicMaterial({ color: 0xbcbcbc, depthFunc: THREE.AlwaysDepth }),
   )
   scene.add(marker)
   marker.visible = false
