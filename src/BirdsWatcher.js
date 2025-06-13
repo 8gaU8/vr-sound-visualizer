@@ -22,6 +22,8 @@ export class BirdsWatcher {
   birds
   /** @type {DirectionIndicator} */
   directionIndicator
+  /** @type {Camera} */
+  camera
 
   /**
    * @description BirdWatcher manages the audio and visual components of a bird model.
@@ -30,9 +32,11 @@ export class BirdsWatcher {
    */
   constructor(audioListener, camera) {
     this.audioListener = audioListener
+    this.camera = camera
+
     this.hapticsManager = new HapticsManager()
     this.birds = []
-    this.directionIndicator = new DirectionIndicator(camera)
+    this.directionIndicator = new DirectionIndicator(this.camera)
   }
 
   /**
@@ -40,7 +44,7 @@ export class BirdsWatcher {
    * @param {BirdConfig} birdConfig - The parameters for the bird model including paths, position, scale, and motion.
    */
   async addBird(birdConfig) {
-    const birdAVController = new BirdAVController(birdConfig, this.audioListener)
+    const birdAVController = new BirdAVController(birdConfig, this.audioListener, this.camera)
     await birdAVController.load()
     this.birds.push(birdAVController)
 
@@ -72,7 +76,7 @@ export class BirdsWatcher {
    */
   update(time, camera) {
     this.birds.forEach((birdAVController) => {
-      birdAVController.update(time, camera)
+      birdAVController.update(time)
     })
     // Update the audio listener's position and orientation to match the camera
     this.audioListener.position.copy(camera.position)

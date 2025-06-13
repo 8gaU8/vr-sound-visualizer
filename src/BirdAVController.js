@@ -21,6 +21,9 @@ import { SpectrogramModelController } from './audioVisualizers/SpectrogramModelC
  * - `SpectrogramModelController` (spectrogram model)
  */
 export class BirdAVController {
+  /** @type {Camera} */
+  camera
+
   /** @type {Group} */
   meshGroup
 
@@ -42,11 +45,12 @@ export class BirdAVController {
   /**
    * @param {BirdConfig} config - The parameters for the bird model including paths, position, scale, and motion.
    * @param {AudioListener} audioListener - The audio listener for the scene.
+   * @param {Camera} camera - The camera used for rendering the scene.
    */
-  constructor(config, audioListener) {
+  constructor(config, audioListener, camera) {
     this.config = config
     this.audioListener = audioListener
-    // this.camera = camera
+    this.camera = camera
     this.birdModelController = new BirdModelController(this.config)
     this.audioController = new AudioController(this.config, this.audioListener)
   }
@@ -56,15 +60,16 @@ export class BirdAVController {
   async load() {
     await this.birdModelController.load()
     await this.audioController.load()
-    this.spectrogramModelController = new SpectrogramModelController(this.audioController)
-
-    // this.spectrogramModelController = new SpectrogramModelController(this.audioController)
+    this.spectrogramModelController = new SpectrogramModelController(
+      this.audioController,
+      this.camera,
+    )
 
     this.meshGroup = new Group()
     this.meshGroup.name = `${this.config.name}Controller`
 
     this.meshGroup.add(this.birdModelController.mesh)
-    this.meshGroup.add(this.spectrogramModelController.mesh)
+    // this.meshGroup.add(this.spectrogramModelController.mesh)
     this.meshGroup.add(this.audioController.audio)
 
     this.meshGroup.position.copy(this.config.position)
@@ -72,14 +77,13 @@ export class BirdAVController {
 
   /**
    * @param {number} time  - The elapsed time since the last update.
-   * @param {Camera} camera - The camera used for rendering the scene.
    * @description Updates the bird model and spectrogram based on the elapsed time.
    */
-  update(time, camera) {
+  update(time) {
     // update model position
     this.birdModelController.updateModelPosition(time, this.meshGroup)
     // update spectrogram
-    this.spectrogramModelController.update(camera)
+    this.spectrogramModelController.update(this.birdModelController.mesh)
   }
 
   get intensity() {

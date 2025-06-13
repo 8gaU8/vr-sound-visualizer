@@ -2,6 +2,7 @@
 
 /**
  * @typedef {import('../BirdAVController.js').BirdAVController} BirdAVController
+ * @typedef {typeof import('../../public/configs/woodpecker.json.js').config} BirdConfig
  */
 
 import * as THREE from 'three'
@@ -52,9 +53,10 @@ export class Point {
   }
 
   #genMesh() {
+    const color = new THREE.Color().setHex(this.target.config.color)
     const pointGeometry = new THREE.CircleGeometry(1, 32, 32)
     const pointMaterial = new THREE.MeshBasicMaterial({
-      color: pointOptions.color,
+      color: color,
       side: THREE.FrontSide,
       depthTest: false,
       depthWrite: false,

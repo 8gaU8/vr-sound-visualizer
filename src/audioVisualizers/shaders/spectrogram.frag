@@ -1,10 +1,13 @@
 uniform sampler2D tAudioData;
+uniform float colorR;
+uniform float colorG;
+uniform float colorB;
 varying vec2 vUv;
 
 void main() {
 
     vec3 backgroundColor = vec3( 0.125, 0.125, 0.125 );
-    vec3 color = vec3( 1.0, 1.0, 0.0 );
+    vec3 color = vec3( colorR, colorG, colorB );
 
     float f = texture2D( tAudioData, vec2( vUv.x, 0.0 ) ).r;
 

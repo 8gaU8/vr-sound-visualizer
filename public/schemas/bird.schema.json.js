@@ -53,7 +53,24 @@ export const schema = {
       description: 'Whether the bird model has motion enabled.',
       default: true,
     },
+    color: {
+      type: 'number',
+      description: 'Color of the bird model, represented as a hexadecimal string.',
+      minimum: 0x000000, // Minimum color is black
+      maximum: 0xffffff, // Maximum color is white
+      default: 0xffffff, // Default color is white
+    },
+    spectrogramPosition: {
+      type: 'object',
+      description: 'Position of the spectrogram model in the 3D space.',
+      properties: {
+        x: { type: 'number' },
+        y: { type: 'number' },
+        z: { type: 'number' },
+      },
+      required: ['x', 'y', 'z'],
+    },
   },
-  required: ['id', 'name', 'modelPath', 'audioPath', 'position', 'scale'],
+  required: ['id', 'name', 'modelPath', 'audioPath', 'position', 'scale', 'color'],
   additionalProperties: false,
 }

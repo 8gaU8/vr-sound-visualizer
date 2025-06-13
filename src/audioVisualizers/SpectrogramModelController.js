@@ -3,6 +3,8 @@
 /**
  * @typedef {import('../AudioController.js').AudioController} AudioController
  * @typedef {import('../BirdModelController.js').BirdModelController} BirdModelController
+ * @typedef {import('three').Camera} Camera
+ * @typedef {typeof import('../../public/configs/woodpecker.json.js').config} BirdConfig
  */
 
 import * as THREE from 'three'
@@ -14,6 +16,9 @@ import { spectrogramShaders } from './shaders.js'
 const spectrogramOpt = VisualizeOptions.spectrogramModel
 
 export class SpectrogramModelController {
+  /** @type {Camera} */
+  camera
+
   /**
    * @description The analyser for the audio
    * @type {THREE.AudioAnalyser}
@@ -39,13 +44,33 @@ export class SpectrogramModelController {
   mesh
 
   /**
-   * @param {AudioController} audioController
+   * @description Configs of bird
+   * @type {BirdConfig}
    */
-  constructor(audioController) {
-    this.fftSize = 64
+  config
+
+  /**
+   * @param {AudioController} audioController
+   * @param {Camera} camera
+   */
+  constructor(audioController, camera) {
+    this.camera = camera
+    this.config = audioController.config
+
+    const color = new THREE.Color().setHex(this.config.color)
 
     this.analyser = new THREE.AudioAnalyser(audioController.audio, spectrogramOpt.fftSize)
     this.uniforms = {
+      colorR: {
+        value: Number(color.r),
+      },
+      colorG: {
+        value: Number(color.g),
+      },
+      colorB: {
+        value: Number(color.b),
+      },
+
       tAudioData: {
         value: new THREE.DataTexture(
           this.analyser.data,
@@ -57,6 +82,7 @@ export class SpectrogramModelController {
     }
     this.mesh = this.#generateSpectrogramMesh()
     this.mesh.name = `${audioController.config.name}SpectrogramMesh`
+    this.camera.add(this.mesh)
   }
 
   /**
@@ -75,33 +101,42 @@ export class SpectrogramModelController {
     const geometry = new THREE.PlaneGeometry(spectrogramOpt.width, spectrogramOpt.height)
 
     const mesh = new THREE.Mesh(geometry, material)
-    mesh.translateY(0.5)
-    mesh.translateZ(-0.5)
+    mesh.position.copy(this.config.spectrogramPosition)
     return mesh
   }
 
   /**
-   * @param {THREE.Camera} camera
-   * @param {THREE.Vector3} worldPosition
+   * @param {THREE.Mesh} targetMesh
    */
-  updateVisibility(camera, worldPosition) {
-    if (VisualizeOptions.spectrogramModel.enabled) {
-      const visibleThreshold = 5
-      const angleThreshold = 0.5
-      // console.log('updateVisibility', camera.position)
-      const distance = camera.position.distanceTo(worldPosition)
-
-      //get vector from camera to mesh
-      const vecToMesh = new THREE.Vector3()
-      vecToMesh.subVectors(worldPosition, camera.position).normalize()
-      //get camera direction vector
-      const cameraDirection = new THREE.Vector3(0, 0, -1)
-      cameraDirection.applyQuaternion(camera.quaternion).normalize()
-      //get angle between camera direction and mesh direction
-      const angle = vecToMesh.dot(cameraDirection)
-
-      this.mesh.visible = distance < visibleThreshold && angle > angleThreshold
+  updateVisibility(targetMesh) {
+    if (!VisualizeOptions.spectrogramModel.enabled) {
+      return false
     }
+
+    // get world position of the mesh
+    const targetWorldPosition = new THREE.Vector3()
+    targetMesh.getWorldPosition(targetWorldPosition)
+
+    // distance from camera to target
+    const distance = this.camera.position.distanceTo(targetWorldPosition)
+
+    // get vector from camera to mesh
+    const vecToMesh = new THREE.Vector3()
+    vecToMesh.subVectors(targetWorldPosition, this.camera.position).normalize()
+
+    // get camera direction vector
+    const cameraDirection = new THREE.Vector3(0, 0, -1)
+    cameraDirection.applyQuaternion(this.camera.quaternion).normalize()
+
+    //get angle between camera direction and mesh direction
+    const angle = vecToMesh.dot(cameraDirection)
+
+    // use configured thresholds to determine visibility
+    const distanceCriterion = distance < spectrogramOpt.visibleThresholds.distance
+    const angleCriterion = angle > spectrogramOpt.visibleThresholds.angle
+
+    // set visibility based on distance and angle
+    this.mesh.visible = distanceCriterion && angleCriterion
   }
 
   get position() {
@@ -109,18 +144,15 @@ export class SpectrogramModelController {
   }
 
   /**
-   * @param {THREE.Camera} camera
+   * @param {THREE.Mesh} targetMesh
    */
-  update(camera) {
+  update(targetMesh) {
+    // update shader material to represent audio data
     this.analyser.getFrequencyData()
     this.uniforms.tAudioData.value.needsUpdate = true
     this.intensity = this.#calcIntensity(this.analyser.data)
 
-    //get world position of the mesh
-    const worldPosition = new THREE.Vector3()
-    this.mesh.getWorldPosition(worldPosition)
-    this.updateVisibility(camera, worldPosition)
-    this.faceToCamera(camera)
+    this.updateVisibility(targetMesh)
   }
 
   /**
@@ -130,23 +162,5 @@ export class SpectrogramModelController {
   #calcIntensity(data) {
     const intensity = Math.max(...data.map(Math.abs))
     return intensity
-  }
-
-  /**
-   * @description Adds the spectrogram mesh to the scene
-   * @param {THREE.Scene} scene - The scene to add the mesh to
-   */
-  addToScene(scene) {
-    scene.add(this.mesh)
-  }
-
-  /**
-   * @description Make the spectrogram plane face the camera direction
-   * @param {THREE.Camera} camera
-   */
-  faceToCamera(camera) {
-    if (this.mesh && camera) {
-      this.mesh.lookAt(camera.position)
-    }
   }
 }
