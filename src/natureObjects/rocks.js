@@ -65,7 +65,9 @@ export class Rocks extends THREE.Group {
     const instancedMesh = new THREE.InstancedMesh(mesh.geometry, mesh.material, 200)
 
     const dummy = new THREE.Object3D()
-    const rng = new RNG(defaultConfigs.rock.seed + seedVar)
+    const name = defaultConfigs.rock.name + `-${seedVar}`
+
+    const rng = new RNG(name, defaultConfigs.rock.seed + seedVar)
 
     let count = 0
     for (let i = 0; i < defaultConfigs.rock.instanceCount; i++) {

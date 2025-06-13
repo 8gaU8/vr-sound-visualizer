@@ -23,7 +23,8 @@ export class MotionGenerator {
    */
   constructor(config) {
     this.config = config
-    this.rng = new RNG(config.seed)
+    const name = this.config.id + 'MotionGenerator'
+    this.rng = new RNG(name, config.seed)
     this.curvePoints = this.generateMotion()
   }
 

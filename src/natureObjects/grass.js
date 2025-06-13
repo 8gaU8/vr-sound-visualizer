@@ -122,7 +122,7 @@ export class Grass extends THREE.Object3D {
 
   generateGrassInstances() {
     const dummy = new THREE.Object3D()
-    const rng = new RNG(defaultConfigs.grass.seed)
+    const rng = new RNG(defaultConfigs.grass.id, defaultConfigs.grass.seed)
 
     let count = 0
     for (let i = 0; i < defaultConfigs.grass.maxInstanceCount; i++) {
@@ -187,7 +187,8 @@ export class Grass extends THREE.Object3D {
    * @param {FlowerConfig} flowerOptions
    */
   generateFlowers(flowerMesh, flowerOptions) {
-    const rng = new RNG(flowerOptions.seed)
+    const name = flowerMesh.name
+    const rng = new RNG(name, flowerOptions.seed)
     for (let i = 0; i < flowerOptions.instanceCount; i++) {
       const flower = flowerMesh.clone()
 
