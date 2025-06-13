@@ -103,34 +103,41 @@ export class SpectrogramModelController {
 
     const mesh = new THREE.Mesh(geometry, material)
     mesh.position.copy(this.config.spectrogramPosition)
-    // mesh.translateY(-0.5)
-    // mesh.translateZ(-2)
     return mesh
   }
 
   /**
-   * @param {THREE.Camera} camera
-   * @param {THREE.Vector3} worldPosition
+   * @param {THREE.Mesh} targetMesh
    */
-  updateVisibility(camera, worldPosition) {
-    return true
-    // if (VisualizeOptions.spectrogramModel.enabled) {
-    //   const visibleThreshold = 5
-    //   const angleThreshold = 0.5
-    //   // console.log('updateVisibility', camera.position)
-    //   const distance = camera.position.distanceTo(worldPosition)
+  updateVisibility(targetMesh) {
+    if (!VisualizeOptions.spectrogramModel.enabled) {
+      return false
+    }
 
-    //   //get vector from camera to mesh
-    //   const vecToMesh = new THREE.Vector3()
-    //   vecToMesh.subVectors(worldPosition, camera.position).normalize()
-    //   //get camera direction vector
-    //   const cameraDirection = new THREE.Vector3(0, 0, -1)
-    //   cameraDirection.applyQuaternion(camera.quaternion).normalize()
-    //   //get angle between camera direction and mesh direction
-    //   const angle = vecToMesh.dot(cameraDirection)
+    // get world position of the mesh
+    const targetWorldPosition = new THREE.Vector3()
+    targetMesh.getWorldPosition(targetWorldPosition)
 
-    //   this.mesh.visible = distance < visibleThreshold && angle > angleThreshold
-    // }
+    // distance from camera to target
+    const distance = this.camera.position.distanceTo(targetWorldPosition)
+
+    // get vector from camera to mesh
+    const vecToMesh = new THREE.Vector3()
+    vecToMesh.subVectors(targetWorldPosition, this.camera.position).normalize()
+
+    // get camera direction vector
+    const cameraDirection = new THREE.Vector3(0, 0, -1)
+    cameraDirection.applyQuaternion(this.camera.quaternion).normalize()
+
+    //get angle between camera direction and mesh direction
+    const angle = vecToMesh.dot(cameraDirection)
+
+    // use configured thresholds to determine visibility
+    const distanceCriterion = distance < spectrogramOpt.visibleThresholds.distance
+    const angleCriterion = angle > spectrogramOpt.visibleThresholds.angle
+
+    // set visibility based on distance and angle
+    this.mesh.visible = distanceCriterion && angleCriterion
   }
 
   get position() {
@@ -138,18 +145,14 @@ export class SpectrogramModelController {
   }
 
   /**
-   * @param {THREE.Camera} camera
+   * @param {THREE.Mesh} targetMesh
    */
-  update(camera) {
+  update(targetMesh) {
     this.analyser.getFrequencyData()
     this.uniforms.tAudioData.value.needsUpdate = true
     this.intensity = this.#calcIntensity(this.analyser.data)
 
-    // //get world position of the mesh
-    // const worldPosition = new THREE.Vector3()
-    // this.mesh.getWorldPosition(worldPosition)
-    // this.updateVisibility(camera, worldPosition)
-    // this.faceToCamera(camera)
+    this.updateVisibility(targetMesh)
   }
 
   /**
