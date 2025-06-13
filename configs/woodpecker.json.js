@@ -7,5 +7,11 @@ export const config = {
   audioPath: 'PileatedWoodpecker.mp3',
   position: { x: 2, y: 1, z: -4 },
   scale: { x: 0.5, y: 0.5, z: 0.5 },
+  color: 0xff206e,
   motion: true,
+  spectrogramPosition: {
+    x: 0,
+    y: -0.5,
+    z: -2,
+  },
 }
