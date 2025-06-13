@@ -77,14 +77,13 @@ export class BirdAVController {
 
   /**
    * @param {number} time  - The elapsed time since the last update.
-   * @param {Camera} camera - The camera used for rendering the scene.
    * @description Updates the bird model and spectrogram based on the elapsed time.
    */
-  update(time, camera) {
+  update(time) {
     // update model position
     this.birdModelController.updateModelPosition(time, this.meshGroup)
     // update spectrogram
-    this.spectrogramModelController.update(camera)
+    this.spectrogramModelController.update(this.birdModelController.mesh)
   }
 
   get intensity() {
