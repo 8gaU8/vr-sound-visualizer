@@ -2,7 +2,11 @@
 
 ![deploy status](https://github.com/8gaU8/vr-sound-visualizer/actions/workflows/deploy.yml/badge.svg)
 
-- [DEMO](https://8gau8.github.io/vr-sound-visualizer/)
+## Course Info
+- Realtime 3D Visualization, Jean Monnet University
+- Master of Science Program in Imaging and Light in Extended Reality
+
+## [DEMO](https://8gau8.github.io/vr-sound-visualizer/)
 
 ## Features
 
@@ -18,13 +22,13 @@
    - Provide haptics of the global sound based on the distance to birds
    - Code: [`src/haptics.js`](src/haptics.js)
 
-2. **Custimization**
+2. **Customization**
 
    You can use your configuration files to customize your experience and environment.
 
    - Basic configuration files: [`public/configs/*.json.js`](public/configs/)
-   - Correspondin schemas: [`public/schemas/*.json.js`](public/schemas/)
-   - Example custimizations:
+   - Corresponding schemas: [`public/schemas/*.json.js`](public/schemas/)
+   - Example customization:
       - Increase the number of blue flowers: [`testConfigurations/manyBlueFlowers.json`](./testConfigurations/manyBlueFlowers.json)
       - Sunset view: [`testConfigurations/sunset.json`]('testConfigurations/sunset.json)
    - Validation script for custom configuration: [`src/defaultConfigs/loadConfig.js`](src/defaultConfigs/loadConfig.js)
